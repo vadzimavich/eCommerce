@@ -13,10 +13,10 @@
     "lint": "eslint . --ext .ts",
     "lint:css": "stylelint --fix **/*.css",
     "lint:scss": "stylelint --fix **/*.scss",
-    "prepare": "cd .. && husky async-race/.husky"
+    "prepare": "husky install"
   },
   "keywords": [],
-  "author": "Denis Nedelko",
+  "author": "Coders final",
   "license": "ISC",
   "description": "",
   "devDependencies": {
