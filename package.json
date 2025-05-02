@@ -13,7 +13,8 @@
     "lint": "eslint . --ext .ts",
     "lint:css": "stylelint --fix **/*.css",
     "lint:scss": "stylelint --fix **/*.scss",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Coders final",
@@ -23,6 +24,8 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@stylistic/stylelint-plugin": "^3.1.2",
+    "@types/jest": "^29.5.14",
+    "@types/node-fetch": "^2.6.12",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "copy-webpack-plugin": "^12.0.2",
@@ -34,6 +37,7 @@
     "eslint-plugin-unicorn": "^57.0.0",
     "html-webpack-plugin": "^5.6.3",
     "husky": "^9.1.7",
+    "jest": "^29.7.0",
     "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "sass": "^1.85.1",
@@ -43,6 +47,7 @@
     "stylelint-config-clean-order": "^7.0.0",
     "stylelint-config-standard": "^37.0.0",
     "stylelint-scss": "^6.11.1",
+    "ts-jest": "^29.3.2",
     "ts-loader": "^9.5.2",
     "typescript": "^5.7.3",
     "webpack": "^5.97.1",
@@ -67,5 +72,12 @@
     "*.scss": [
       "npm run lint:scss"
     ]
+  },
+  "dependencies": {
+    "@commercetools/history-sdk": "^5.2.1",
+    "@commercetools/importapi-sdk": "^6.1.1",
+    "@commercetools/platform-sdk": "^8.8.0",
+    "@commercetools/sdk-client": "^4.0.1",
+    "@commercetools/sdk-client-v2": "^3.0.0"
   }
 }
