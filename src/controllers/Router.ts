@@ -3,7 +3,7 @@ import { Routes } from '../models/types/router-types';
 
 export class Router {
   private routes: Routes;
-  private readonly publicRoutes = ['/home', '/login', '/register', '/about', '/not-found'];
+  private readonly publicRoutes = ['/home', '/login', '/registration', '/about-us', '/not-found'];
   constructor(
     routes: Routes,
     private mainContainer: HTMLElement,

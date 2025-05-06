@@ -1,31 +1,33 @@
 import { createButton, createElement } from '../../utils/dom-helpers';
-import { HeaderController } from './headerController';
 
 export class HeaderView {
+  private headerContainer: HTMLElement;
   private navContainer: HTMLElement;
 
-  constructor(private controller: HeaderController) {
+  constructor() {
+    this.headerContainer = createElement({ tag: 'header', classes: ['header'] });
     this.navContainer = createElement({ tag: 'nav', classes: ['nav'] });
   }
 
   public render(): HTMLElement {
-    const buttonHome = createButton({ text: 'Home', classes: ['nav_btn', 'button'] });
-    buttonHome.dataset.route = '/home';
+    this.navContainer = this.renderNavContainer();
+    this.headerContainer.append(this.navContainer);
+    return this.headerContainer;
+  }
 
-    const buttonLogin = createButton({ text: 'Login', classes: ['nav_btn', 'button'] });
-    buttonLogin.dataset.route = '/login';
+  public getNavContainer(): HTMLElement {
+    return this.navContainer;
+  }
 
-    this.navContainer.append(buttonHome, buttonLogin);
-
-    Array.from(this.navContainer.children).forEach((item) => {
-      if (item instanceof HTMLElement) {
-        item.addEventListener('click', () => {
-          const route = item.dataset.route;
-          if (route) {
-            this.controller.navigate(route);
-          }
-        });
-      }
+  private renderNavContainer(): HTMLElement {
+    const buttons = ['Home', 'Catalog', 'About Us', 'Login', 'Registration'];
+    buttons.forEach((item) => {
+      const button = createButton({
+        text: item,
+        classes: ['nav_btn', 'button'],
+        attributes: { 'data-route': `/${item.split(' ').join('-').toLowerCase()}` },
+      });
+      this.navContainer.append(button);
     });
     return this.navContainer;
   }
