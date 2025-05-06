@@ -1,16 +1,9 @@
-import { AppModel } from '../../models/appModel';
+import { route } from '../../app';
 import { HeaderView } from './headerView';
 
 export class HeaderController {
-  constructor(
-    private readonly appModel: AppModel,
-    private readonly view: HeaderView
-  ) {
+  constructor(private readonly view: HeaderView) {
     this.addEventListeners();
-  }
-
-  public navigate(route: string): void {
-    this.appModel.setRoute(route);
   }
 
   private addEventListeners(): void {
@@ -18,9 +11,9 @@ export class HeaderController {
     navContainer.addEventListener('click', (event: MouseEvent) => {
       const target = event.target;
       if (target instanceof HTMLElement) {
-        const route = target.getAttribute('data-route');
-        if (route) {
-          this.appModel.setRoute(route);
+        const rout = target.getAttribute('data-route');
+        if (rout) {
+          route.navigate(rout);
         }
       }
     });

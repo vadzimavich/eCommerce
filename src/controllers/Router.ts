@@ -14,6 +14,10 @@ export class Router {
     this.loadRoute();
   }
 
+  public navigate(path: string): void {
+    location.href = `#${path}`;
+  }
+
   private loadRoute(): void {
     const path = location.hash.slice(1) || '/';
     const view = this.routes[path] || this.routes['/not-found'];
