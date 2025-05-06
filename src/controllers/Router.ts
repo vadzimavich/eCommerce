@@ -1,0 +1,32 @@
+import { AppModel } from '../models/appModel';
+import { Routes } from '../models/types/router-types';
+
+export class Router {
+  private routes: Routes;
+  private readonly publicRoutes = ['/login', '/register', '/about', '/not-found'];
+  constructor(
+    routes: Routes,
+    private mainContainer: HTMLElement,
+    private appModel: AppModel
+  ) {
+    this.routes = routes;
+    window.addEventListener('hashchange', () => this.loadRoute());
+    this.loadRoute();
+  }
+
+  private loadRoute(): void {
+    const path = location.hash.slice(1) || '/';
+    const view = this.routes[path] || this.routes['/not-found'];
+
+    const isPublic = this.publicRoutes.includes(path);
+
+    if (!isPublic) {
+      location.hash = '/login';
+      return;
+    }
+
+    if (view) {
+      this.mainContainer.replaceChildren(new view(this.appModel).render());
+    }
+  }
+}
