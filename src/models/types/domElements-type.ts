@@ -6,8 +6,8 @@ export type Button = {
   attributes?: Record<string, string>;
 };
 
-export type DivElementOptions = {
-  tag?: 'div';
+export type ElementOptions = {
+  tag: string;
   id?: string;
   text?: string;
   children?: HTMLElement[];

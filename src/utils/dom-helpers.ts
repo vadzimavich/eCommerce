@@ -1,4 +1,4 @@
-import { Button, DivElementOptions } from '../models/types/domElements-type';
+import { Button, ElementOptions } from '../models/types/domElements-type';
 
 export function createButton({ id, text, classes, disabled = false, attributes = {} }: Button): HTMLButtonElement {
   const button = document.createElement('button');
@@ -18,9 +18,9 @@ export function createButton({ id, text, classes, disabled = false, attributes =
   return button;
 }
 
-export const createDivElement = (options: DivElementOptions): HTMLDivElement => {
-  const { id, text = '', children = [], classes = [], attributes = {} } = options;
-  const element = document.createElement('div');
+export const createElement = (options: ElementOptions): HTMLElement => {
+  const { tag, id, text = '', children = [], classes = [], attributes = {} } = options;
+  const element = document.createElement(tag);
   element.textContent = text;
 
   if (id) {
