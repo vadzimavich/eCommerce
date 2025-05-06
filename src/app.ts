@@ -8,6 +8,7 @@ import { LoginPage } from './views/pages/LoginPage';
 import { AboutPage } from './views/pages/AboutUsPage';
 import { RegistrationPage } from './views/pages/RegistrationPage';
 import { CatalogPage } from './views/pages/CatalogPage';
+import { NotFoundPage } from './views/pages/NotFoundPage';
 
 export class App {
   constructor() {
@@ -26,6 +27,7 @@ export class App {
       '/registration': RegistrationPage,
       '/login': LoginPage,
       '/catalog': CatalogPage,
+      '/not-found': NotFoundPage,
     };
 
     new Router(routes, mainContainer, appModel);
