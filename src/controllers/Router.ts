@@ -1,4 +1,4 @@
-import { AppModel } from '../models/appModel';
+import { AppModel } from '../models/state/AppState';
 import { Routes } from '../models/types/router-types';
 
 export class Router {

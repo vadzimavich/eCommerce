@@ -1,4 +1,4 @@
-import { AppModel } from '../appModel';
+import { AppModel } from '../state/AppState';
 
 type Main = {
   render: () => HTMLElement;

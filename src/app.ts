@@ -1,4 +1,4 @@
-import { AppModel } from './models/appModel';
+import { AppModel } from './models/state/AppState';
 import { Router } from './controllers/Router';
 import { Header } from './components/header';
 
