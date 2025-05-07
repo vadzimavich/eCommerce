@@ -1,17 +1,18 @@
-import { createButton, createElement } from '../../utils/dom-helpers';
+import ElementCreator from '../../utils/dom-helpers';
 
 export class HeaderView {
   private headerContainer: HTMLElement;
   private navContainer: HTMLElement;
 
   constructor() {
-    this.headerContainer = createElement({ tag: 'header', classes: ['header'] });
-    this.navContainer = createElement({ tag: 'nav', classes: ['nav'] });
+    this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
+    this.navContainer = ElementCreator.element({ tag: 'nav', classNames: ['header__nav', 'nav'] });
   }
 
   public render(): HTMLElement {
-    this.navContainer = this.renderNavContainer();
+    this.navContainer = this.createElementsForNavContrainer();
     this.headerContainer.append(this.navContainer);
+
     return this.headerContainer;
   }
 
@@ -19,16 +20,19 @@ export class HeaderView {
     return this.navContainer;
   }
 
-  private renderNavContainer(): HTMLElement {
+  private createElementsForNavContrainer(): HTMLElement {
     const buttons = ['Home', 'Catalog', 'About Us', 'Login', 'Registration'];
+
     buttons.forEach((item) => {
-      const button = createButton({
-        text: item,
-        classes: ['nav_btn', 'button'],
+      const button = ElementCreator.button({
+        tag: 'button',
+        classNames: ['nav-item', 'nav-item__btn'],
+        content: item,
         attributes: { 'data-route': `/${item.split(' ').join('-').toLowerCase()}` },
       });
       this.navContainer.append(button);
     });
+
     return this.navContainer;
   }
 }

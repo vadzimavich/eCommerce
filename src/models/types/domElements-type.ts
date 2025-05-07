@@ -1,16 +1,8 @@
-export type Button = {
-  id?: string;
-  text: string;
-  classes: string[];
-  disabled?: boolean;
-  attributes?: Record<string, string>;
-};
-
-export type ElementOptions = {
-  tag: string;
-  id?: string;
-  text?: string;
-  children?: HTMLElement[];
-  classes?: string[];
-  attributes?: Record<string, string>;
+type Attributes = { [key: string]: string };
+export type CustomHTMLElement = HTMLElement | HTMLAnchorElement | HTMLInputElement | HTMLButtonElement;
+export type ElementParameters = {
+  tag?: string;
+  classNames?: string[];
+  attributes?: Attributes;
+  content?: string;
 };

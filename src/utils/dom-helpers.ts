@@ -1,40 +1,54 @@
-import { Button, ElementOptions } from '../models/types/domElements-type';
+import { CustomHTMLElement, ElementParameters } from '../models/types/domElements-type';
 
-export function createButton({ id, text, classes, disabled = false, attributes = {} }: Button): HTMLButtonElement {
-  const button = document.createElement('button');
-  if (id) {
-    button.id = id;
+class ElementCreator {
+  public static element(parameters: ElementParameters): HTMLElement {
+    const { tag = 'div' } = parameters;
+    const element = document.createElement(tag);
+    ElementCreator.addParametersForElement(element, parameters);
+
+    return element;
   }
-  button.textContent = text;
-  if (classes.length > 0) {
-    button.classList.add(...classes);
+
+  public static button(parameters: ElementParameters): HTMLButtonElement {
+    const element = document.createElement('button');
+    ElementCreator.addParametersForElement(element, parameters);
+
+    return element;
   }
-  !disabled ? (button.disabled = false) : (button.disabled = true);
 
-  Object.entries(attributes).forEach(([key, value]) => {
-    button.setAttribute(key, String(value));
-  });
+  public static anchor(parameters: ElementParameters): HTMLAnchorElement {
+    const element = document.createElement('a');
+    ElementCreator.addParametersForElement(element, parameters);
 
-  return button;
+    return element;
+  }
+
+  public static input(parameters: ElementParameters): HTMLInputElement {
+    const element = document.createElement('input');
+    ElementCreator.addParametersForElement(element, parameters);
+
+    return element;
+  }
+
+  private static addParametersForElement(element: CustomHTMLElement, parameters: ElementParameters): void {
+    if (parameters.classNames) {
+      parameters.classNames.forEach((className) => element.classList.add(className));
+    }
+
+    if (parameters.attributes) {
+      const keys = Object.keys(parameters.attributes);
+      keys.forEach((key) => {
+        const value = parameters.attributes?.[key];
+        if (value !== undefined) {
+          element.setAttribute(key, value);
+        }
+      });
+    }
+
+    if (parameters.content) {
+      element.textContent = parameters.content;
+    }
+  }
 }
 
-export const createElement = (options: ElementOptions): HTMLElement => {
-  const { tag, id, text = '', children = [], classes = [], attributes = {} } = options;
-  const element = document.createElement(tag);
-  element.textContent = text;
-
-  if (id) {
-    element.id = id;
-  }
-
-  if (classes.length > 0) {
-    element.classList.add(...classes);
-  }
-
-  Object.entries(attributes).forEach(([key, value]) => {
-    element.setAttribute(key, String(value));
-  });
-
-  element.append(...children);
-  return element;
-};
+export default ElementCreator;
