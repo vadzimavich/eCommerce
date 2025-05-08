@@ -7,7 +7,7 @@ export class HeaderView {
   private logoContainer: HTMLElement;
   private cartIconContainer: HTMLElement;
   private currentUserHead: HTMLElement;
-  private logoutIconContainer: HTMLElement;
+  private logoutContainer: HTMLElement;
 
   constructor(private readonly appModel: AppModel) {
     this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
@@ -15,7 +15,7 @@ export class HeaderView {
     this.logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
     this.cartIconContainer = ElementCreator.element({ classNames: ['header__cart', 'header__cart-wrapper'] });
     this.currentUserHead = ElementCreator.element({ tag: 'span', classNames: ['header__user'] });
-    this.logoutIconContainer = ElementCreator.element({ classNames: ['header__logout'] });
+    this.logoutContainer = ElementCreator.element({ classNames: ['header__logout'] });
   }
 
   public render(): HTMLElement {
@@ -45,35 +45,30 @@ export class HeaderView {
     return this.currentUserHead;
   }
 
+  public getLogoutContainer(): HTMLElement {
+    return this.logoutContainer;
+  }
+
   public updateCurrentUserState(): void {
     const user = this.appModel.getCurrentUser();
-    console.log('current user is', user);
     if (!user) {
-      this.logoutIconContainer.style.display = 'none';
+      this.logoutContainer.style.visibility = 'hidden';
+      this.currentUserHead.textContent = '';
       return;
     }
 
     this.currentUserHead.textContent = user;
-    this.logoutIconContainer.style.display = 'block';
+    this.logoutContainer.style.visibility = 'visible';
   }
 
   private buildLogoElement(): HTMLElement {
-    const logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
-
-    const logoLink = ElementCreator.element({
-      tag: 'a',
-      attributes: { href: '/home' },
-      classNames: ['logo__link'],
-    });
-
     const logoImg = ElementCreator.element({
       tag: 'img',
-      attributes: { src: '../assets/logo/logo.png', alt: 'app-logo' },
+      attributes: { src: '../assets/logo/logo.jpg', alt: 'app-logo' },
     });
+    this.logoContainer.append(logoImg);
 
-    logoLink.append(logoImg);
-    logoContainer.append(logoLink);
-    return logoContainer;
+    return this.logoContainer;
   }
 
   private buildNavButtons(): void {
@@ -112,7 +107,7 @@ export class HeaderView {
       classNames: ['header__logout-icon'],
       attributes: { src: '../assets/icons/header-icons/header-logout.svg', alt: 'logout-icon' },
     });
-    this.logoutIconContainer.append(iconLogout);
-    return this.logoutIconContainer;
+    this.logoutContainer.append(iconLogout);
+    return this.logoutContainer;
   }
 }

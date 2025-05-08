@@ -15,6 +15,7 @@ export class HeaderController {
   private addEventListeners(): void {
     this.handleNavigationClick();
     this.handleLogoClick();
+    this.handleLogoutClick();
   }
 
   private handleNavigationClick(): void {
@@ -27,12 +28,8 @@ export class HeaderController {
           route.navigate(rout);
         }
 
-        if (rout === '/login') {
+        if (rout === '/sign-in') {
           this.appModel.setCurrentUser('testUser');
-        }
-
-        if (rout === '/registration') {
-          this.appModel.setCurrentUser('user was logouted');
         }
       }
     });
@@ -40,7 +37,14 @@ export class HeaderController {
 
   private handleLogoClick(): void {
     const logoContainer = this.view.getLogoContainer();
-    logoContainer.addEventListener('click', () => route.navigate('/home'));
+    logoContainer.addEventListener('click', () => route.navigate('/'));
+  }
+
+  private handleLogoutClick(): void {
+    const logoutContainer = this.view.getLogoutContainer();
+    logoutContainer.addEventListener('click', () => {
+      this.appModel.setCurrentUser('');
+    });
   }
 
   private handleCurrentUserHead(): void {
