@@ -3,7 +3,7 @@ import { Routes } from '../models/types/router-types';
 
 export class Router {
   private routes: Routes;
-  private readonly publicRoutes = ['/', '/home', '/login', '/catalog', '/registration', '/about-us', '/not-found'];
+  private readonly publicRoutes = ['/', '/home', '/catalog', '/about-us', '/sign-in', '/sign-up', '/not-found'];
   constructor(
     routes: Routes,
     private mainContainer: HTMLElement,
@@ -24,8 +24,8 @@ export class Router {
     const isPublic = this.publicRoutes.includes(path);
     const isAuthorized = this.appModel.getCurrentUser();
 
-    if (!isPublic && !isAuthorized && this.routes.hasOwnProperty(path)) {
-      location.hash = '/home';
+    if (!isPublic && !isAuthorized) {
+      this.navigate('/home');
       return;
     }
 

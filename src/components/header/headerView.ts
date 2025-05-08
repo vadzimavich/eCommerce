@@ -21,14 +21,14 @@ export class HeaderView {
   }
 
   public render(): HTMLElement {
-    const nav = this.buildNavButtons();
+    this.buildNavButtons();
     const logo = this.buildLogoElement();
     const search = this.buildSearchElement();
     const cart = this.buildCartElement();
     const userContainer = ElementCreator.element({ classNames: ['header__user-wrapper'] });
     userContainer.append(this.currentUserHead, cart);
     const logout = this.buildLogoutElement();
-    this.headerContainer.append(logo, nav, search, userContainer, logout);
+    this.headerContainer.append(logo, this.navContainer, search, userContainer, logout);
     return this.headerContainer;
   }
 
@@ -64,22 +64,6 @@ export class HeaderView {
     this.logoutIconContainer.style.display = 'block';
   }
 
-  private buildNavButtons(): HTMLElement {
-    const buttons = ['Home', 'Catalog', 'About Us', 'Login', 'Registration'];
-
-    buttons.forEach((item) => {
-      const button = ElementCreator.button({
-        tag: 'button',
-        classNames: ['nav-item', 'nav-item__btn'],
-        content: item,
-        attributes: { 'data-route': `/${item.split(' ').join('-').toLowerCase()}` },
-      });
-      this.navContainer.append(button);
-    });
-
-    return this.navContainer;
-  }
-
   private buildLogoElement(): HTMLElement {
     const logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
 
@@ -112,6 +96,26 @@ export class HeaderView {
     });
     this.inputSearchContainer.append(inputSearch, iconSearch);
     return this.inputSearchContainer;
+  }
+
+  private buildNavButtons(): void {
+    const buttons = [
+      { label: 'Home', route: '/' },
+      { label: 'Catalog', route: '/catalog' },
+      { label: 'About Us', route: '/about-us' },
+      { label: 'Sign In', route: '/sign-in' },
+      { label: 'Sign Up', route: '/sign-up' },
+    ];
+
+    buttons.forEach((item) => {
+      const button = ElementCreator.button({
+        tag: 'button',
+        classNames: ['nav-item', 'nav-item__btn'],
+        content: item.label,
+        attributes: { 'data-route': item.route },
+      });
+      this.navContainer.append(button);
+    });
   }
 
   private buildCartElement(): HTMLElement {
