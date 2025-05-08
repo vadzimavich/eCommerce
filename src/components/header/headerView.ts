@@ -5,19 +5,22 @@ export class HeaderView {
   private navContainer: HTMLElement;
   private logoContainer: HTMLElement;
   private inputSearchContainer: HTMLElement;
+  private cartIconContainer: HTMLElement;
 
   constructor() {
     this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
     this.navContainer = ElementCreator.element({ tag: 'nav', classNames: ['header__nav', 'nav'] });
     this.logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
     this.inputSearchContainer = ElementCreator.element({ classNames: ['header__search', 'header__search-wrapper'] });
+    this.cartIconContainer = ElementCreator.element({ classNames: ['header__cart', 'header__cart-wrapper'] });
   }
 
   public render(): HTMLElement {
     const nav = this.buildNavButtons();
     const logo = this.buildLogoElement();
     const search = this.buildSearchElement();
-    this.headerContainer.append(logo, nav, search);
+    const cart = this.buildCartElement();
+    this.headerContainer.append(logo, nav, search, cart);
     return this.headerContainer;
   }
 
@@ -72,5 +75,15 @@ export class HeaderView {
     });
     this.inputSearchContainer.append(inputSearch, iconSearch);
     return this.inputSearchContainer;
+  }
+
+  private buildCartElement(): HTMLElement {
+    const iconCart = ElementCreator.element({
+      tag: 'img',
+      classNames: ['header__cart-icon'],
+      attributes: { src: '../assets/icons/header-icons/header-cart.svg', alt: 'cart-icon' },
+    });
+    this.cartIconContainer.append(iconCart);
+    return this.cartIconContainer;
   }
 }
