@@ -4,17 +4,20 @@ export class HeaderView {
   private headerContainer: HTMLElement;
   private navContainer: HTMLElement;
   private logoContainer: HTMLElement;
+  private inputSearchContainer: HTMLElement;
 
   constructor() {
     this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
     this.navContainer = ElementCreator.element({ tag: 'nav', classNames: ['header__nav', 'nav'] });
     this.logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
+    this.inputSearchContainer = ElementCreator.element({ classNames: ['header__search', 'header__search-wrapper'] });
   }
 
   public render(): HTMLElement {
     const nav = this.buildNavButtons();
     const logo = this.buildLogoElement();
-    this.headerContainer.append(logo, nav);
+    const search = this.buildSearchElement();
+    this.headerContainer.append(logo, nav, search);
     return this.headerContainer;
   }
 
@@ -24,6 +27,10 @@ export class HeaderView {
 
   public getLogoContainer(): HTMLElement {
     return this.logoContainer;
+  }
+
+  public getSearchContainer(): HTMLElement {
+    return this.inputSearchContainer;
   }
 
   private buildNavButtons(): HTMLElement {
@@ -43,10 +50,27 @@ export class HeaderView {
   }
 
   private buildLogoElement(): HTMLElement {
-    const logo = document.createElement('img');
-    logo.src = '../assets/logo/logo.png';
-    logo.alt = 'app-logo';
+    const logo = ElementCreator.element({
+      tag: 'img',
+      classNames: ['header__logo', 'logo'],
+      attributes: { src: '../assets/logo/logo.png', alt: 'app-logo' },
+    });
     this.logoContainer.append(logo);
     return this.logoContainer;
+  }
+
+  private buildSearchElement(): HTMLElement {
+    const inputSearch = ElementCreator.element({
+      tag: 'input',
+      classNames: ['header__search-input', 'input'],
+      attributes: { type: 'text' },
+    });
+    const iconSearch = ElementCreator.element({
+      tag: 'img',
+      classNames: ['header__search-icon'],
+      attributes: { src: '../assets/icons/header-icons/header-search.svg', alt: 'search-icon' },
+    });
+    this.inputSearchContainer.append(inputSearch, iconSearch);
+    return this.inputSearchContainer;
   }
 }
