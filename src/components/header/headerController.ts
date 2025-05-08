@@ -8,6 +8,7 @@ export class HeaderController {
     private readonly view: HeaderView
   ) {
     this.addEventListeners();
+    this.handleCurrentUserHead();
     this.appModel.subscribeUsersListener(() => this.handleCurrentUserHead());
   }
 
@@ -43,6 +44,6 @@ export class HeaderController {
   }
 
   private handleCurrentUserHead(): void {
-    this.view.updateCurrentUserHead();
+    this.view.updateCurrentUserState();
   }
 }

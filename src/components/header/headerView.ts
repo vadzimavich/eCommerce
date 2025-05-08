@@ -8,6 +8,7 @@ export class HeaderView {
   private inputSearchContainer: HTMLElement;
   private cartIconContainer: HTMLElement;
   private currentUserHead: HTMLElement;
+  private logoutIconContainer: HTMLElement;
 
   constructor(private readonly appModel: AppModel) {
     this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
@@ -15,11 +16,8 @@ export class HeaderView {
     this.logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
     this.inputSearchContainer = ElementCreator.element({ classNames: ['header__search', 'header__search-wrapper'] });
     this.cartIconContainer = ElementCreator.element({ classNames: ['header__cart', 'header__cart-wrapper'] });
-    this.currentUserHead = ElementCreator.element({
-      tag: 'span',
-      classNames: ['header__user'],
-      content: this.appModel.getCurrentUser(),
-    });
+    this.currentUserHead = ElementCreator.element({ tag: 'span', classNames: ['header__user'] });
+    this.logoutIconContainer = ElementCreator.element({ classNames: ['header__logout'] });
   }
 
   public render(): HTMLElement {
@@ -29,7 +27,8 @@ export class HeaderView {
     const cart = this.buildCartElement();
     const userContainer = ElementCreator.element({ classNames: ['header__user-wrapper'] });
     userContainer.append(this.currentUserHead, cart);
-    this.headerContainer.append(logo, nav, search, userContainer);
+    const logout = this.buildLogoutElement();
+    this.headerContainer.append(logo, nav, search, userContainer, logout);
     return this.headerContainer;
   }
 
@@ -53,14 +52,16 @@ export class HeaderView {
     return this.currentUserHead;
   }
 
-  public updateCurrentUserHead(): void {
+  public updateCurrentUserState(): void {
     const user = this.appModel.getCurrentUser();
-
+    console.log('current user is', user);
     if (!user) {
+      this.logoutIconContainer.style.display = 'none';
       return;
     }
 
     this.currentUserHead.textContent = user;
+    this.logoutIconContainer.style.display = 'block';
   }
 
   private buildNavButtons(): HTMLElement {
@@ -80,13 +81,22 @@ export class HeaderView {
   }
 
   private buildLogoElement(): HTMLElement {
-    const logo = ElementCreator.element({
+    const logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
+
+    const logoLink = ElementCreator.element({
+      tag: 'a',
+      attributes: { href: '/home' },
+      classNames: ['logo__link'],
+    });
+
+    const logoImg = ElementCreator.element({
       tag: 'img',
-      classNames: ['header__logo', 'logo'],
       attributes: { src: '../assets/logo/logo.png', alt: 'app-logo' },
     });
-    this.logoContainer.append(logo);
-    return this.logoContainer;
+
+    logoLink.append(logoImg);
+    logoContainer.append(logoLink);
+    return logoContainer;
   }
 
   private buildSearchElement(): HTMLElement {
@@ -112,5 +122,15 @@ export class HeaderView {
     });
     this.cartIconContainer.append(iconCart);
     return this.cartIconContainer;
+  }
+
+  private buildLogoutElement(): HTMLElement {
+    const iconLogout = ElementCreator.element({
+      tag: 'img',
+      classNames: ['header__logout-icon'],
+      attributes: { src: '../assets/icons/header-icons/header-logout.svg', alt: 'logout-icon' },
+    });
+    this.logoutIconContainer.append(iconLogout);
+    return this.logoutIconContainer;
   }
 }
