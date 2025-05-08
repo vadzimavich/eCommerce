@@ -10,7 +10,7 @@ export class HeaderView {
   }
 
   public render(): HTMLElement {
-    this.navContainer = this.createElementsForNavContrainer();
+    this.buildNavButtons();
     this.headerContainer.append(this.navContainer);
 
     return this.headerContainer;
@@ -20,19 +20,23 @@ export class HeaderView {
     return this.navContainer;
   }
 
-  private createElementsForNavContrainer(): HTMLElement {
-    const buttons = ['Home', 'Catalog', 'About Us', 'Login', 'Registration'];
+  private buildNavButtons(): void {
+    const buttons = [
+      { label: 'Home', route: '/' },
+      { label: 'Catalog', route: '/catalog' },
+      { label: 'About Us', route: '/about-us' },
+      { label: 'Sign In', route: '/sign-in' },
+      { label: 'Sign Up', route: '/sign-up' },
+    ];
 
     buttons.forEach((item) => {
       const button = ElementCreator.button({
         tag: 'button',
         classNames: ['nav-item', 'nav-item__btn'],
-        content: item,
-        attributes: { 'data-route': `/${item.split(' ').join('-').toLowerCase()}` },
+        content: item.label,
+        attributes: { 'data-route': item.route },
       });
       this.navContainer.append(button);
     });
-
-    return this.navContainer;
   }
 }

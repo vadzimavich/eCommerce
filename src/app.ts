@@ -26,10 +26,10 @@ class App {
     const routes: Routes = {
       '/': HomePage,
       '/home': HomePage,
-      '/about-us': AboutPage,
-      '/registration': RegistrationPage,
-      '/login': LoginPage,
       '/catalog': CatalogPage,
+      '/about-us': AboutPage,
+      '/sign-in': LoginPage,
+      '/sign-up': RegistrationPage,
       '/not-found': NotFoundPage,
     };
 
