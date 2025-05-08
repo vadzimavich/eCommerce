@@ -5,7 +5,6 @@ export class HeaderView {
   private headerContainer: HTMLElement;
   private navContainer: HTMLElement;
   private logoContainer: HTMLElement;
-  private inputSearchContainer: HTMLElement;
   private cartIconContainer: HTMLElement;
   private currentUserHead: HTMLElement;
   private logoutIconContainer: HTMLElement;
@@ -14,7 +13,6 @@ export class HeaderView {
     this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
     this.navContainer = ElementCreator.element({ tag: 'nav', classNames: ['header__nav', 'nav'] });
     this.logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
-    this.inputSearchContainer = ElementCreator.element({ classNames: ['header__search', 'header__search-wrapper'] });
     this.cartIconContainer = ElementCreator.element({ classNames: ['header__cart', 'header__cart-wrapper'] });
     this.currentUserHead = ElementCreator.element({ tag: 'span', classNames: ['header__user'] });
     this.logoutIconContainer = ElementCreator.element({ classNames: ['header__logout'] });
@@ -23,12 +21,11 @@ export class HeaderView {
   public render(): HTMLElement {
     this.buildNavButtons();
     const logo = this.buildLogoElement();
-    const search = this.buildSearchElement();
     const cart = this.buildCartElement();
     const userContainer = ElementCreator.element({ classNames: ['header__user-wrapper'] });
     userContainer.append(this.currentUserHead, cart);
     const logout = this.buildLogoutElement();
-    this.headerContainer.append(logo, this.navContainer, search, userContainer, logout);
+    this.headerContainer.append(logo, this.navContainer, userContainer, logout);
     return this.headerContainer;
   }
 
@@ -38,10 +35,6 @@ export class HeaderView {
 
   public getLogoContainer(): HTMLElement {
     return this.logoContainer;
-  }
-
-  public getSearchContainer(): HTMLElement {
-    return this.inputSearchContainer;
   }
 
   public getCartContainer(): HTMLElement {
@@ -81,21 +74,6 @@ export class HeaderView {
     logoLink.append(logoImg);
     logoContainer.append(logoLink);
     return logoContainer;
-  }
-
-  private buildSearchElement(): HTMLElement {
-    const inputSearch = ElementCreator.element({
-      tag: 'input',
-      classNames: ['header__search-input', 'input'],
-      attributes: { type: 'text' },
-    });
-    const iconSearch = ElementCreator.element({
-      tag: 'img',
-      classNames: ['header__search-icon'],
-      attributes: { src: '../assets/icons/header-icons/header-search.svg', alt: 'search-icon' },
-    });
-    this.inputSearchContainer.append(inputSearch, iconSearch);
-    return this.inputSearchContainer;
   }
 
   private buildNavButtons(): void {
