@@ -1,0 +1,83 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "webpack",
+    "build:dev": "webpack --env mode=development",
+    "build:prod": "webpack --env mode=production",
+    "serve": "webpack serve --env mode=development",
+    "format": "prettier --write . --ignore-unknown",
+    "ci:format": "prettier --check . --ignore-unknown",
+    "check-format": "prettier --list-different . --ignore-unknown",
+    "lint": "eslint . --ext .ts",
+    "lint:css": "stylelint --fix **/*.css",
+    "lint:scss": "stylelint --fix **/*.scss",
+    "prepare": "husky install",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Coders final",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@stylistic/stylelint-plugin": "^3.1.2",
+    "@types/jest": "^29.5.14",
+    "@types/node-fetch": "^2.6.12",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-unicorn": "^57.0.0",
+    "html-webpack-plugin": "^5.6.3",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.4.2",
+    "sass": "^1.85.1",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "stylelint": "^16.15.0",
+    "stylelint-config-clean-order": "^7.0.0",
+    "stylelint-config-standard": "^37.0.0",
+    "stylelint-scss": "^6.11.1",
+    "ts-jest": "^29.3.2",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.7.3",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
+  },
+  "overrides": {
+    "eslint": "^9.22.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint",
+      "npm run format"
+    ],
+    "*.js": [
+      "npm run lint",
+      "npm run format"
+    ],
+    "*.css": [
+      "npm run lint:css"
+    ],
+    "*.scss": [
+      "npm run lint:scss"
+    ]
+  },
+  "dependencies": {
+    "@commercetools/history-sdk": "^5.2.1",
+    "@commercetools/importapi-sdk": "^6.1.1",
+    "@commercetools/platform-sdk": "^8.8.0",
+    "@commercetools/sdk-client": "^4.0.1",
+    "@commercetools/sdk-client-v2": "^3.0.0"
+  }
+}
