@@ -43,6 +43,7 @@ export class HeaderController {
   private handleLogoutClick(): void {
     const logoutContainer = this.view.getLogoutContainer();
     logoutContainer.addEventListener('click', () => {
+      route.navigate('/');
       this.appModel.setCurrentUser('');
     });
   }
