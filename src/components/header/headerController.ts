@@ -1,12 +1,21 @@
 import { route } from '../../app';
+import { AppModel } from '../../models/state/AppState';
 import { HeaderView } from './headerView';
 
 export class HeaderController {
-  constructor(private readonly view: HeaderView) {
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly view: HeaderView
+  ) {
     this.addEventListeners();
   }
 
   private addEventListeners(): void {
+    this.handleNavigationClick();
+    this.handleLogoClick();
+  }
+
+  private handleNavigationClick(): void {
     const navContainer = this.view.getNavContainer();
     navContainer.addEventListener('click', (event: MouseEvent) => {
       const target = event.target;
@@ -17,5 +26,10 @@ export class HeaderController {
         }
       }
     });
+  }
+
+  private handleLogoClick(): void {
+    const logoContainer = this.view.getLogoContainer();
+    logoContainer.addEventListener('click', () => route.navigate('/home'));
   }
 }
