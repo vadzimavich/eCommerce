@@ -8,6 +8,7 @@ export class HeaderController {
     private readonly view: HeaderView
   ) {
     this.addEventListeners();
+    this.appModel.subscribeUsersListener(() => this.handleCurrentUserHead());
   }
 
   private addEventListeners(): void {
@@ -24,6 +25,14 @@ export class HeaderController {
         if (rout) {
           route.navigate(rout);
         }
+
+        if (rout === '/login') {
+          this.appModel.setCurrentUser('testUser');
+        }
+
+        if (rout === '/registration') {
+          this.appModel.setCurrentUser('user was logouted');
+        }
       }
     });
   }
@@ -31,5 +40,9 @@ export class HeaderController {
   private handleLogoClick(): void {
     const logoContainer = this.view.getLogoContainer();
     logoContainer.addEventListener('click', () => route.navigate('/home'));
+  }
+
+  private handleCurrentUserHead(): void {
+    this.view.updateCurrentUserHead();
   }
 }

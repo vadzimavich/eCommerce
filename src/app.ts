@@ -14,10 +14,10 @@ import type { Routes } from './models/types/router-types';
 class App {
   public readonly route: Router;
 
-  constructor() {
-    const appModel = new AppModel();
+  constructor(private readonly appModel: AppModel) {
+    // const appModel = new AppModel();
 
-    const header = new Header();
+    const header = new Header(this.appModel);
     const headerContainer = header.init();
 
     const mainContainer = document.createElement('main');
@@ -37,5 +37,5 @@ class App {
   }
 }
 
-const app = new App();
+const app = new App(new AppModel());
 export const route = app.route;

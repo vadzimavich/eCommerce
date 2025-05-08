@@ -1,3 +1,4 @@
+import { AppModel } from '../../models/state/AppState';
 import ElementCreator from '../../utils/dom-helpers';
 
 export class HeaderView {
@@ -6,13 +7,19 @@ export class HeaderView {
   private logoContainer: HTMLElement;
   private inputSearchContainer: HTMLElement;
   private cartIconContainer: HTMLElement;
+  private currentUserHead: HTMLElement;
 
-  constructor() {
+  constructor(private readonly appModel: AppModel) {
     this.headerContainer = ElementCreator.element({ tag: 'header', classNames: ['header'] });
     this.navContainer = ElementCreator.element({ tag: 'nav', classNames: ['header__nav', 'nav'] });
     this.logoContainer = ElementCreator.element({ classNames: ['header__logo', 'logo'] });
     this.inputSearchContainer = ElementCreator.element({ classNames: ['header__search', 'header__search-wrapper'] });
     this.cartIconContainer = ElementCreator.element({ classNames: ['header__cart', 'header__cart-wrapper'] });
+    this.currentUserHead = ElementCreator.element({
+      tag: 'span',
+      classNames: ['header__user'],
+      content: this.appModel.getCurrentUser(),
+    });
   }
 
   public render(): HTMLElement {
@@ -20,7 +27,9 @@ export class HeaderView {
     const logo = this.buildLogoElement();
     const search = this.buildSearchElement();
     const cart = this.buildCartElement();
-    this.headerContainer.append(logo, nav, search, cart);
+    const userContainer = ElementCreator.element({ classNames: ['header__user-wrapper'] });
+    userContainer.append(this.currentUserHead, cart);
+    this.headerContainer.append(logo, nav, search, userContainer);
     return this.headerContainer;
   }
 
@@ -34,6 +43,24 @@ export class HeaderView {
 
   public getSearchContainer(): HTMLElement {
     return this.inputSearchContainer;
+  }
+
+  public getCartContainer(): HTMLElement {
+    return this.cartIconContainer;
+  }
+
+  public getCurentUserHead(): HTMLElement {
+    return this.currentUserHead;
+  }
+
+  public updateCurrentUserHead(): void {
+    const user = this.appModel.getCurrentUser();
+
+    if (!user) {
+      return;
+    }
+
+    this.currentUserHead.textContent = user;
   }
 
   private buildNavButtons(): HTMLElement {
