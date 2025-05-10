@@ -23,8 +23,8 @@ export class Router {
     const view = this.routes[path] || this.routes['/not-found'];
     const isPublic = this.publicRoutes.includes(path);
     const isAuthorized = this.appModel.getCurrentUser();
-
-    if (!isPublic && !isAuthorized) {
+    // тут проверка на проперти нужна так как этот
+    if (!isPublic && !isAuthorized && this.routes.hasOwnProperty(path)) {
       this.navigate('/home');
       return;
     }
