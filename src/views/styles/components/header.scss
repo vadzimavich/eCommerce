@@ -2,11 +2,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   height: 10rem;
   padding: 1rem 2rem;
-
-  /* градиент имеет ознакомительный характер. В будущем его уберем так как хеадер будет в абсолюте, а этот фон мы можем использовать для блока на главной странице для информациооного блока. */
-  background: linear-gradient(to bottom, #f6f1e7 0%, #b6dfdb 100%);
 
   &__logo {
     cursor: pointer;
