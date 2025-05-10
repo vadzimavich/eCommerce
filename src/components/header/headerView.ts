@@ -64,7 +64,7 @@ export class HeaderView {
   private buildLogoElement(): HTMLElement {
     const logoImg = ElementCreator.element({
       tag: 'img',
-      attributes: { src: '../assets/logo/logo.jpg', alt: 'app-logo' },
+      attributes: { src: '../assets/logo/logo.png', alt: 'app-logo' },
     });
     this.logoContainer.append(logoImg);
 
