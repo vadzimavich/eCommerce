@@ -2,7 +2,7 @@ export const countries = ['USA', 'Canada'];
 
 export const enum RegistrationContent {
   Title = 'Create an account',
-  Description = 'Some text',
+  Description = `Let's set you up to access your personal account.`,
   Button_form = 'Create',
   Link_Description = 'Already have an account?',
   Link_Sign_In = 'Sign In',

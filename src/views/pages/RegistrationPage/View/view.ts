@@ -7,8 +7,8 @@ export class RegistrationView {
   private form: HTMLFormElement;
 
   constructor() {
-    this.container = elementCreator(document.createElement('section'), { classNames: ['reg__wrapper'] });
-    this.form = elementCreator(document.createElement('form'), { classNames: ['reg__form', 'nav'] });
+    this.container = elementCreator(document.createElement('section'), { classNames: ['reg'] });
+    this.form = elementCreator(document.createElement('form'), { classNames: ['form'] });
   }
 
   public render(): HTMLElement {
@@ -34,12 +34,12 @@ export class RegistrationView {
     });
 
     const description = elementCreator(document.createElement('p'), {
-      classNames: ['reg__descriptoin'],
+      classNames: ['reg__description'],
       content: content.RegistrationContent.Description,
     });
 
     wrapper.append(title, description);
-    this.container.append(wrapper);
+    this.form.append(wrapper);
   }
 
   private createForm(): HTMLElement {
@@ -50,7 +50,8 @@ export class RegistrationView {
     this.createBillingAddress();
 
     const button = elementCreator(document.createElement('button'), {
-      attributes: { type: 'submite' },
+      classNames: ['form__button', 'button'],
+      attributes: { type: 'submit' },
       content: content.RegistrationContent.Button_form,
     });
 
@@ -61,7 +62,7 @@ export class RegistrationView {
     return this.form;
   }
 
-  private createInputsWrapper(titleContent?: string): HTMLElement {
+  private createInputsWrapper(titleContent?: string, checkboxes?: HTMLElement): HTMLElement {
     const wrapper = elementCreator(document.createElement('section'), {
       classNames: ['reg__subtitle__wrapper'],
     });
@@ -80,6 +81,11 @@ export class RegistrationView {
     }
 
     wrapper.append(inputsWrapper);
+
+    if (checkboxes) {
+      wrapper.append(checkboxes);
+    }
+
     this.form.append(wrapper);
 
     return inputsWrapper;
@@ -105,10 +111,14 @@ export class RegistrationView {
   }
 
   private createShippingAddress(): void {
-    const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Shipping_Address);
+    const checkboxesWrapper = elementCreator(document.createElement('div'), { classNames: ['form__checkboxes'] });
 
     const checkboxIsDefault = this.createCheckbox('shipping', content.CheckboxSetting.Bill_Shipping_Address);
     const checkboxBillShipping = this.createCheckbox('bill', content.CheckboxSetting.Shipping_Address);
+
+    checkboxesWrapper.append(checkboxIsDefault, checkboxBillShipping);
+
+    const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Shipping_Address, checkboxesWrapper);
 
     inputsWrapper.append(
       this.createInputWrapper(content.AddressLabel.Street, formInputs.createInputStreet('shipping-street')),
@@ -120,9 +130,7 @@ export class RegistrationView {
       this.createInputWrapper(
         content.AddressLabel.Postal_Code,
         formInputs.createInputPostalCode('shipping-portal-code')
-      ),
-      checkboxIsDefault,
-      checkboxBillShipping
+      )
     );
   }
 
@@ -139,9 +147,12 @@ export class RegistrationView {
   }
 
   private createBillingAddress(): void {
-    const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Billing_Address);
+    const checkboxesWrapper = elementCreator(document.createElement('div'), { classNames: ['form__checkboxes'] });
     const checkboxIsDefault = this.createCheckbox('billing', content.CheckboxSetting.Billing_Address);
 
+    checkboxesWrapper.append(checkboxIsDefault);
+
+    const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Billing_Address, checkboxesWrapper);
     inputsWrapper.append(
       this.createInputWrapper(content.AddressLabel.Street, formInputs.createInputStreet('billing-street')),
       this.createInputWrapper(content.AddressLabel.City, formInputs.createInputCity('billing-city')),
@@ -149,11 +160,7 @@ export class RegistrationView {
         content.AddressLabel.Country,
         formInputs.createSelectCountry('billing-country', content.countries)
       ),
-      this.createInputWrapper(
-        content.AddressLabel.Postal_Code,
-        formInputs.createInputPostalCode('billing-portal-code')
-      ),
-      checkboxIsDefault
+      this.createInputWrapper(content.AddressLabel.Postal_Code, formInputs.createInputPostalCode('billing-portal-code'))
     );
   }
 
@@ -186,11 +193,14 @@ export class RegistrationView {
   }
 
   private createRoutingSingIn(): void {
-    const container = elementCreator(document.createElement('section'));
+    const container = elementCreator(document.createElement('section'), {
+      classNames: ['navigate'],
+    });
     const description = elementCreator(document.createElement('p'), {
       content: content.RegistrationContent.Link_Description,
     });
     const link = elementCreator(document.createElement('a'), {
+      classNames: ['navigate__link'],
       attributes: { 'data-route': '/login' },
       content: content.RegistrationContent.Link_Sign_In,
     });
