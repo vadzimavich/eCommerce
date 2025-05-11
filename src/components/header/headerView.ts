@@ -83,7 +83,7 @@ export class HeaderView {
     buttons.forEach((item) => {
       const button = ElementCreator.button({
         tag: 'button',
-        classNames: ['nav-item', 'nav-item__btn'],
+        classNames: ['nav-item', 'nav-item__btn', 'btn'],
         content: item.label,
         attributes: { 'data-route': item.route },
       });
