@@ -52,13 +52,13 @@ export class HeaderView {
   public updateCurrentUserState(): void {
     const user = this.appModel.getCurrentUser();
     if (!user) {
-      this.logoutContainer.style.visibility = 'hidden';
+      this.logoutContainer.classList.remove('visible');
       this.currentUserHead.textContent = '';
       return;
     }
 
     this.currentUserHead.textContent = user;
-    this.logoutContainer.style.visibility = 'visible';
+    this.logoutContainer.classList.add('visible');
   }
 
   private buildLogoElement(): HTMLElement {
