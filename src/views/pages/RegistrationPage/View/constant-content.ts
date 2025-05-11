@@ -38,3 +38,10 @@ export const enum CheckboxSetting {
   Billing_Address = 'Set Billing Address as default',
   Bill_Shipping_Address = 'Bill to Shipping Address',
 }
+
+export const enum EmailErrorTooltips {
+  Email_symbol = `Email address must contain an '@' symbol separating local part and domain name.`,
+  Email_domain = `Email address must contain a domain name (e.g., example.com).`,
+  Email_whitespace = `Email address must not contain leading or trailing whitespace.`,
+  Email_format = `Email address must be properly formatted (e.g., user@example.com).`,
+}

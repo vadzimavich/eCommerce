@@ -1,10 +1,14 @@
 :root {
   --color-dark: #313131;
-  --color-white: #ffffff;
-  --color-bg-modal: rgba(255, 255, 255, 0.72);
+  --color-white: #fff;
+  --color-bg-modal: rgb(255 255 255 / 72%);
   --color-border-input: #e0e5eb;
   --color-red: red;
   --color-btn-bg: #222934;
+  --color-disabled: #eef1f6;
+  --color-error-tooltip-bg: #fff4ea;
+  --color-error-tooltip-border: #fee9d6;
+  --color-error-tooltip-text: #f67804;
 }
 
 $padding-section-horizontal: 60px;

@@ -1,15 +1,16 @@
 @use '../index' as *;
 
 body {
-  background: linear-gradient(rgb(245, 247, 250), rgb(215, 206, 178));
+  background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
 }
 
 .reg {
   @include container;
+
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: $gap-middle;
+  align-items: center;
 
   &__title {
     font-size: 2em;
@@ -17,33 +18,46 @@ body {
     &__wrapper {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       gap: $gap-middle;
+      align-items: flex-start;
     }
+  }
+
+  &__description {
+    text-align: start;
   }
 
   .form {
     display: flex;
     flex-direction: column;
     gap: $gap-big;
+
     padding: 3em;
     border-radius: $radius;
+
     background-color: var(--color-bg-modal);
 
     &__button {
       width: 200px;
       padding: 1em 1.5em;
       border-radius: $radius;
+
       font-weight: 600;
-      background-color: var(--color-btn-bg);
       color: var(--color-white);
+
+      background-color: var(--color-btn-bg);
+
+      &:disabled {
+        opacity: 0.5;
+      }
     }
 
     &__checkboxes {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
       gap: $gap-small;
+      align-items: flex-start;
+
       font-size: 0.8em;
 
       div {
@@ -56,9 +70,9 @@ body {
   &__input__wrapper {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     flex-grow: 1;
     gap: $gap-small;
+    align-items: flex-start;
 
     .input_required {
       color: var(--color-red);
@@ -76,23 +90,26 @@ body {
     width: 100%;
     min-width: 220px;
     padding: 1em 1.5em;
-    border-radius: $radius;
     border: 0.1em solid var(--color-border-input);
+    border-radius: $radius;
+
     background-color: var(--color-white);
   }
 
   &__subtitle__wrapper {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: $gap-big;
+    align-items: flex-start;
   }
 
   .navigate {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
     width: 100%;
+
     font-size: 0.8em;
 
     &__link {
