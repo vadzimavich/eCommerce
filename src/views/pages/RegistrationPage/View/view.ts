@@ -3,12 +3,18 @@ import * as content from './constant-content';
 import * as formInputs from './form-inputs';
 
 export class RegistrationView {
+  public form: HTMLFormElement;
+  public linkNavigate: HTMLAnchorElement;
   private container: HTMLElement;
-  private form: HTMLFormElement;
 
   constructor() {
     this.container = elementCreator(document.createElement('section'), { classNames: ['reg'] });
     this.form = elementCreator(document.createElement('form'), { classNames: ['form'] });
+    this.linkNavigate = elementCreator(document.createElement('a'), {
+      classNames: ['navigate__link'],
+      attributes: { 'data-route': '/sign-in' },
+      content: content.RegistrationContent.Link_Sign_In,
+    });
   }
 
   public render(): HTMLElement {
@@ -17,10 +23,6 @@ export class RegistrationView {
     this.container.append(this.form);
 
     return this.container;
-  }
-
-  public getForm(): HTMLElement {
-    return this.form;
   }
 
   private createTitle(): void {
@@ -51,7 +53,7 @@ export class RegistrationView {
 
     const button = elementCreator(document.createElement('button'), {
       classNames: ['form__button', 'button'],
-      attributes: { type: 'submit' },
+      attributes: { type: 'submit', disabled: '' },
       content: content.RegistrationContent.Button_form,
     });
 
@@ -199,13 +201,8 @@ export class RegistrationView {
     const description = elementCreator(document.createElement('p'), {
       content: content.RegistrationContent.Link_Description,
     });
-    const link = elementCreator(document.createElement('a'), {
-      classNames: ['navigate__link'],
-      attributes: { 'data-route': '/login' },
-      content: content.RegistrationContent.Link_Sign_In,
-    });
 
-    container.append(description, link);
+    container.append(description, this.linkNavigate);
     this.form.append(container);
   }
 }
