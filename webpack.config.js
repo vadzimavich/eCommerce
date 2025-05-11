@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import Dotenv from 'dotenv-webpack';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -19,6 +20,10 @@ export default (env) => {
       extensions: ['.ts', '.js'],
     },
     plugins: [
+      new Dotenv({
+        path: './.env',
+        systemvars: true,
+      }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'public', 'index.html'),
       }),
