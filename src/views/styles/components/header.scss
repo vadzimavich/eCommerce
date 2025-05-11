@@ -20,26 +20,6 @@
   &__nav {
     display: flex;
     gap: 1rem;
-
-    .nav-item__btn {
-      cursor: pointer;
-
-      padding: 0.5rem 1rem;
-      border: 2px solid #389a73;
-      border-radius: 8px;
-
-      font-weight: bold;
-      color: #389a73;
-
-      background-color: transparent;
-
-      transition: all 0.3s ease;
-
-      &:hover {
-        color: #fff;
-        background-color: #389a73;
-      }
-    }
   }
 
   &__user-wrapper {
