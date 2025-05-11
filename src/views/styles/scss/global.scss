@@ -1,8 +1,4 @@
-:root {
-  --color-dark: #181c29;
-  --color-white: #ffffff;
-  --color-bg: #fdfff0ba;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 html {
   box-sizing: border-box;
@@ -21,28 +17,10 @@ a {
   cursor: pointer;
 }
 
-h1 {
-  margin: 0;
-}
-
-h2 {
-  margin: 0;
-}
-
-h3 {
-  margin: 0;
-}
-
-h4 {
-  margin: 0;
-}
-
-h5 {
-  margin: 0;
-}
-
-h6 {
-  margin: 0;
+@for $i from 1 through 6 {
+  h#{$i} {
+    margin: 0;
+  }
 }
 
 p {
@@ -67,21 +45,22 @@ input {
   padding: 0;
   border: none;
   background-color: transparent;
-  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 }
-button:disabled,
-input:disabled {
-  cursor: default;
+
+button {
+  cursor: pointer;
 }
 
 body {
   min-width: 320px;
   margin: 0 auto;
-  font-family: sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 23px;
   overflow-x: hidden;
 }
-
-/*# sourceMappingURL=main.css.map */
