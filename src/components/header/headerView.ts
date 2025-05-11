@@ -52,13 +52,13 @@ export class HeaderView {
   public updateCurrentUserState(): void {
     const user = this.appModel.getCurrentUser();
     if (!user) {
-      this.logoutContainer.style.visibility = 'hidden';
+      this.logoutContainer.classList.remove('visible');
       this.currentUserHead.textContent = '';
       return;
     }
 
     this.currentUserHead.textContent = user;
-    this.logoutContainer.style.visibility = 'visible';
+    this.logoutContainer.classList.add('visible');
   }
 
   private buildLogoElement(): HTMLElement {
@@ -83,7 +83,7 @@ export class HeaderView {
     buttons.forEach((item) => {
       const button = ElementCreator.button({
         tag: 'button',
-        classNames: ['nav-item', 'nav-item__btn'],
+        classNames: ['nav-item', 'nav-item__btn', 'btn'],
         content: item.label,
         attributes: { 'data-route': item.route },
       });
