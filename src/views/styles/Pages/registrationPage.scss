@@ -1,4 +1,4 @@
-@use "../index" as *;
+@use '../index' as *;
 
 body {
   background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
@@ -114,6 +114,35 @@ body {
 
     &__link {
       color: var(--color-red);
+    }
+  }
+
+  .password {
+    &__container {
+      position: relative;
+      width: 100%;
+
+      .reg__input {
+        padding-right: 3em;
+      }
+    }
+
+    &__button-view {
+      position: absolute;
+      top: calc(50% - 10px);
+      right: 10px;
+
+      width: 20px;
+      height: 20px;
+
+      background-image: url('../../../assets/icons/eye-off.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    &__button-view.view {
+      background-image: url('../../../assets/icons/eye.svg');
     }
   }
 }

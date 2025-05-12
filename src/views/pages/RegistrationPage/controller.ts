@@ -5,6 +5,7 @@ export class RegistrationController {
   constructor(private readonly view: RegistrationView) {
     this.handlerSubmitForm();
     this.navigateToSingIn();
+    this.handlerViewPassword();
   }
 
   private handlerSubmitForm(): void {
@@ -21,6 +22,28 @@ export class RegistrationController {
         }
       }
     });
+  }
+
+  private handlerViewPassword(): void {
+    console.log('🚀 ~ RegistrationController ~ handlerViewPassword ~ this.view.form:', this.view.form);
+    const password = this.view.form.querySelector('#password');
+    console.log('🚀 ~ RegistrationController ~ handlerViewPassword ~ password:', password);
+    const buttonViewPassword = this.view.form.querySelector('#password-view');
+    console.log('🚀 ~ RegistrationController ~ handlerViewPassword ~ buttonViewPassword:', buttonViewPassword);
+
+    if (buttonViewPassword instanceof HTMLButtonElement) {
+      buttonViewPassword.addEventListener('click', () => {
+        const isView = password?.getAttribute('type') === 'text';
+
+        if (isView) {
+          password?.setAttribute('type', 'password');
+          buttonViewPassword.classList.remove('view');
+        } else {
+          password?.setAttribute('type', 'text');
+          buttonViewPassword.classList.add('view');
+        }
+      });
+    }
   }
 
   private navigateToSingIn(): void {

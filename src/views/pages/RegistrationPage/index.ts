@@ -9,7 +9,8 @@ export class RegistrationPage {
   }
 
   public render(): HTMLElement {
+    const render = this.view.render();
     new RegistrationController(this.view);
-    return this.view.render();
+    return render;
   }
 }

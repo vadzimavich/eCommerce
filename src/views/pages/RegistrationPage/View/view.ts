@@ -1,6 +1,6 @@
 import { elementCreator } from '../../../../utils/dom-helpers';
 import * as content from './constant-content';
-import * as formInputs from './form-inputs';
+import * as formInputs from '../../../../utils/form-inputs';
 
 export class RegistrationView {
   public form: HTMLFormElement;
@@ -96,9 +96,21 @@ export class RegistrationView {
   private createAccountData(): void {
     const inputsWrapper = this.createInputsWrapper();
 
+    const buttonViewPassword = elementCreator(document.createElement('button'), {
+      classNames: ['password__button-view'],
+      attributes: {
+        type: 'button',
+        id: 'password-view',
+      },
+    });
+
     inputsWrapper.append(
       this.createInputWrapper(content.AccountDataLabel.Email, formInputs.createInputEmail('email')),
-      this.createInputWrapper(content.AccountDataLabel.Password, formInputs.createInputPassword('password'))
+      this.createInputWrapper(
+        content.AccountDataLabel.Password,
+        formInputs.createInputPassword('password'),
+        buttonViewPassword
+      )
     );
   }
 
@@ -185,10 +197,16 @@ export class RegistrationView {
     });
 
     labelInput.append(required);
-    wrapper.append(labelInput, input);
 
     if (button) {
-      input.append(button);
+      const passwordContainer = elementCreator(document.createElement('div'), {
+        classNames: ['password__container'],
+      });
+
+      passwordContainer.append(input, button);
+      wrapper.append(labelInput, passwordContainer);
+    } else {
+      wrapper.append(labelInput, input);
     }
 
     return wrapper;

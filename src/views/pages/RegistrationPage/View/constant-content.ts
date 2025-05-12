@@ -45,3 +45,12 @@ export const enum EmailErrorTooltips {
   Email_whitespace = `Email address must not contain leading or trailing whitespace.`,
   Email_format = `Email address must be properly formatted (e.g., user@example.com).`,
 }
+
+export const enum PasswordErrorTooltips {
+  Password_length = `Password must be at least 8 characters long.`,
+  Password_upper_letter = `Password must contain at least one uppercase letter (A-Z).`,
+  Password_lower_letter = `Password must contain at least one lowercase letter (a-z).`,
+  Password_number = `Password must contain at least one digit (0-9).`,
+  Password_symbol = ` Password must contain at least one special character (e.g., !@#$%^&*).`,
+  Password_whitespace = `Password must not contain leading or trailing whitespace.`,
+}
