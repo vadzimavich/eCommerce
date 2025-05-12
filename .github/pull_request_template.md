@@ -24,10 +24,10 @@ For example: Create a pull request template with a clear structure for describin
 
 ## What was done?
 
-*   Dependencies added:
-*   Folders added:
-*   Files added:
-*   Scripts added:
+- Dependencies added:
+- Folders added:
+- Files added:
+- Scripts added:
 
 ## Author's Checklist
 
