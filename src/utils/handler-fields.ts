@@ -1,4 +1,8 @@
-import { EmailErrorTooltips, PasswordErrorTooltips } from '../views/pages/RegistrationPage/View/constant-content';
+import {
+  EmailErrorTooltips,
+  NameErrorTooltips,
+  PasswordErrorTooltips,
+} from '../views/pages/RegistrationPage/View/constant-content';
 import { addErrorTooltip, removeErrorTooltip } from './error-tooltip';
 
 export const handlerEmailField = (input: HTMLInputElement): void => {
@@ -38,6 +42,30 @@ export const handlerPasswordField = (input: HTMLInputElement): void => {
     addErrorTooltip(input, PasswordErrorTooltips.Password_upper_letter);
   } else if (!regexSymbol.test(value)) {
     addErrorTooltip(input, PasswordErrorTooltips.Password_symbol);
+  } else {
+    removeErrorTooltip(input);
+  }
+};
+
+export const handlerNameField = (input: HTMLInputElement): void => {
+  const value = input.value;
+
+  const regex = /^[a-zA-Z]+$/;
+
+  if (value.length < 1) {
+    addErrorTooltip(input, NameErrorTooltips.Name_length);
+  } else if (!regex.test(value)) {
+    addErrorTooltip(input, NameErrorTooltips.Name_value);
+  } else {
+    removeErrorTooltip(input);
+  }
+};
+
+export const handlerLengthField = (input: HTMLInputElement): void => {
+  const value = input.value;
+
+  if (value.length < 1) {
+    addErrorTooltip(input, NameErrorTooltips.Name_length);
   } else {
     removeErrorTooltip(input);
   }

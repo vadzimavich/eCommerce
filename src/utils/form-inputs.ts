@@ -52,8 +52,13 @@ export const createInputFirstName = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'Your First Name',
       autocomplete: 'given-name',
+      pattern: '^[a-zA-Z]+$',
       required: '',
     },
+  });
+
+  input.addEventListener('input', () => {
+    handlerField.handlerNameField(input);
   });
 
   return input;
@@ -70,6 +75,10 @@ export const createInputLastName = (id: string): HTMLInputElement => {
       autocomplete: 'family-name',
       required: '',
     },
+  });
+
+  input.addEventListener('input', () => {
+    handlerField.handlerNameField(input);
   });
 
   return input;
@@ -104,6 +113,10 @@ export const createInputStreet = (id: string): HTMLInputElement => {
     },
   });
 
+  input.addEventListener('input', () => {
+    handlerField.handlerLengthField(input);
+  });
+
   return input;
 };
 
@@ -118,6 +131,10 @@ export const createInputCity = (id: string): HTMLInputElement => {
       autocomplete: 'city',
       required: '',
     },
+  });
+
+  input.addEventListener('input', () => {
+    handlerField.handlerNameField(input);
   });
 
   return input;

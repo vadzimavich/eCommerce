@@ -54,3 +54,8 @@ export const enum PasswordErrorTooltips {
   Password_symbol = ` Password must contain at least one special character (e.g., !@#$%^&*).`,
   Password_whitespace = `Password must not contain leading or trailing whitespace.`,
 }
+
+export const enum NameErrorTooltips {
+  Name_value = `Must contain only letters (no special characters or numbers).`,
+  Name_length = `Must contain at least one character.`,
+}
