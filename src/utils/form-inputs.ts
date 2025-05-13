@@ -187,5 +187,9 @@ export const createInputPostalCode = (id: string): HTMLInputElement => {
     },
   });
 
+  input.addEventListener('input', () => {
+    handlerField.handlerPostalCodeField(input);
+  });
+
   return input;
 };

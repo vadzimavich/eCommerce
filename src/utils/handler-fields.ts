@@ -3,6 +3,7 @@ import {
   EmailErrorTooltips,
   NameErrorTooltips,
   PasswordErrorTooltips,
+  PostalCodeErrorTooltips,
 } from '../views/pages/RegistrationPage/View/constant-content';
 import { addErrorTooltip, removeErrorTooltip } from './error-tooltip';
 import { calculateAge } from './helpers';
@@ -84,5 +85,32 @@ export const handlerDateField = (input: HTMLInputElement): void => {
     addErrorTooltip(input, DateErrorTooltips.Date_old);
   } else {
     removeErrorTooltip(input);
+  }
+};
+
+export const handlerPostalCodeField = (input: HTMLInputElement): void => {
+  const value = input.value;
+
+  const wrapper = input.closest('.reg__inputs__wrapper');
+
+  if (wrapper instanceof HTMLElement) {
+    const county = wrapper.querySelector('select[name="country"]');
+    if (county instanceof HTMLSelectElement) {
+      if (county.value === 'USA') {
+        const regex = /^\d{5}(-\d{4})?$/;
+
+        if (!regex.test(value)) {
+          addErrorTooltip(input, PostalCodeErrorTooltips.Postal_code_USA);
+        }
+      } else if (county.value === 'Canada') {
+        const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+
+        if (!regex.test(value)) {
+          addErrorTooltip(input, PostalCodeErrorTooltips.Postal_code_Canada);
+        }
+      } else {
+        removeErrorTooltip(input);
+      }
+    }
   }
 };

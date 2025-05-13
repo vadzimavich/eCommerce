@@ -64,3 +64,8 @@ export const enum DateErrorTooltips {
   Date_future = `Birthday cannot be in the future.`,
   Date_old = `User must be at least 13 years old.`,
 }
+
+export const enum PostalCodeErrorTooltips {
+  Postal_code_USA = `Postal code must follow the format for the USA (e.g., 12345)`,
+  Postal_code_Canada = `Postal code must follow the format for Canada (e.g., A1B 2C3)`,
+}
