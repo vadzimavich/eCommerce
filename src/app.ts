@@ -10,7 +10,7 @@ import { CatalogPage } from './views/pages/CatalogPage';
 import { NotFoundPage } from './views/pages/NotFoundPage';
 
 import type { Routes } from './models/types/router-types';
-import { CustomerService } from './models/services/AuthService';
+// import { CustomerService } from './models/services/AuthService';
 
 class App {
   public readonly route: Router;
@@ -41,7 +41,7 @@ class App {
 const app = new App();
 export const route = app.route;
 
-const customerService = new CustomerService();
+// const customerService = new CustomerService();
 // customerService.registerCustomer({
 //   email: 'alex@test.com',
 //   password: 'test123',
@@ -56,7 +56,10 @@ const customerService = new CustomerService();
 //   },
 // });
 
-customerService.loginCustomer({
-  email: 'alex@test.com',
-  password: 'test123',
-});
+// customerService.logoutCustomer();
+
+// customerService.loginCustomer({
+//   email: 'alex@test.com',
+//   password: 'test123',
+// });
+// customerService.getProducts();
