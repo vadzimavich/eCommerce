@@ -59,3 +59,8 @@ export const enum NameErrorTooltips {
   Name_value = `Must contain only letters (no special characters or numbers).`,
   Name_length = `Must contain at least one character.`,
 }
+
+export const enum DateErrorTooltips {
+  Date_future = `Birthday cannot be in the future.`,
+  Date_old = `User must be at least 13 years old.`,
+}

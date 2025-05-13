@@ -1,9 +1,11 @@
 import {
+  DateErrorTooltips,
   EmailErrorTooltips,
   NameErrorTooltips,
   PasswordErrorTooltips,
 } from '../views/pages/RegistrationPage/View/constant-content';
 import { addErrorTooltip, removeErrorTooltip } from './error-tooltip';
+import { calculateAge } from './helpers';
 
 export const handlerEmailField = (input: HTMLInputElement): void => {
   const value = input.value;
@@ -66,6 +68,20 @@ export const handlerLengthField = (input: HTMLInputElement): void => {
 
   if (value.length < 1) {
     addErrorTooltip(input, NameErrorTooltips.Name_length);
+  } else {
+    removeErrorTooltip(input);
+  }
+};
+
+export const handlerDateField = (input: HTMLInputElement): void => {
+  const value = input.value;
+
+  const old = calculateAge(new Date(value));
+
+  if (old < 0) {
+    addErrorTooltip(input, DateErrorTooltips.Date_future);
+  } else if (old < 13) {
+    addErrorTooltip(input, DateErrorTooltips.Date_old);
   } else {
     removeErrorTooltip(input);
   }

@@ -91,10 +91,15 @@ export const createInputBirthday = (id: string): HTMLInputElement => {
       name: 'birthday',
       type: 'date',
       id: id,
+      min: '1900-01-01',
       placeholder: '01.01.2000',
       autocomplete: 'birthday',
       required: '',
     },
+  });
+
+  input.addEventListener('input', () => {
+    handlerField.handlerDateField(input);
   });
 
   return input;
