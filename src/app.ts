@@ -42,15 +42,21 @@ const app = new App();
 export const route = app.route;
 
 const customerService = new CustomerService();
-customerService.registerCustomer({
+// customerService.registerCustomer({
+//   email: 'alex@test.com',
+//   password: 'test123',
+//   firstName: 'Alex',
+//   lastName: 'Petrov',
+//   dateOfBirth: '1999-12-12',
+//   address: {
+//     streetName: 'west street 123',
+//     postalCode: '222200',
+//     city: 'LA',
+//     country: 'US',
+//   },
+// });
+
+customerService.loginCustomer({
   email: 'alex@test.com',
   password: 'test123',
-  firstName: 'Alex',
-  lastName: 'Petrov',
-  address: {
-    streetName: 'west street 123',
-    postalCode: '222200',
-    city: 'LA',
-    country: 'US',
-  },
 });

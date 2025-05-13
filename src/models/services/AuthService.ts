@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import { AuthMiddlewareOptions, ClientBuilder, HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import type { CustomerRegistrationData } from '../types/api-types';
+import type { CustomerLoginData, CustomerRegistrationData } from '../types/api-types';
 
 export class CustomerService {
   private readonly projectKey = getEnvironmentValue('CTP_PROJECT_KEY');
@@ -49,6 +49,7 @@ export class CustomerService {
             password: data.password,
             firstName: data.firstName,
             lastName: data.lastName,
+            dateOfBirth: data.dateOfBirth.toString(),
             addresses: [data.address],
           },
         })
@@ -56,6 +57,23 @@ export class CustomerService {
       console.log('User registered:', response.body.customer);
     } catch (error) {
       console.error('Registration failed:', error);
+    }
+  }
+
+  public async loginCustomer(customer: CustomerLoginData): Promise<void> {
+    try {
+      const response = await this.anonymousClient
+        .me()
+        .login()
+        .post({
+          body: customer,
+        })
+        .execute();
+
+      console.log('Succes of login for', response.body.customer.email);
+    } catch (error) {
+      console.error('Fail of login', error);
+      throw error;
     }
   }
 }
