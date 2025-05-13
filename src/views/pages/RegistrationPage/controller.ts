@@ -25,11 +25,8 @@ export class RegistrationController {
   }
 
   private handlerViewPassword(): void {
-    console.log('🚀 ~ RegistrationController ~ handlerViewPassword ~ this.view.form:', this.view.form);
     const password = this.view.form.querySelector('#password');
-    console.log('🚀 ~ RegistrationController ~ handlerViewPassword ~ password:', password);
     const buttonViewPassword = this.view.form.querySelector('#password-view');
-    console.log('🚀 ~ RegistrationController ~ handlerViewPassword ~ buttonViewPassword:', buttonViewPassword);
 
     if (buttonViewPassword instanceof HTMLButtonElement) {
       buttonViewPassword.addEventListener('click', () => {
