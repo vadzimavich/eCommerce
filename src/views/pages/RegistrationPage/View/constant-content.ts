@@ -66,6 +66,7 @@ export const enum DateErrorTooltips {
 }
 
 export const enum PostalCodeErrorTooltips {
-  Postal_code_USA = `Postal code must follow the format for the USA (e.g., 12345)`,
-  Postal_code_Canada = `Postal code must follow the format for Canada (e.g., A1B 2C3)`,
+  Postal_code_required = `Postal code required.`,
+  Postal_code_USA = `Postal code must follow the format for the USA (e.g., 12345).`,
+  Postal_code_Canada = `Postal code must follow the format for Canada (e.g., A1B 2C3).`,
 }

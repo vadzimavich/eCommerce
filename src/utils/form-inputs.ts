@@ -171,6 +171,10 @@ export const createSelectCountry = (id: string, values: string[]): HTMLSelectEle
     });
   }
 
+  select.addEventListener('change', () => {
+    handlerField.handlerCountryField(select);
+  });
+
   return select;
 };
 

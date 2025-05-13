@@ -114,3 +114,32 @@ export const handlerPostalCodeField = (input: HTMLInputElement): void => {
     }
   }
 };
+
+export const handlerCountryField = (select: HTMLSelectElement): void => {
+  const value = select.value;
+
+  const wrapper = select.closest('.reg__inputs__wrapper');
+
+  if (wrapper instanceof HTMLElement) {
+    const postalCode = wrapper.querySelector('input[name="postal-code"]');
+    if (postalCode instanceof HTMLInputElement) {
+      if (postalCode.value === '') {
+        addErrorTooltip(postalCode, PostalCodeErrorTooltips.Postal_code_required);
+      } else if (value === 'USA') {
+        const regex = /^\d{5}(-\d{4})?$/;
+
+        if (!regex.test(postalCode.value)) {
+          addErrorTooltip(postalCode, PostalCodeErrorTooltips.Postal_code_USA);
+        }
+      } else if (value === 'Canada') {
+        const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+
+        if (!regex.test(postalCode.value)) {
+          addErrorTooltip(postalCode, PostalCodeErrorTooltips.Postal_code_Canada);
+        }
+      } else {
+        removeErrorTooltip(postalCode);
+      }
+    }
+  }
+};
