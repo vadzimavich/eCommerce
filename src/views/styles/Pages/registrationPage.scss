@@ -1,4 +1,4 @@
-@use '../index' as *;
+@use "../index" as *;
 
 body {
   background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
@@ -32,6 +32,7 @@ body {
     flex-direction: column;
     gap: $gap-big;
 
+    width: 100%;
     padding: 3em;
     border-radius: $radius;
 
@@ -80,10 +81,22 @@ body {
   }
 
   &__inputs__wrapper {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: $gap-big;
     width: 100%;
+
+    @media (width <= 1400px) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (width <= 1170px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (width <= 800px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__input {
@@ -135,14 +148,14 @@ body {
       width: 20px;
       height: 20px;
 
-      background-image: url('../../../assets/icons/eye-off.svg');
+      background-image: url("../../../assets/icons/eye-off.svg");
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
     }
 
     &__button-view.view {
-      background-image: url('../../../assets/icons/eye.svg');
+      background-image: url("../../../assets/icons/eye.svg");
     }
   }
 }
