@@ -10,7 +10,7 @@ export const createInputEmail = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'Your email address',
       autocomplete: 'email',
-      pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -31,7 +31,7 @@ export const createInputPassword = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'Create password',
       autocomplete: 'off',
-      pattern: `^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$`,
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -52,7 +52,7 @@ export const createInputFirstName = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'Your First Name',
       autocomplete: 'given-name',
-      pattern: '^[a-zA-Z]+$',
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -73,6 +73,7 @@ export const createInputLastName = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'Your Last Name',
       autocomplete: 'family-name',
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -93,7 +94,8 @@ export const createInputBirthday = (id: string): HTMLInputElement => {
       id: id,
       min: '1900-01-01',
       placeholder: '01.01.2000',
-      autocomplete: 'birthday',
+      autocomplete: 'on',
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -114,6 +116,7 @@ export const createInputStreet = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'Street',
       autocomplete: 'text',
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -134,6 +137,7 @@ export const createInputCity = (id: string): HTMLInputElement => {
       id: id,
       placeholder: 'City',
       autocomplete: 'city',
+      'data-correct': 'false',
       required: '',
     },
   });
@@ -154,6 +158,7 @@ export const createSelectCountry = (id: string, values: string[]): HTMLSelectEle
       id: id,
       placeholder: 'Select Country',
       autocomplete: 'off',
+      'data-correct': 'true',
       required: '',
     },
   });
@@ -187,6 +192,7 @@ export const createInputPostalCode = (id: string): HTMLInputElement => {
       id: id,
       placeholder: '42142',
       autocomplete: 'postal-code',
+      'data-correct': 'false',
       required: '',
     },
   });
