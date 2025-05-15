@@ -1,12 +1,11 @@
-import ElementCreator from '../../utils/dom-helpers';
+import { elementCreator } from '../../../utils/dom-helpers';
 
 export class NotFoundView {
   private readonly container: HTMLElement;
   private readonly buttonToHome: HTMLButtonElement;
   constructor() {
-    this.container = ElementCreator.element({ classNames: ['page-wrapper'] });
-    this.buttonToHome = ElementCreator.button({
-      tag: 'button',
+    this.container = elementCreator(document.createElement('div'), { classNames: ['page-wrapper'] });
+    this.buttonToHome = elementCreator(document.createElement('button'), {
       classNames: ['btn', 'not-found__btn'],
       content: 'Go to HomePage',
     });
@@ -23,16 +22,14 @@ export class NotFoundView {
   }
 
   private buildInformContent(): HTMLElement {
-    const wrapper = ElementCreator.element({ classNames: ['not-found__content'] });
+    const wrapper = elementCreator(document.createElement('div'), { classNames: ['not-found__content'] });
 
-    const title = ElementCreator.element({
-      tag: 'h1',
+    const title = elementCreator(document.createElement('h1'), {
       classNames: ['not-found__title'],
       content: '404',
     });
 
-    const subtitle = ElementCreator.element({
-      tag: 'p',
+    const subtitle = elementCreator(document.createElement('p'), {
       classNames: ['not-found__subtitle'],
       content: 'Sorry, the page you are looking for does not exist.',
     });

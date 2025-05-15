@@ -1,4 +1,4 @@
-import { route } from '../../app';
+import { route } from '../../../app';
 import { NotFoundView } from './not-found-view';
 
 export class NotFoundController {

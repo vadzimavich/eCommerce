@@ -1,11 +1,14 @@
-import { NotFound } from '../../../components/not-found-page';
+import { NotFoundController } from './not-found-controller';
+import { NotFoundView } from './not-found-view';
 
 export class NotFoundPage {
-  public render(): HTMLElement {
-    const content = new NotFound().init();
-    const container = document.createElement('div');
-    container.innerHTML = 'NotFoundPage';
+  private readonly view: NotFoundView;
 
-    return content;
+  constructor() {
+    this.view = new NotFoundView();
+  }
+  public render(): HTMLElement {
+    new NotFoundController(this.view);
+    return this.view.render();
   }
 }
