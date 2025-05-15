@@ -1,5 +1,5 @@
-import { route } from '../../app';
-import { AppModel } from '../../models/state/AppState';
+import { route } from '../../../app';
+import { AppModel } from '../../../models/state/AppState';
 import { HeaderView } from './headerView';
 
 export class HeaderController {

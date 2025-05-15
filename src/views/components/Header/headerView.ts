@@ -1,5 +1,5 @@
-import { AppModel } from '../../models/state/AppState';
-import { elementCreator } from '../../utils/dom-helpers';
+import { AppModel } from '../../../models/state/AppState';
+import { elementCreator } from '../../../utils/dom-helpers';
 
 export class HeaderView {
   private headerContainer: HTMLElement;
