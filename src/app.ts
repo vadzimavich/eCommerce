@@ -1,8 +1,7 @@
 import { AppModel } from './models/state/AppState';
 import { Router } from './controllers/Router';
-import { Header } from './components/header';
-
 import { HomePage } from './views/pages/HomePage';
+
 import { LoginPage } from './views/pages/LoginPage';
 import { AboutPage } from './views/pages/AboutUsPage';
 import { RegistrationPage } from './views/pages/RegistrationPage';
@@ -10,13 +9,14 @@ import { CatalogPage } from './views/pages/CatalogPage';
 import { NotFoundPage } from './views/pages/NotFoundPage';
 
 import type { Routes } from './models/types/router-types';
+import { Header } from './views/components/Header';
 
 class App {
   public readonly route: Router;
 
   constructor(private readonly appModel: AppModel) {
     const header = new Header(this.appModel);
-    const headerContainer = header.init();
+    const headerContainer = header.render();
 
     const mainContainer = document.createElement('main');
     document.body.append(headerContainer, mainContainer);
