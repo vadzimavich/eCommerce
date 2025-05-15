@@ -7,7 +7,12 @@ import {
 } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import type { CustomerLoginData, CustomerRegistrationData } from '../types/api-types';
+import type {
+  CustomerAddress,
+  CustomerDraftBody,
+  CustomerLoginData,
+  CustomerRegistrationData,
+} from '../types/api-types';
 
 export class CustomerService {
   private readonly projectKey = getEnvironmentValue('CTP_PROJECT_KEY');
@@ -48,20 +53,8 @@ export class CustomerService {
 
   public async registerCustomer(data: CustomerRegistrationData): Promise<void> {
     try {
-      const response = await this.anonymousClient
-        .me()
-        .signup()
-        .post({
-          body: {
-            email: data.email,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            dateOfBirth: data.dateOfBirth,
-            addresses: [data.address],
-          },
-        })
-        .execute();
+      const body = this.createCustomerSignUpBody(data);
+      const response = await this.anonymousClient.me().signup().post({ body }).execute();
       console.log('User registered:', response.body.customer);
       await this.loginCustomer({ email: data.email, password: data.password });
     } catch (error) {
@@ -106,7 +99,6 @@ export class CustomerService {
 
   public logoutCustomer(): void {
     this.currentClient = this.anonymousClient;
-    console.log(this.currentClient);
     console.log('Switched to anonymous session');
   }
 
@@ -118,4 +110,61 @@ export class CustomerService {
       console.error('Error fetching products:', error);
     }
   };
+
+  private createCustomerSignUpBody(data: CustomerRegistrationData): CustomerDraftBody {
+    const addresses: CustomerAddress[] = [];
+    const shippingAddressIndex = addresses.push(data.shippingAddress) - 1;
+
+    let billingAddressIndex: number;
+    if (!data.billToShippingAddress && data.billingAddress) {
+      billingAddressIndex = addresses.push(data.billingAddress) - 1;
+    } else {
+      billingAddressIndex = shippingAddressIndex;
+    }
+
+    const body: CustomerDraftBody = {
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      dateOfBirth: data.dateOfBirth,
+      addresses,
+      shippingAddressIds: [shippingAddressIndex],
+      billingAddressesIds: [billingAddressIndex],
+    };
+
+    if (data.isShippingDefault) {
+      body.defaultShippingAddress = shippingAddressIndex;
+    }
+
+    if (data.isBillingDefault) {
+      body.defaultBillingAddress = billingAddressIndex;
+    }
+
+    return body;
+  }
 }
+
+// Example to request for registration new customer
+// customerService.registerCustomer({
+//   email: 'test@mail.com',
+//   password: '12345678',
+//   firstName: 'Test',
+//   lastName: 'User',
+//   dateOfBirth: '1990-03-13',
+//   shippingAddress: {
+//     streetName: 'west street 123',
+//     postalCode: '222200',
+//     city: 'LA',
+//     country: 'US',
+//   },
+//   billingAddress: {
+//     streetName: 'heght street 100',
+//     postalCode: '444444',
+//     city: 'LA',
+//     country: 'US',
+//   },
+//   isShippingDefault: true,
+//   isBillingDefault: true,
+//   billToShippingAddress: false,
+// });

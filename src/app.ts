@@ -10,7 +10,6 @@ import { CatalogPage } from './views/pages/CatalogPage';
 import { NotFoundPage } from './views/pages/NotFoundPage';
 
 import type { Routes } from './models/types/router-types';
-// import { CustomerService } from './models/services/AuthService';
 
 class App {
   public readonly route: Router;
@@ -40,26 +39,3 @@ class App {
 
 const app = new App();
 export const route = app.route;
-
-// const customerService = new CustomerService();
-// customerService.registerCustomer({
-//   email: 'alex@test.com',
-//   password: 'test123',
-//   firstName: 'Alex',
-//   lastName: 'Petrov',
-//   dateOfBirth: '1999-12-12',
-//   address: {
-//     streetName: 'west street 123',
-//     postalCode: '222200',
-//     city: 'LA',
-//     country: 'US',
-//   },
-// });
-
-// customerService.logoutCustomer();
-
-// customerService.loginCustomer({
-//   email: 'alex@test.com',
-//   password: 'test123',
-// });
-// customerService.getProducts();
