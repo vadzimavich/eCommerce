@@ -3,6 +3,7 @@ export type CustomerAddress = {
   postalCode: string;
   city: string;
   country: string;
+  firstName?: string;
 };
 
 export type CustomerRegistrationData = {

@@ -113,10 +113,12 @@ export class CustomerService {
 
   private createCustomerSignUpBody(data: CustomerRegistrationData): CustomerDraftBody {
     const addresses: CustomerAddress[] = [];
+    data.shippingAddress.firstName = data.firstName;
     const shippingAddressIndex = addresses.push(data.shippingAddress) - 1;
 
     let billingAddressIndex: number;
     if (!data.billToShippingAddress && data.billingAddress) {
+      data.billingAddress.firstName = data.firstName;
       billingAddressIndex = addresses.push(data.billingAddress) - 1;
     } else {
       billingAddressIndex = shippingAddressIndex;
