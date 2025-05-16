@@ -1,19 +1,19 @@
-@use '../index' as *;
+@use "../index" as *;
 
 body {
   background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
 }
 
 .reg {
-  @include container;
-
   display: flex;
   flex-direction: column;
   gap: $gap-middle;
   align-items: center;
 
+  @include container;
+
   &__title {
-    font-size: 2em;
+    font-size: 2rem;
 
     &__wrapper {
       display: flex;
@@ -25,6 +25,10 @@ body {
 
   &__description {
     text-align: start;
+
+    @media (width <= 520px) {
+      text-align: center;
+    }
   }
 
   .form {
@@ -33,14 +37,14 @@ body {
     gap: $gap-big;
 
     width: 100%;
-    padding: 3em;
+    padding: 3rem;
     border-radius: $radius;
 
     background-color: var(--color-bg-modal);
 
     &__button {
       width: 200px;
-      padding: 1em 1.5em;
+      padding: 1rem 1.5rem;
       border-radius: $radius;
 
       font-weight: 600;
@@ -59,12 +63,22 @@ body {
       gap: $gap-small;
       align-items: flex-start;
 
-      font-size: 0.8em;
+      font-size: 0.8rem;
 
       div {
         display: flex;
         align-items: center;
       }
+    }
+
+    label[for="bill"] {
+      @media (width <= 520px) {
+        text-align: start;
+      }
+    }
+
+    @media (width <= 520px) {
+      padding: 1.5rem;
     }
   }
 
@@ -102,8 +116,8 @@ body {
   &__input {
     width: 100%;
     min-width: 220px;
-    padding: 1em 1.5em;
-    border: 0.1em solid var(--color-border-input);
+    padding: 1rem 1.5rem;
+    border: 0.1rem solid var(--color-border-input);
     border-radius: $radius;
 
     background-color: var(--color-white);
@@ -123,7 +137,7 @@ body {
 
     width: 100%;
 
-    font-size: 0.8em;
+    font-size: 0.8rem;
 
     &__link {
       color: var(--color-red);
@@ -136,7 +150,7 @@ body {
       width: 100%;
 
       .reg__input {
-        padding-right: 3em;
+        padding-right: 3rem;
       }
     }
 
@@ -148,14 +162,14 @@ body {
       width: 20px;
       height: 20px;
 
-      background-image: url('../../../assets/icons/eye-off.svg');
+      background-image: url("../../../assets/icons/eye-off.svg");
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
     }
 
     &__button-view.view {
-      background-image: url('../../../assets/icons/eye.svg');
+      background-image: url("../../../assets/icons/eye.svg");
     }
   }
 }
