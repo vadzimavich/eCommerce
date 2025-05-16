@@ -6,4 +6,3 @@ export type EnvironmentKey =
   | 'CTP_AUTH_URL'
   | 'CTP_API_URL'
   | 'CTP_SCOPES';
-

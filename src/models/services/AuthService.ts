@@ -7,12 +7,9 @@ import {
 } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import type {
-  CustomerAddress,
-  CustomerDraftBody,
-  CustomerLoginData,
-  CustomerRegistrationData,
-} from '../types/api-types';
+import type { CustomerDraftBody, CustomerLoginData } from '../types/api-types';
+import { route } from '../../app';
+import { Modal } from '../../components/modal';
 
 export class CustomerService {
   private readonly projectKey = getEnvironmentValue('CTP_PROJECT_KEY');
@@ -22,6 +19,7 @@ export class CustomerService {
   private readonly scopes = getEnvironmentValue('CTP_SCOPES').split(' ');
   private readonly apiUrl = getEnvironmentValue('CTP_API_URL');
   private readonly httpMiddlewareOptions: HttpMiddlewareOptions;
+  private readonly modal: Modal;
   private readonly anonymousClient;
   private currentClient;
   constructor() {
@@ -49,16 +47,21 @@ export class CustomerService {
     ).withProjectKey({ projectKey: this.projectKey });
 
     this.currentClient = this.anonymousClient;
+    this.modal = new Modal();
   }
 
-  public async registerCustomer(data: CustomerRegistrationData): Promise<void> {
+  public async registerCustomer(body: CustomerDraftBody): Promise<void> {
     try {
-      const body = this.createCustomerSignUpBody(data);
       const response = await this.anonymousClient.me().signup().post({ body }).execute();
       console.log('User registered:', response.body.customer);
-      await this.loginCustomer({ email: data.email, password: data.password });
+      this.modal.infoMessage(`You have successfully registered`);
+      await this.loginCustomer({ email: body.email, password: body.password });
+      route.navigate('/home');
     } catch (error) {
       console.error('Registration failed:', error);
+      if (error instanceof Error) {
+        this.modal.errorMessage(error.message);
+      }
     }
   }
 
@@ -101,72 +104,4 @@ export class CustomerService {
     this.currentClient = this.anonymousClient;
     console.log('Switched to anonymous session');
   }
-
-  public getProducts = async (): Promise<void> => {
-    try {
-      const response = await this.currentClient.productProjections().get().execute();
-      console.log('Products:', response.body.results);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
-
-  private createCustomerSignUpBody(data: CustomerRegistrationData): CustomerDraftBody {
-    const addresses: CustomerAddress[] = [];
-    data.shippingAddress.firstName = data.firstName;
-    const shippingAddressIndex = addresses.push(data.shippingAddress) - 1;
-
-    let billingAddressIndex: number;
-    if (!data.billToShippingAddress && data.billingAddress) {
-      data.billingAddress.firstName = data.firstName;
-      billingAddressIndex = addresses.push(data.billingAddress) - 1;
-    } else {
-      billingAddressIndex = shippingAddressIndex;
-    }
-
-    const body: CustomerDraftBody = {
-      email: data.email,
-      password: data.password,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      dateOfBirth: data.dateOfBirth,
-      addresses,
-      shippingAddressIds: [shippingAddressIndex],
-      billingAddressesIds: [billingAddressIndex],
-    };
-
-    if (data.isShippingDefault) {
-      body.defaultShippingAddress = shippingAddressIndex;
-    }
-
-    if (data.isBillingDefault) {
-      body.defaultBillingAddress = billingAddressIndex;
-    }
-
-    return body;
-  }
 }
-
-// Example to request for registration new customer
-// customerService.registerCustomer({
-//   email: 'test@mail.com',
-//   password: '12345678',
-//   firstName: 'Test',
-//   lastName: 'User',
-//   dateOfBirth: '1990-03-13',
-//   shippingAddress: {
-//     streetName: 'west street 123',
-//     postalCode: '222200',
-//     city: 'LA',
-//     country: 'US',
-//   },
-//   billingAddress: {
-//     streetName: 'heght street 100',
-//     postalCode: '444444',
-//     city: 'LA',
-//     country: 'US',
-//   },
-//   isShippingDefault: true,
-//   isBillingDefault: true,
-//   billToShippingAddress: false,
-// });
