@@ -1,0 +1,63 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 10rem;
+  padding: 1rem 2rem;
+
+  &__logo {
+    cursor: pointer;
+    width: 100%;
+    max-width: 8rem;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__user-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+
+    width: 100%;
+    max-width: 100px;
+  }
+
+  &__user {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #005eaa;
+  }
+
+  &__cart-wrapper,
+  &__logout {
+    cursor: pointer;
+
+    img {
+      width: 2.4rem;
+      height: 2.4rem;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  &__logout {
+    visibility: hidden;
+
+    &.visible {
+      visibility: visible;
+    }
+  }
+}

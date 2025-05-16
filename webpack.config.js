@@ -22,7 +22,6 @@ export default (env) => {
     plugins: [
       new Dotenv({
         path: './.env',
-        //systemvars: true,
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'public', 'index.html'),

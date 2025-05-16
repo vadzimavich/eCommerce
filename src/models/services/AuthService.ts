@@ -104,13 +104,4 @@ export class CustomerService {
     this.currentClient = this.anonymousClient;
     console.log('Switched to anonymous session');
   }
-
-  public getProducts = async (): Promise<void> => {
-    try {
-      const response = await this.currentClient.productProjections().get().execute();
-      console.log('Products:', response.body.results);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
 }

@@ -1,3 +1,4 @@
+export type Subscriber = () => void;
 export type EnvironmentKey =
   | 'CTP_PROJECT_KEY'
   | 'CTP_CLIENT_ID'

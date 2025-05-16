@@ -1,8 +1,14 @@
-export class NotFoundPage {
-  public render(): HTMLElement {
-    const container = document.createElement('div');
-    container.innerHTML = 'NotFoundPage';
+import { NotFoundController } from './not-found-controller';
+import { NotFoundView } from './not-found-view';
 
-    return container;
+export class NotFoundPage {
+  private readonly view: NotFoundView;
+
+  constructor() {
+    this.view = new NotFoundView();
+  }
+  public render(): HTMLElement {
+    new NotFoundController(this.view);
+    return this.view.render();
   }
 }
