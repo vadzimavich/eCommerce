@@ -1,0 +1,37 @@
+@use "./components/header.scss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  /* градиент имеет ознакомительный характер. В будущем его уберем так как хеадер будет в абсолюте, а этот фон мы можем использовать для блока на главной странице для информациооного блока. */
+  height: 100vh;
+  background: linear-gradient(to bottom, #f6f1e7 0%, #b6dfdb 100%);
+}
+
+.btn {
+  cursor: pointer;
+
+  padding: 0.5rem 1rem;
+  border: 2px solid #389a73;
+  border-radius: 8px;
+
+  font-weight: bold;
+  color: #389a73;
+
+  background-color: transparent;
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #fff;
+    background-color: #389a73;
+  }
+}
