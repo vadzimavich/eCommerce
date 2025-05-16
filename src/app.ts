@@ -6,10 +6,10 @@ import { LoginPage } from './views/pages/LoginPage';
 import { AboutPage } from './views/pages/AboutUsPage';
 import { RegistrationPage } from './views/pages/RegistrationPage';
 import { CatalogPage } from './views/pages/CatalogPage';
-import { NotFoundPage } from './views/pages/NotFoundPage';
 
 import type { Routes } from './models/types/router-types';
 import { Header } from './views/components/Header';
+import { NotFoundPage } from './views/pages/NotFoundPage';
 
 class App {
   public readonly route: Router;

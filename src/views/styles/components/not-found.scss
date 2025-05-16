@@ -1,0 +1,22 @@
+.not-found {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 60rem;
+  }
+
+  &__title {
+    font-size: 8rem;
+    font-weight: 700;
+    color: #3c4563;
+  }
+
+  &__subtitle {
+    font-size: 1.5rem;
+    color: #3c4563;
+  }
+}
