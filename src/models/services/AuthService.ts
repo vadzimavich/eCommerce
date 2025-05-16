@@ -19,6 +19,7 @@ export class CustomerService {
   private readonly scopes = getEnvironmentValue('CTP_SCOPES').split(' ');
   private readonly apiUrl = getEnvironmentValue('CTP_API_URL');
   private readonly httpMiddlewareOptions: HttpMiddlewareOptions;
+  private readonly modal: Modal;
   private readonly anonymousClient;
   private currentClient;
   constructor() {
@@ -46,19 +47,20 @@ export class CustomerService {
     ).withProjectKey({ projectKey: this.projectKey });
 
     this.currentClient = this.anonymousClient;
-    console.log('projectKey', this.projectKey);
+    this.modal = new Modal();
   }
 
   public async registerCustomer(body: CustomerDraftBody): Promise<void> {
     try {
       const response = await this.anonymousClient.me().signup().post({ body }).execute();
       console.log('User registered:', response.body.customer);
+      this.modal.infoMessage(`You have successfully registered`);
       await this.loginCustomer({ email: body.email, password: body.password });
       route.navigate('/home');
     } catch (error) {
       console.error('Registration failed:', error);
       if (error instanceof Error) {
-        new Modal().init(error.message);
+        this.modal.errorMessage(error.message);
       }
     }
   }

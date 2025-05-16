@@ -12,21 +12,35 @@ export class ModalView {
     });
   }
 
-  public render(message: string): HTMLDialogElement {
-    this.build(message);
+  public renderError(message: string): HTMLDialogElement {
+    this.addMessage(message);
+    this.modal.append(this.button);
     document.body.append(this.modal);
     this.modal.showModal();
 
     return this.modal;
   }
 
+  public renderInfo(message: string): HTMLDialogElement {
+    this.addMessage(message);
+    document.body.append(this.modal);
+    this.modal.showModal();
+
+    setTimeout(() => {
+      this.remove();
+    }, 3000);
+
+    return this.modal;
+  }
+
   public remove(): void {
+    this.modal.close();
     this.modal.remove();
   }
 
-  private build(message: string): void {
+  private addMessage(message: string): void {
     const content = elementCreator(document.createElement('div'), { classNames: ['modal__content'], content: message });
 
-    this.modal.append(content, this.button);
+    this.modal.append(content);
   }
 }

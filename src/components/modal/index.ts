@@ -5,9 +5,18 @@ export class Modal {
   private readonly view: ModalView;
   constructor() {
     this.view = new ModalView();
-  }
-  public init(message: string): void {
     new ModalController(this.view);
-    this.view.render(message);
+  }
+
+  public errorMessage(message: string): void {
+    this.view.renderError(message);
+  }
+
+  public infoMessage(message: string): void {
+    this.view.renderInfo(message);
+  }
+
+  public remove(): void {
+    this.view.remove();
   }
 }
