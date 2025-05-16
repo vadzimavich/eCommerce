@@ -36,7 +36,7 @@ export const handlerPasswordField = (input: HTMLInputElement): void => {
   const regexNumber = /(?=.*[0-9])/;
   const regexLowerLetter = /(?=.*[a-z])/;
   const regexUpperLetter = /^(?=.*[A-Z])/;
-  const regexSymbol = /(?=.*[!@#$%^&*])/;
+  const regexSymbol = /(?=.*[!@#$%^&*-])/;
 
   if (value.trim() !== value || value.split(' ').length > 1) {
     input.setAttribute('data-correct', 'false');

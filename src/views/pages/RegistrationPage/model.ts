@@ -78,7 +78,7 @@ export class RegistrationModel {
       password: this.dataForm.password,
       firstName: this.dataForm['first-name'],
       lastName: this.dataForm['last-name'],
-      dateOfBirth: this.dataForm.birthday,
+      dateOfBirth: this.dataForm['bday'],
       shippingAddress: {
         country: this.getCodeCountry(this.dataForm['shipping-country']),
         city: this.dataForm['shipping-city'],

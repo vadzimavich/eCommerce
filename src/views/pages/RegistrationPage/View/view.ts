@@ -139,7 +139,7 @@ export class RegistrationView {
     inputsWrapper.append(
       this.createInputWrapper(content.PersonalInfoLabel.First_Name, formInputs.createInputFirstName('first-name')),
       this.createInputWrapper(content.PersonalInfoLabel.Last_Name, formInputs.createInputLastName('last-name')),
-      this.createInputWrapper(content.PersonalInfoLabel.Birthday, formInputs.createInputBirthday('birthday'))
+      this.createInputWrapper(content.PersonalInfoLabel.Birthday, formInputs.createInputBirthday('bday'))
     );
   }
 

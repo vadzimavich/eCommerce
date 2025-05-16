@@ -51,7 +51,7 @@ export const enum PasswordErrorTooltips {
   Password_upper_letter = `Password must contain at least one uppercase letter (A-Z).`,
   Password_lower_letter = `Password must contain at least one lowercase letter (a-z).`,
   Password_number = `Password must contain at least one digit (0-9).`,
-  Password_symbol = ` Password must contain at least one special character (e.g., !@#$%^&*).`,
+  Password_symbol = ` Password must contain at least one special character (e.g., !@#$%^&*-).`,
   Password_whitespace = `Password must not contain leading or trailing whitespace.`,
 }
 
