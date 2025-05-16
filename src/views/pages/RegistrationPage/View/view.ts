@@ -1,19 +1,36 @@
 import { elementCreator } from '../../../../utils/dom-helpers';
 import * as content from './constant-content';
 import * as formInputs from '../../../../utils/form-inputs';
+import { RegistrationModel } from '../model';
 
 export class RegistrationView {
-  public form: HTMLFormElement;
-  public linkNavigate: HTMLAnchorElement;
+  public readonly form: HTMLFormElement;
+  public readonly inputPassword: HTMLInputElement;
+  public readonly buttonViewPassword: HTMLButtonElement;
+  public readonly linkNavigate: HTMLAnchorElement;
+  public readonly submitButton: HTMLButtonElement;
   private container: HTMLElement;
 
-  constructor() {
+  constructor(private readonly model: RegistrationModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['reg'] });
     this.form = elementCreator(document.createElement('form'), { classNames: ['form'] });
+    this.inputPassword = formInputs.createInputPassword('password');
+    this.buttonViewPassword = elementCreator(document.createElement('button'), {
+      classNames: ['password__button-view'],
+      attributes: {
+        type: 'button',
+        id: 'password-view',
+      },
+    });
     this.linkNavigate = elementCreator(document.createElement('a'), {
       classNames: ['navigate__link'],
       attributes: { 'data-route': '/sign-in' },
       content: content.RegistrationContent.Link_Sign_In,
+    });
+    this.submitButton = elementCreator(document.createElement('button'), {
+      classNames: ['form__button', 'button'],
+      attributes: { type: 'submit', disabled: '' },
+      content: content.RegistrationContent.Button_form,
     });
   }
 
@@ -23,6 +40,26 @@ export class RegistrationView {
     this.container.append(this.form);
 
     return this.container;
+  }
+
+  public changeButtonSubmit(): void {
+    if (this.model.checkValues()) {
+      this.submitButton.disabled = false;
+    } else {
+      this.submitButton.disabled = true;
+    }
+  }
+
+  public updateViewPassword(): void {
+    const isView = this.inputPassword.getAttribute('type') === 'text';
+
+    if (isView) {
+      this.inputPassword.setAttribute('type', 'password');
+      this.buttonViewPassword.classList.remove('view');
+    } else {
+      this.inputPassword.setAttribute('type', 'text');
+      this.buttonViewPassword.classList.add('view');
+    }
   }
 
   private createTitle(): void {
@@ -51,13 +88,7 @@ export class RegistrationView {
     this.createShippingAddress();
     this.createBillingAddress();
 
-    const button = elementCreator(document.createElement('button'), {
-      classNames: ['form__button', 'button'],
-      attributes: { type: 'submit', disabled: '' },
-      content: content.RegistrationContent.Button_form,
-    });
-
-    this.form.append(button);
+    this.form.append(this.submitButton);
 
     this.createRoutingSingIn();
 
@@ -96,21 +127,9 @@ export class RegistrationView {
   private createAccountData(): void {
     const inputsWrapper = this.createInputsWrapper();
 
-    const buttonViewPassword = elementCreator(document.createElement('button'), {
-      classNames: ['password__button-view'],
-      attributes: {
-        type: 'button',
-        id: 'password-view',
-      },
-    });
-
     inputsWrapper.append(
       this.createInputWrapper(content.AccountDataLabel.Email, formInputs.createInputEmail('email')),
-      this.createInputWrapper(
-        content.AccountDataLabel.Password,
-        formInputs.createInputPassword('password'),
-        buttonViewPassword
-      )
+      this.createInputWrapper(content.AccountDataLabel.Password, this.inputPassword, this.buttonViewPassword)
     );
   }
 

@@ -7,8 +7,8 @@ export class RegistrationPage {
   private readonly model: RegistrationModel;
 
   constructor() {
-    this.view = new RegistrationView();
     this.model = new RegistrationModel();
+    this.view = new RegistrationView(this.model);
   }
 
   public render(): HTMLElement {
