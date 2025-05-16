@@ -1,12 +1,16 @@
 import { route } from '../../../app';
+import { CustomerService } from '../../../models/services/AuthService';
 import { RegistrationModel } from './model';
 import { RegistrationView } from './View/view';
 
 export class RegistrationController {
+  private readonly service: CustomerService;
+
   constructor(
     private readonly model: RegistrationModel,
     private readonly view: RegistrationView
   ) {
+    this.service = new CustomerService();
     this.handlerSubmitForm();
     this.navigateToSingIn();
     this.handlerViewPassword();
@@ -69,11 +73,10 @@ export class RegistrationController {
   private handlerSubmitForm(): void {
     const form = this.view.form;
 
-    form.addEventListener('submit', (event: SubmitEvent) => {
+    form.addEventListener('submit', async (event: SubmitEvent) => {
       event.preventDefault();
 
-      console.log('getDataForm', this.model.getDataForm());
-      route.navigate('/home');
+      this.service.registerCustomer(this.model.createCustomerSignUpBody());
     });
   }
 

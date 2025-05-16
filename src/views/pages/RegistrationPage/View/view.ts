@@ -143,7 +143,7 @@ export class RegistrationView {
       ),
       this.createInputWrapper(
         content.AddressLabel.Postal_Code,
-        formInputs.createInputPostalCode('shipping-portal-code')
+        formInputs.createInputPostalCode('shipping-postal-code')
       )
     );
   }

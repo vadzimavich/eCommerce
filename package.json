@@ -24,6 +24,7 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@stylistic/stylelint-plugin": "^3.1.2",
+    "@types/dotenv": "^6.1.1",
     "@types/jest": "^29.5.14",
     "@types/node-fetch": "^2.6.12",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
@@ -79,6 +80,7 @@
     "@commercetools/importapi-sdk": "^6.1.1",
     "@commercetools/platform-sdk": "^8.8.0",
     "@commercetools/sdk-client": "^4.0.1",
-    "@commercetools/sdk-client-v2": "^3.0.0"
+    "@commercetools/sdk-client-v2": "^3.0.0",
+    "dotenv": "^16.5.0"
   }
 }

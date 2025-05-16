@@ -22,7 +22,7 @@ export default (env) => {
     plugins: [
       new Dotenv({
         path: './.env',
-        systemvars: true,
+        //systemvars: true,
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'public', 'index.html'),
@@ -54,8 +54,8 @@ export default (env) => {
         },
         ,
         {
-          test: /\.svg$/,
-          use: ['file-loader'],
+          test: /\.(png|jpg|svg|gif)$/,
+          type: 'asset/resource',
         },
       ],
     },
