@@ -1,4 +1,5 @@
 import { elementCreator } from './dom-helpers';
+import { updateTooltip } from './error-tooltip';
 import * as handlerField from './handler-fields';
 
 export const createInputEmail = (id: string): HTMLInputElement => {
@@ -16,7 +17,11 @@ export const createInputEmail = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerEmailField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerEmailField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -37,7 +42,11 @@ export const createInputPassword = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerPasswordField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerPasswordField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -58,7 +67,11 @@ export const createInputFirstName = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerNameField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerNameField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -79,7 +92,11 @@ export const createInputLastName = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerNameField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerNameField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -100,7 +117,11 @@ export const createInputBirthday = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerDateField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerDateField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -121,7 +142,11 @@ export const createInputStreet = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerLengthField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerRequiredField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -142,7 +167,11 @@ export const createInputCity = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerNameField(input);
+    const value = input.value;
+    const resultHandler = handlerField.handlerNameField(value);
+
+    input.setAttribute('data-correct', resultHandler.result.toString());
+    updateTooltip(input, resultHandler);
   });
 
   return input;
@@ -155,28 +184,34 @@ export const createSelectCountry = (id: string, values: string[]): HTMLSelectEle
       name: 'country',
       type: 'select',
       id: id,
-      placeholder: 'Select Country',
-      autocomplete: 'country-name',
       'data-correct': 'true',
       required: '',
     },
   });
 
-  if (values) {
-    values.forEach((item) => {
-      const option = elementCreator(document.createElement('option'), {
-        attributes: {
-          value: item,
-        },
-        content: item[0].toUpperCase() + item.slice(1),
-      });
-
-      select.append(option);
+  values.forEach((item) => {
+    const option = elementCreator(document.createElement('option'), {
+      attributes: {
+        value: item,
+      },
+      content: item[0].toUpperCase() + item.slice(1),
     });
-  }
+
+    select.append(option);
+  });
 
   select.addEventListener('change', () => {
-    handlerField.handlerCountryField(select);
+    const value = select.value;
+    const wrapper = select.closest('.reg__inputs__wrapper');
+
+    if (wrapper instanceof HTMLElement) {
+      const postalCode = wrapper.querySelector('input[name="postal-code"]');
+      if (postalCode instanceof HTMLInputElement) {
+        const resultHandler = handlerField.handlerCountryField(postalCode.value, value);
+        postalCode.setAttribute('data-correct', resultHandler.result.toString());
+        updateTooltip(postalCode, resultHandler);
+      }
+    }
   });
 
   return select;
@@ -197,7 +232,18 @@ export const createInputPostalCode = (id: string): HTMLInputElement => {
   });
 
   input.addEventListener('input', () => {
-    handlerField.handlerPostalCodeField(input);
+    const value = input.value;
+
+    const wrapper = input.closest('.reg__inputs__wrapper');
+    if (wrapper instanceof HTMLElement) {
+      const county = wrapper.querySelector('select[name="country"]');
+      if (county instanceof HTMLSelectElement) {
+        const resultHandler = handlerField.handlerPostalCodeField(county.value, value);
+
+        input.setAttribute('data-correct', resultHandler.result.toString());
+        updateTooltip(input, resultHandler);
+      }
+    }
   });
 
   return input;

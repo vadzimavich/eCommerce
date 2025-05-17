@@ -1,6 +1,7 @@
+import { HandlerInputFieldResult } from '../models/types/common-types';
 import { elementCreator } from './dom-helpers';
 
-export const addErrorTooltip = (input: HTMLInputElement, message: string): void => {
+const addErrorTooltip = (input: HTMLInputElement, message: string): void => {
   const wrapper = input.closest('.reg__input__wrapper');
 
   if (wrapper instanceof HTMLElement) {
@@ -16,7 +17,7 @@ export const addErrorTooltip = (input: HTMLInputElement, message: string): void 
   }
 };
 
-export const removeErrorTooltip = (input: HTMLInputElement): void => {
+const removeErrorTooltip = (input: HTMLInputElement): void => {
   const wrapper = input.closest('.reg__input__wrapper');
 
   if (wrapper instanceof HTMLElement) {
@@ -52,4 +53,12 @@ const changeMessageTooltip = (tooltip: HTMLElement, message: string): void => {
   const content = tooltip.children[1];
 
   content.textContent = message;
+};
+
+export const updateTooltip = (element: HTMLInputElement, resultHandler: HandlerInputFieldResult): void => {
+  if (!resultHandler.result && resultHandler.errorMessage) {
+    addErrorTooltip(element, resultHandler.errorMessage);
+  } else {
+    removeErrorTooltip(element);
+  }
 };
