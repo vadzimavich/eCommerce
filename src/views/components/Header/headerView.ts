@@ -1,3 +1,4 @@
+// import { route } from '../../../app';
 import { AppModel } from '../../../models/state/AppState';
 import { elementCreator } from '../../../utils/dom-helpers';
 
@@ -21,13 +22,8 @@ export class HeaderView {
   }
 
   public render(): HTMLElement {
-    this.buildNavButtons();
-    const logo = this.buildLogoElement();
-    const cart = this.buildCartElement();
-    const userContainer = elementCreator(document.createElement('div'), { classNames: ['header__user-wrapper'] });
-    userContainer.append(this.currentUserHead, cart);
-    const logout = this.buildLogoutElement();
-    this.headerContainer.append(logo, this.navContainer, userContainer, logout);
+    const header = this.buildHeader();
+    this.headerContainer.append(header);
     return this.headerContainer;
   }
 
@@ -64,49 +60,83 @@ export class HeaderView {
   }
 
   private buildLogoElement(): HTMLElement {
+    const anchorItem = elementCreator(document.createElement('a'), {
+      attributes: { 'data-route': '/home', href: '#/home' },
+    });
     const logoImg = elementCreator(document.createElement('img'), {
       classNames: ['logo', 'header__logo', 'header__logo-img'],
       attributes: { src: '../assets/logo/logo.png', alt: 'app-logo' },
     });
-    this.logoContainer.append(logoImg);
+    anchorItem.append(logoImg);
+    this.logoContainer.append(anchorItem);
 
     return this.logoContainer;
   }
 
-  private buildNavButtons(): void {
-    const buttons = [
-      { label: 'Home', route: '/' },
+  private buildNavContainer(): void {
+    const items = [
+      { label: 'Home', route: '/home' },
       { label: 'Catalog', route: '/catalog' },
       { label: 'About Us', route: '/about-us' },
       { label: 'Sign In', route: '/sign-in' },
       { label: 'Sign Up', route: '/sign-up' },
     ];
 
-    buttons.forEach((item) => {
-      const button = elementCreator(document.createElement('button'), {
-        classNames: ['nav-item', 'nav-item__btn', 'btn'],
+    const navList = elementCreator(document.createElement('ul'), { classNames: ['nav-list'] });
+    const userItem = elementCreator(document.createElement('ul'), { classNames: ['nav-list'] });
+
+    items.forEach((item) => {
+      const navListItem = elementCreator(document.createElement('li'), { classNames: ['nav-item', 'nav-list__item'] });
+      const anchorItem = elementCreator(document.createElement('a'), {
         content: item.label,
-        attributes: { 'data-route': item.route },
+        attributes: { 'data-route': item.route, href: `#${item.route}` },
       });
-      this.navContainer.append(button);
+      navListItem.append(anchorItem);
+      navList.append(navListItem);
     });
+    userItem.append(this.buildUserContainer());
+    this.navContainer.append(navList, userItem);
   }
 
   private buildCartElement(): HTMLElement {
+    const anchorItem = elementCreator(document.createElement('a'), {
+      attributes: { 'data-route': '/cart', href: '#/cart', title: 'cart' },
+    });
     const iconCart = elementCreator(document.createElement('img'), {
       classNames: ['header__cart-icon'],
       attributes: { src: '../assets/icons/header-icons/header-cart.svg', alt: 'cart-icon' },
     });
-    this.cartIconContainer.append(iconCart);
+    anchorItem.append(iconCart);
+    this.cartIconContainer.append(anchorItem);
     return this.cartIconContainer;
   }
 
   private buildLogoutElement(): HTMLElement {
+    const anchorItem = elementCreator(document.createElement('a'), {
+      attributes: { 'data-route': '/home', href: '#/home', title: 'logout' },
+    });
     const iconLogout = elementCreator(document.createElement('img'), {
       classNames: ['header__logout-icon'],
       attributes: { src: '../assets/icons/header-icons/header-logout.svg', alt: 'logout-icon' },
     });
-    this.logoutContainer.append(iconLogout);
+    anchorItem.append(iconLogout);
+    this.logoutContainer.append(anchorItem);
     return this.logoutContainer;
+  }
+
+  private buildHeader(): HTMLElement {
+    const headerWrapper = elementCreator(document.createElement('div'), { classNames: ['header__wrapper'] });
+    this.buildNavContainer();
+    const logo = this.buildLogoElement();
+    headerWrapper.append(logo, this.navContainer);
+    return headerWrapper;
+  }
+
+  private buildUserContainer(): HTMLElement {
+    const userContainer = elementCreator(document.createElement('div'), { classNames: ['header__user-wrapper'] });
+    const cart = this.buildCartElement();
+    const logout = this.buildLogoutElement();
+    userContainer.append(cart, this.currentUserHead, logout);
+    return userContainer;
   }
 }

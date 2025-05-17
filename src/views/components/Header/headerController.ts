@@ -22,7 +22,7 @@ export class HeaderController {
     const navContainer = this.view.getNavContainer();
     navContainer.addEventListener('click', (event: MouseEvent) => {
       const target = event.target;
-      if (target instanceof HTMLElement) {
+      if (target instanceof HTMLAnchorElement) {
         const rout = target.getAttribute('data-route');
         if (rout) {
           route.navigate(rout);

@@ -15,7 +15,7 @@ export class Router {
   }
 
   public navigate(path: string): void {
-    location.href = `#${path}`;
+    location.hash = `#${path}`;
   }
 
   private loadRoute(): void {
