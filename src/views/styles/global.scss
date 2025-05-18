@@ -78,6 +78,10 @@ body {
   }
 }
 
+body.overlay {
+  overflow: hidden;
+}
+
 .error-tooltip {
   display: flex;
   gap: $gap-small;

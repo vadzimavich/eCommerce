@@ -102,7 +102,14 @@ export class HeaderView {
   }
 
   public toggleShowBurgerMenu(): void {
-    this.navContainer.classList.toggle('open');
+    const state = this.model.getBurgerMenuState();
+    if (state) {
+      this.navContainer.classList.add('open');
+      document.body.classList.add('overlay');
+    } else {
+      this.navContainer.classList.remove('open');
+      document.body.classList.remove('overlay');
+    }
   }
 
   private buildLogoElement(): HTMLElement {

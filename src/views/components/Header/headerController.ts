@@ -12,6 +12,7 @@ export class HeaderController {
     this.addEventListeners();
     this.appModel.subscribeUsersListener(() => this.handleCurrentUserHead());
     this.model.subscribeCurrentPageListener(() => this.handleCurrentPage());
+    this.model.subscribeBurgerMenuListener(() => this.view.toggleShowBurgerMenu());
     this.handleCurrentUserHead();
     this.handleCurrentPage();
   }
@@ -34,7 +35,7 @@ export class HeaderController {
 
         if (anchor instanceof HTMLAnchorElement) {
           const rout = anchor.getAttribute('data-route');
-
+          this.model.setBurgerMenuState(false);
           if (rout) {
             route.navigate(rout);
             this.model.setCurrentRoute(rout);
@@ -77,7 +78,10 @@ export class HeaderController {
   private handleClickBurgerMenuButton(): void {
     const buttonBM = this.view.getButtonBM();
     buttonBM.addEventListener('click', () => {
+      const currentState = this.model.getBurgerMenuState();
+      const newState = !currentState;
       this.view.toggleShowBurgerMenu();
+      this.model.setBurgerMenuState(newState);
     });
   }
 }
