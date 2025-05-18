@@ -1,5 +1,6 @@
 import { elementCreator } from '../../../../utils/dom-helpers';
 import * as content from './constant-content';
+import * as inputsFieldContent from '../../../components/InputField/constants-content';
 import * as formInputs from '../../../../utils/form-inputs';
 import { RegistrationModel } from '../model';
 
@@ -39,7 +40,7 @@ export class RegistrationView {
     this.checkboxBillToShipping = this.createCheckbox('shipping', content.CheckboxSetting.Bill_Shipping_Address);
     this.checkboxBillToShipping.classList.add('disabled');
 
-    this.inputBillCountry = formInputs.createSelectCountry('billing-country', content.countries);
+    this.inputBillCountry = formInputs.createSelectCountry('billing-country', inputsFieldContent.countries);
     this.inputBillCity = formInputs.createInputCity('billing-city');
     this.inputBillStreet = formInputs.createInputCity('billing-street');
     this.inputBillPostCode = formInputs.createInputCity('billing-portal-code');
@@ -163,8 +164,8 @@ export class RegistrationView {
   private createAccountData(): void {
     const inputsWrapper = this.createInputsWrapper();
     inputsWrapper.append(
-      this.createInputWrapper(content.AccountDataLabel.Email, formInputs.createInputEmail('email')),
-      this.createInputWrapper(content.AccountDataLabel.Password, this.inputPassword, this.buttonViewPassword)
+      this.createInputWrapper(inputsFieldContent.AccountDataLabel.Email, formInputs.createInputEmail('email')),
+      this.createInputWrapper(inputsFieldContent.AccountDataLabel.Password, this.inputPassword, this.buttonViewPassword)
     );
   }
 
@@ -172,9 +173,15 @@ export class RegistrationView {
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Personal_Info);
 
     inputsWrapper.append(
-      this.createInputWrapper(content.PersonalInfoLabel.First_Name, formInputs.createInputFirstName('first-name')),
-      this.createInputWrapper(content.PersonalInfoLabel.Last_Name, formInputs.createInputLastName('last-name')),
-      this.createInputWrapper(content.PersonalInfoLabel.Birthday, formInputs.createInputBirthday('birthday'))
+      this.createInputWrapper(
+        inputsFieldContent.PersonalInfoLabel.First_Name,
+        formInputs.createInputFirstName('first-name')
+      ),
+      this.createInputWrapper(
+        inputsFieldContent.PersonalInfoLabel.Last_Name,
+        formInputs.createInputLastName('last-name')
+      ),
+      this.createInputWrapper(inputsFieldContent.PersonalInfoLabel.Birthday, formInputs.createInputBirthday('bday'))
     );
   }
 
@@ -187,15 +194,15 @@ export class RegistrationView {
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Shipping_Address, checkboxesWrapper);
 
     inputsWrapper.append(
-      this.createInputWrapper(content.AddressLabel.Street, formInputs.createInputStreet('shipping-street')),
-      this.createInputWrapper(content.AddressLabel.City, formInputs.createInputCity('shipping-city')),
+      this.createInputWrapper(inputsFieldContent.AddressLabel.Street, formInputs.createInputStreet('shipping-street')),
+      this.createInputWrapper(inputsFieldContent.AddressLabel.City, formInputs.createInputCity('shipping-city')),
       this.createInputWrapper(
-        content.AddressLabel.Country,
-        formInputs.createSelectCountry('shipping-country', content.countries)
+        inputsFieldContent.AddressLabel.Country,
+        formInputs.createSelectCountry('shipping-country', inputsFieldContent.countries)
       ),
       this.createInputWrapper(
-        content.AddressLabel.Postal_Code,
-        formInputs.createInputPostalCode('shipping-portal-code')
+        inputsFieldContent.AddressLabel.Postal_Code,
+        formInputs.createInputPostalCode('shipping-postal-code')
       )
     );
   }
@@ -220,10 +227,16 @@ export class RegistrationView {
 
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Billing_Address, checkboxesWrapper);
     inputsWrapper.append(
-      this.createInputWrapper(content.AddressLabel.Street, this.inputBillStreet),
-      this.createInputWrapper(content.AddressLabel.City, this.inputBillCity),
-      this.createInputWrapper(content.AddressLabel.Country, this.inputBillCountry),
-      this.createInputWrapper(content.AddressLabel.Postal_Code, this.inputBillPostCode)
+      this.createInputWrapper(inputsFieldContent.AddressLabel.Street, formInputs.createInputStreet('billing-street')),
+      this.createInputWrapper(inputsFieldContent.AddressLabel.City, formInputs.createInputCity('billing-city')),
+      this.createInputWrapper(
+        inputsFieldContent.AddressLabel.Country,
+        formInputs.createSelectCountry('billing-country', inputsFieldContent.countries)
+      ),
+      this.createInputWrapper(
+        inputsFieldContent.AddressLabel.Postal_Code,
+        formInputs.createInputPostalCode('billing-portal-code')
+      )
     );
   }
 
