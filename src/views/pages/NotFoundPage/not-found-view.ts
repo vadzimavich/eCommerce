@@ -6,7 +6,7 @@ export class NotFoundView {
   constructor() {
     this.container = elementCreator(document.createElement('div'), { classNames: ['page-wrapper'] });
     this.buttonToHome = elementCreator(document.createElement('button'), {
-      classNames: ['btn', 'not-found__btn'],
+      classNames: ['button', 'not-found__button'],
       content: 'Go to HomePage',
     });
   }
