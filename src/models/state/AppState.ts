@@ -6,7 +6,16 @@ export class AppModel {
 
   public setCurrentUser(user: string): void {
     this.currentUser = user;
+    sessionStorage.setItem('currentUser', this.currentUser);
     this.notifyUserListener();
+  }
+
+  public initUserFromSession(): void {
+    const storedUser = sessionStorage.getItem('currentUser');
+    if (storedUser) {
+      this.currentUser = storedUser;
+      this.notifyUserListener();
+    }
   }
   public getCurrentUser(): string {
     return this.currentUser;

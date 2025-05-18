@@ -20,6 +20,7 @@ class App {
     private readonly appModel: AppModel,
     private readonly headerModel: HeaderModel
   ) {
+    this.appModel.initUserFromSession();
     const header = new Header(this.appModel, this.headerModel);
     const headerContainer = header.render();
 
