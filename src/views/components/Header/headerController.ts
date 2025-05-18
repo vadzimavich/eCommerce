@@ -20,6 +20,7 @@ export class HeaderController {
     this.handleNavigationClick();
     this.handleLogoClick();
     this.handleLogoutClick();
+    this.handleClickBurgerMenuButton();
   }
 
   private handleNavigationClick(): void {
@@ -65,18 +66,18 @@ export class HeaderController {
     });
   }
 
-  // private handleCartClick(): void {
-  //   const cart = this.view.getCartAnhor();
-  //   cart.addEventListener('click', () => {
-  //     this.model.setCurrentRoute('/cart');
-  //   });
-  // }
-
   private handleCurrentUserHead(): void {
     this.view.updateCurrentUserState();
   }
 
   private handleCurrentPage(): void {
     this.view.updateViewActivePage();
+  }
+
+  private handleClickBurgerMenuButton(): void {
+    const buttonBM = this.view.getButtonBM();
+    buttonBM.addEventListener('click', () => {
+      this.view.toggleShowBurgerMenu();
+    });
   }
 }
