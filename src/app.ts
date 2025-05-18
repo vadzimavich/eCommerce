@@ -15,6 +15,7 @@ class App {
   public readonly route: Router;
 
   constructor(private readonly appModel: AppModel) {
+    this.appModel.initUserFromSession();
     const header = new Header(this.appModel);
     const headerContainer = header.render();
 
