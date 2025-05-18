@@ -79,7 +79,7 @@ body {
 }
 
 body.overlay {
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 main {
@@ -107,7 +107,7 @@ main {
 .error-tooltip svg {
   flex-shrink: 0;
 }
-
+// Заглушка для страниц потом удалим
 .plug {
   height: 100vh;
 }
