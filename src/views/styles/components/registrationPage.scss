@@ -1,4 +1,4 @@
-@use "../index" as *;
+@use '../index' as *;
 
 body {
   background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
@@ -71,7 +71,7 @@ body {
       }
     }
 
-    label[for="bill"] {
+    label[for='bill'] {
       @media (width <= 520px) {
         text-align: start;
       }
@@ -162,14 +162,14 @@ body {
       width: 20px;
       height: 20px;
 
-      background-image: url("../../../assets/icons/eye-off.svg");
+      background-image: url('../../../assets/icons/eye-off.svg');
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
     }
 
     &__button-view.view {
-      background-image: url("../../../assets/icons/eye.svg");
+      background-image: url('../../../assets/icons/eye.svg');
     }
   }
 }
