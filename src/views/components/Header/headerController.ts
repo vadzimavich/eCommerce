@@ -24,17 +24,25 @@ export class HeaderController {
 
   private handleNavigationClick(): void {
     const navContainer = this.view.getNavContainer();
+
     navContainer.addEventListener('click', (event: MouseEvent) => {
       const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        const rout = target.getAttribute('data-route');
-        if (rout) {
-          route.navigate(rout);
-          this.model.setCurrentRoute(rout);
-        }
 
-        if (rout === '/sign-in') {
-          this.appModel.setCurrentUser('testUser');
+      if (target instanceof HTMLElement) {
+        const anchor = target.closest('a');
+
+        if (anchor instanceof HTMLAnchorElement) {
+          const rout = anchor.getAttribute('data-route');
+
+          if (rout) {
+            route.navigate(rout);
+            this.model.setCurrentRoute(rout);
+            console.log(this.model.getCurrentRoute());
+          }
+
+          if (rout === '/sign-in') {
+            this.appModel.setCurrentUser('testUser');
+          }
         }
       }
     });
@@ -49,13 +57,20 @@ export class HeaderController {
   }
 
   private handleLogoutClick(): void {
-    const logoutContainer = this.view.getLogoutContainer();
+    const logoutContainer = this.view.getLogoutAnchor();
     logoutContainer.addEventListener('click', () => {
       route.navigate('/home');
       this.appModel.setCurrentUser('');
       this.model.setCurrentRoute('/home');
     });
   }
+
+  // private handleCartClick(): void {
+  //   const cart = this.view.getCartAnhor();
+  //   cart.addEventListener('click', () => {
+  //     this.model.setCurrentRoute('/cart');
+  //   });
+  // }
 
   private handleCurrentUserHead(): void {
     this.view.updateCurrentUserState();

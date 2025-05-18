@@ -1,3 +1,5 @@
+@use '../index' as *;
+
 .header {
   width: 100%;
   max-width: 144rem;
@@ -9,11 +11,12 @@
     align-items: center;
     justify-content: space-between;
 
+    height: 6rem;
     padding: 0 2rem;
     border-radius: 999.9rem;
 
     background-color: var(--color-white);
-    box-shadow: 0 4px 16px rgb(0 0 0 / 5%);
+    box-shadow: 0 4px 16px var(--color-shadow);
   }
 
   &__logo {
@@ -25,7 +28,7 @@
     max-width: 33.3333%;
 
     &-img {
-      width: 12rem;
+      width: 10rem;
       height: auto;
     }
   }
@@ -41,13 +44,6 @@
     overflow-wrap: break-word;
   }
 
-  &__cart-wrapper,
-  &__logout {
-    display: flex;
-    align-items: center;
-    height: 100%;
-  }
-
   &__logout {
     &.visible {
       display: flex;
@@ -59,6 +55,7 @@
   }
 
   &__icon {
+    display: block;
     background-color: var(--color-dark);
     transition: background-color 0.3s ease;
 
@@ -96,7 +93,7 @@
 
   &-list {
     display: flex;
-    gap: 1.2rem;
+    gap: $gap-middle;
 
     a {
       display: inline-block;
@@ -124,9 +121,9 @@
 
   &-user {
     display: flex;
-    gap: 1rem;
+    gap: $gap-small;
     align-items: center;
-    margin-left: 1.5rem;
+    margin-left: $gap-middle;
 
     .nav-user__cart-wrapper,
     .nav-user__logout-wrapper {
