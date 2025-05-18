@@ -21,6 +21,6 @@ export class NotFoundController {
 
   private navigateToHome(): void {
     this.removeEventListeners();
-    route.navigate('/');
+    route.navigate('/home');
   }
 }
