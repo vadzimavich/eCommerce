@@ -17,7 +17,6 @@ export class RegistrationController {
     this.handlerClickCheckboxShippingToBill();
     this.model.subscribeSubmitButtonListener(() => this.handlerButtonSubmit());
     this.model.subscribechekboxBillToShippingListener(() => this.toggleCheckboxDisableState());
-    console.log(this.view.getCheckboxBillToShipping());
   }
 
   private eventCheckbox(): void {

@@ -111,3 +111,8 @@ main {
 .plug {
   height: 100vh;
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

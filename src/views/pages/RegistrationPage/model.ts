@@ -10,13 +10,13 @@ export class RegistrationModel {
     'shipping-street',
     'shipping-country',
     'shipping-city',
-    'shipping-portal-code',
+    'shipping-postal-code',
   ];
   private readonly billingFields: string[] = [
     'billing-street',
     'billing-country',
     'billing-city',
-    'billing-portal-code',
+    'billing-postal-code',
   ];
   constructor() {
     this.dataForm = {};
@@ -51,17 +51,14 @@ export class RegistrationModel {
   public updateData(element: HTMLInputElement | HTMLSelectElement): void {
     this.setDataForm(element.id, element.value);
     this.setStatusForm(element.id, element.dataset.correct === 'true' ? true : false);
-    console.log(this.dataForm);
   }
 
   public checkShippingFieldsValidation(): boolean {
     const formData = this.getDataForm();
-
     const isComplete = this.shippingFields.every((field) => {
       const value = formData[field];
       return typeof value === 'string' && value.trim() !== '';
     });
-
     return isComplete;
   }
 

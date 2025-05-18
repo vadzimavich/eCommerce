@@ -19,8 +19,21 @@ export class Router {
     private appModel: AppModel
   ) {
     this.routes = routes;
-    window.addEventListener('hashchange', () => this.loadRoute());
-    this.loadRoute();
+
+    const currentPath = location.hash.slice(1) || '/';
+    this.appModel.setCurrentHash(currentPath);
+
+    if (!location.hash) {
+      this.navigate('/');
+    } else {
+      this.loadRoute();
+    }
+
+    window.addEventListener('hashchange', () => {
+      const newPath = location.hash.slice(1);
+      this.appModel.setCurrentHash(newPath);
+      this.loadRoute();
+    });
   }
 
   public navigate(path: string): void {

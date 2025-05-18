@@ -77,11 +77,11 @@ export class HeaderView {
   }
 
   public updateViewActivePage(): void {
-    const modelRoute = this.model.getCurrentRoute();
-    console.log(modelRoute);
+    const modelRoute = this.appModel.getCurrentRoute();
     const nav = this.navContainer.firstElementChild;
     if (nav) {
       const navItems = nav.children;
+
       for (let i = 0; i < navItems.length; i++) {
         const li = navItems[i];
         const anchor = li.firstElementChild;
@@ -96,6 +96,13 @@ export class HeaderView {
           if (route === '/cart') {
             anchor.classList.remove('active');
           }
+        }
+      }
+
+      if (modelRoute === '/') {
+        const anchorHome = navItems[0].firstElementChild;
+        if (anchorHome) {
+          anchorHome.classList.add('active');
         }
       }
     }
@@ -139,7 +146,7 @@ export class HeaderView {
     const cart = this.buildCartElement();
     const logout = this.buildLogoutElement();
 
-    items.forEach((item, index) => {
+    items.forEach((item) => {
       const navListItem = elementCreator(document.createElement('li'), {
         classNames: ['nav-list__item'],
       });
@@ -147,9 +154,9 @@ export class HeaderView {
         content: item.label,
         attributes: { 'data-route': item.route, href: `#${item.route}` },
       });
-      if (index === 0) {
-        anchorItem.classList.add('active');
-      }
+      // if (index === 0) {
+      //   anchorItem.classList.add('active');
+      // }
       navListItem.append(anchorItem);
       navList.append(navListItem);
     });

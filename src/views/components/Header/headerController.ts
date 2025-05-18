@@ -10,11 +10,11 @@ export class HeaderController {
     private readonly view: HeaderView
   ) {
     this.addEventListeners();
-    this.appModel.subscribeUsersListener(() => this.handleCurrentUserHead());
-    this.model.subscribeCurrentPageListener(() => this.handleCurrentPage());
-    this.model.subscribeBurgerMenuListener(() => this.view.toggleShowBurgerMenu());
     this.handleCurrentUserHead();
     this.handleCurrentPage();
+    this.appModel.subscribeUsersListener(() => this.handleCurrentUserHead());
+    this.appModel.subscribeCurrentPageListener(() => this.handleCurrentPage());
+    this.model.subscribeBurgerMenuListener(() => this.view.toggleShowBurgerMenu());
   }
 
   private addEventListeners(): void {
@@ -38,12 +38,6 @@ export class HeaderController {
           this.model.setBurgerMenuState(false);
           if (rout) {
             route.navigate(rout);
-            this.model.setCurrentRoute(rout);
-            console.log(this.model.getCurrentRoute());
-          }
-
-          if (rout === '/sign-in') {
-            this.appModel.setCurrentUser('testUser');
           }
         }
       }
@@ -54,7 +48,6 @@ export class HeaderController {
     const logoContainer = this.view.getLogoContainer();
     logoContainer.addEventListener('click', () => {
       route.navigate('/home');
-      this.model.setCurrentRoute('/home');
     });
   }
 
@@ -63,7 +56,6 @@ export class HeaderController {
     logoutContainer.addEventListener('click', () => {
       route.navigate('/home');
       this.appModel.setCurrentUser('');
-      this.model.setCurrentRoute('/home');
     });
   }
 
