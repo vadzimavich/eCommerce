@@ -82,6 +82,12 @@ body.overlay {
   overflow: hidden;
 }
 
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .error-tooltip {
   display: flex;
   gap: $gap-small;
@@ -100,4 +106,8 @@ body.overlay {
 
 .error-tooltip svg {
   flex-shrink: 0;
+}
+
+.plug {
+  height: 100vh;
 }

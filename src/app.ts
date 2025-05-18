@@ -6,6 +6,7 @@ import { LoginPage } from './views/pages/LoginPage';
 import { AboutPage } from './views/pages/AboutUsPage';
 import { RegistrationPage } from './views/pages/RegistrationPage';
 import { CatalogPage } from './views/pages/CatalogPage';
+import { CartPage } from './views/pages/BasketPage';
 
 import type { Routes } from './models/types/router-types';
 import { Header } from './views/components/Header';
@@ -33,6 +34,7 @@ class App {
       '/sign-in': LoginPage,
       '/sign-up': RegistrationPage,
       '/not-found': NotFoundPage,
+      '/cart': CartPage,
     };
 
     this.route = new Router(routes, mainContainer, appModel);
