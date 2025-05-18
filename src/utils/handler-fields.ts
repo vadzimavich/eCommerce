@@ -79,7 +79,7 @@ export const handlerNameField = (value: string): HandlerInputFieldResult => {
 };
 
 export const handlerRequiredField = (value: string): HandlerInputFieldResult => {
-  if (value.length < 1) {
+  if (value.trim().length < 1) {
     return { result: false, errorMessage: NameErrorTooltips.Name_length };
   }
 
