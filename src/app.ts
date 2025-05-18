@@ -10,12 +10,16 @@ import { CatalogPage } from './views/pages/CatalogPage';
 import type { Routes } from './models/types/router-types';
 import { Header } from './views/components/Header';
 import { NotFoundPage } from './views/pages/NotFoundPage';
+import { HeaderModel } from './views/components/Header/headerModel';
 
 class App {
   public readonly route: Router;
 
-  constructor(private readonly appModel: AppModel) {
-    const header = new Header(this.appModel);
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly headerModel: HeaderModel
+  ) {
+    const header = new Header(this.appModel, this.headerModel);
     const headerContainer = header.render();
 
     const mainContainer = document.createElement('main');
@@ -35,5 +39,5 @@ class App {
   }
 }
 
-const app = new App(new AppModel());
+const app = new App(new AppModel(), new HeaderModel());
 export const route = app.route;

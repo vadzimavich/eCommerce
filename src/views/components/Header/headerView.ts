@@ -1,6 +1,6 @@
-// import { route } from '../../../app';
 import { AppModel } from '../../../models/state/AppState';
 import { elementCreator } from '../../../utils/dom-helpers';
+import { HeaderModel } from './headerModel';
 
 export class HeaderView {
   private header: HTMLElement;
@@ -10,7 +10,10 @@ export class HeaderView {
   private currentUserHead: HTMLElement;
   private logoutContainer: HTMLElement;
 
-  constructor(private readonly appModel: AppModel) {
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly model: HeaderModel
+  ) {
     this.header = elementCreator(document.createElement('header'), { classNames: ['header'] });
     this.navContainer = elementCreator(document.createElement('nav'), { classNames: ['header__nav', 'nav'] });
     this.logoContainer = elementCreator(document.createElement('h1'), { classNames: ['header__logo', 'logo'] });
@@ -63,6 +66,27 @@ export class HeaderView {
     this.logoutContainer.classList.add('visible');
   }
 
+  public updateViewActivePage(): void {
+    const modelRoute = this.model.getCurrentRoute();
+    const nav = this.navContainer.firstElementChild;
+    if (nav) {
+      const navItems = nav.children;
+      for (let i = 0; i < navItems.length; i++) {
+        const li = navItems[i];
+        const anchor = li.firstElementChild;
+
+        if (anchor) {
+          const route = anchor.getAttribute('data-route');
+          if (route === modelRoute) {
+            anchor.classList.add('active');
+          } else {
+            anchor.classList.remove('active');
+          }
+        }
+      }
+    }
+  }
+
   private buildLogoElement(): HTMLElement {
     const anchorItem = elementCreator(document.createElement('a'), {
       attributes: { 'data-route': '/home', href: '#/home' },
@@ -89,7 +113,7 @@ export class HeaderView {
     const navList = elementCreator(document.createElement('ul'), { classNames: ['header__nav-list'] });
     const userItem = elementCreator(document.createElement('ul'), { classNames: ['header__nav-user'] });
 
-    items.forEach((item) => {
+    items.forEach((item, index) => {
       const navListItem = elementCreator(document.createElement('li'), {
         classNames: ['nav-list__item'],
       });
@@ -97,6 +121,9 @@ export class HeaderView {
         content: item.label,
         attributes: { 'data-route': item.route, href: `#${item.route}` },
       });
+      if (index === 0) {
+        anchorItem.classList.add('active');
+      }
       navListItem.append(anchorItem);
       navList.append(navListItem);
     });

@@ -113,6 +113,12 @@
       &:hover {
         color: var(--color-breeze);
       }
+
+      &.active {
+        position: relative;
+        border-bottom: 3px solid var(--color-breeze);
+        color: var(--color-breeze);
+      }
     }
   }
 
