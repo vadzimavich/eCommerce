@@ -28,4 +28,7 @@ To use the chat server application follow these steps:
 | `npm run lint:css`     | Checks and auto-fixes CSS files using Stylelint.                         |
 | `npm run lint:scss`    | Checks and auto-fixes SCSS files using Stylelint.                        |
 | `npm run prepare`      | Installs Git hooks via Husky (automatically called after `npm install`). |
-| `npm test`             | Runs unit tests using Jest.                                              |
+| `npm test`             | Runs a set of unit tests using Jest                                      |
+| `npm test:related`     | Runs only the tests related to the changed files using Jest.             |
+| `npm test:all`         | Executes a complete run of all unit tests in the project.                |
+| `npm test:coverage`    | Runs tests and generates a report on code coverage by the tests.         |
