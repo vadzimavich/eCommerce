@@ -1,14 +1,17 @@
 import { route } from '../../../app';
+import { CustomerService } from '../../../models/services/AuthService';
 import { AppModel } from '../../../models/state/AppState';
 import { HeaderModel } from './headerModel';
 import { HeaderView } from './headerView';
 
 export class HeaderController {
+  private readonly service: CustomerService;
   constructor(
     private readonly appModel: AppModel,
     private readonly model: HeaderModel,
     private readonly view: HeaderView
   ) {
+    this.service = new CustomerService();
     this.addEventListeners();
     this.handleCurrentUserHead();
     this.handleCurrentPage();
@@ -54,6 +57,7 @@ export class HeaderController {
   private handleLogoutClick(): void {
     const logoutContainer = this.view.getLogoutAnchor();
     logoutContainer.addEventListener('click', () => {
+      this.service.logoutCustomer();
       route.navigate('/home');
       this.appModel.setCurrentUser('');
     });
