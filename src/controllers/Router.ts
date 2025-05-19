@@ -3,19 +3,41 @@ import { Routes } from '../models/types/router-types';
 
 export class Router {
   private routes: Routes;
-  private readonly publicRoutes = ['/', '/home', '/catalog', '/about-us', '/sign-in', '/sign-up', '/not-found'];
+  private readonly publicRoutes = [
+    '/',
+    '/home',
+    '/catalog',
+    '/about-us',
+    '/sign-in',
+    '/sign-up',
+    '/cart',
+    '/not-found',
+  ];
   constructor(
     routes: Routes,
     private mainContainer: HTMLElement,
     private appModel: AppModel
   ) {
     this.routes = routes;
-    window.addEventListener('hashchange', () => this.loadRoute());
-    this.loadRoute();
+
+    const currentPath = location.hash.slice(1) || '/';
+    this.appModel.setCurrentHash(currentPath);
+
+    if (!location.hash) {
+      this.navigate('/');
+    } else {
+      this.loadRoute();
+    }
+
+    window.addEventListener('hashchange', () => {
+      const newPath = location.hash.slice(1);
+      this.appModel.setCurrentHash(newPath);
+      this.loadRoute();
+    });
   }
 
   public navigate(path: string): void {
-    location.href = `#${path}`;
+    location.hash = `#${path}`;
   }
 
   private loadRoute(): void {

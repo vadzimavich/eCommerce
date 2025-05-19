@@ -1,34 +1,43 @@
 import { AppModel } from '../../../models/state/AppState';
 import { elementCreator } from '../../../utils/dom-helpers';
+import { HeaderModel } from './headerModel';
 
 export class HeaderView {
-  private headerContainer: HTMLElement;
-  private navContainer: HTMLElement;
-  private logoContainer: HTMLElement;
-  private cartIconContainer: HTMLElement;
-  private currentUserHead: HTMLElement;
-  private logoutContainer: HTMLElement;
+  private readonly header: HTMLElement;
+  private readonly navContainer: HTMLElement;
+  private readonly logoContainer: HTMLElement;
+  private readonly cartIconAnchor: HTMLAnchorElement;
+  private readonly currentUserHead: HTMLElement;
+  private readonly logoutIconAnchor: HTMLAnchorElement;
+  private readonly buttonBM: HTMLButtonElement;
 
-  constructor(private readonly appModel: AppModel) {
-    this.headerContainer = elementCreator(document.createElement('header'), { classNames: ['header'] });
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly model: HeaderModel
+  ) {
+    this.header = elementCreator(document.createElement('header'), { classNames: ['header'] });
     this.navContainer = elementCreator(document.createElement('nav'), { classNames: ['header__nav', 'nav'] });
-    this.logoContainer = elementCreator(document.createElement('div'), { classNames: ['header__logo', 'logo'] });
-    this.cartIconContainer = elementCreator(document.createElement('div'), {
-      classNames: ['header__cart', 'header__cart-wrapper'],
+    this.logoContainer = elementCreator(document.createElement('h1'), { classNames: ['header__logo', 'logo'] });
+    this.cartIconAnchor = elementCreator(document.createElement('a'), {
+      classNames: ['header__icon', 'header__icon-cart'],
+      attributes: { 'data-route': '/cart', href: '#/cart', title: 'cart' },
     });
-    this.currentUserHead = elementCreator(document.createElement('span'), { classNames: ['header__user'] });
-    this.logoutContainer = elementCreator(document.createElement('div'), { classNames: ['header__logout'] });
+    this.currentUserHead = elementCreator(document.createElement('span'), {
+      classNames: ['header__user', 'nav-user__user'],
+    });
+    this.logoutIconAnchor = elementCreator(document.createElement('a'), {
+      classNames: ['header__icon', 'header__logout', 'header__icon-logout'],
+      attributes: { 'data-route': '/home', href: '#/home', title: 'logout' },
+    });
+    this.buttonBM = elementCreator(document.createElement('button'), {
+      classNames: ['header__button-burger'],
+    });
   }
 
   public render(): HTMLElement {
-    this.buildNavButtons();
-    const logo = this.buildLogoElement();
-    const cart = this.buildCartElement();
-    const userContainer = elementCreator(document.createElement('div'), { classNames: ['header__user-wrapper'] });
-    userContainer.append(this.currentUserHead, cart);
-    const logout = this.buildLogoutElement();
-    this.headerContainer.append(logo, this.navContainer, userContainer, logout);
-    return this.headerContainer;
+    const header = this.buildHeader();
+    this.header.append(header);
+    return this.header;
   }
 
   public getNavContainer(): HTMLElement {
@@ -39,74 +48,156 @@ export class HeaderView {
     return this.logoContainer;
   }
 
-  public getCartContainer(): HTMLElement {
-    return this.cartIconContainer;
+  public getCartAnhor(): HTMLAnchorElement {
+    return this.cartIconAnchor;
   }
 
   public getCurentUserHead(): HTMLElement {
     return this.currentUserHead;
   }
 
-  public getLogoutContainer(): HTMLElement {
-    return this.logoutContainer;
+  public getLogoutAnchor(): HTMLAnchorElement {
+    return this.logoutIconAnchor;
+  }
+
+  public getButtonBM(): HTMLButtonElement {
+    return this.buttonBM;
   }
 
   public updateCurrentUserState(): void {
     const user = this.appModel.getCurrentUser();
     if (!user) {
-      this.logoutContainer.classList.remove('visible');
+      this.logoutIconAnchor.classList.remove('visible');
       this.currentUserHead.textContent = '';
       return;
     }
 
     this.currentUserHead.textContent = user;
-    this.logoutContainer.classList.add('visible');
+    this.logoutIconAnchor.classList.add('visible');
+  }
+
+  public updateViewActivePage(): void {
+    const modelRoute = this.appModel.getCurrentRoute();
+    const nav = this.navContainer.firstElementChild;
+    if (nav) {
+      const navItems = nav.children;
+
+      for (let i = 0; i < navItems.length; i++) {
+        const li = navItems[i];
+        const anchor = li.firstElementChild;
+
+        if (anchor) {
+          const route = anchor.getAttribute('data-route');
+          if (route === modelRoute) {
+            anchor.classList.add('active');
+          } else {
+            anchor.classList.remove('active');
+          }
+          if (route === '/cart') {
+            anchor.classList.remove('active');
+          }
+        }
+      }
+
+      if (modelRoute === '/') {
+        const anchorHome = navItems[0].firstElementChild;
+        if (anchorHome) {
+          anchorHome.classList.add('active');
+        }
+      }
+    }
+  }
+
+  public toggleShowBurgerMenu(): void {
+    const state = this.model.getBurgerMenuState();
+    if (state) {
+      this.navContainer.classList.add('open');
+      document.body.classList.add('overlay');
+    } else {
+      this.navContainer.classList.remove('open');
+      document.body.classList.remove('overlay');
+    }
   }
 
   private buildLogoElement(): HTMLElement {
+    const anchorItem = elementCreator(document.createElement('a'), {
+      attributes: { 'data-route': '/home', href: '#/home' },
+    });
     const logoImg = elementCreator(document.createElement('img'), {
-      classNames: ['logo', 'header__logo', 'header__logo-img'],
+      classNames: ['logo', 'header__logo-img'],
       attributes: { src: '../assets/logo/logo.png', alt: 'app-logo' },
     });
-    this.logoContainer.append(logoImg);
+    anchorItem.append(logoImg);
+    this.logoContainer.append(anchorItem);
 
     return this.logoContainer;
   }
 
-  private buildNavButtons(): void {
-    const buttons = [
-      { label: 'Home', route: '/' },
+  private buildNavContainer(): void {
+    const items = [
+      { label: 'Home', route: '/home' },
       { label: 'Catalog', route: '/catalog' },
       { label: 'About Us', route: '/about-us' },
       { label: 'Sign In', route: '/sign-in' },
       { label: 'Sign Up', route: '/sign-up' },
     ];
+    const navList = elementCreator(document.createElement('ul'), { classNames: ['header__nav-list'] });
+    const userItem = elementCreator(document.createElement('ul'), { classNames: ['header__nav-user'] });
+    const cart = this.buildCartElement();
+    const logout = this.buildLogoutElement();
 
-    buttons.forEach((item) => {
-      const button = elementCreator(document.createElement('button'), {
-        classNames: ['nav-item', 'nav-item__btn', 'btn'],
-        content: item.label,
-        attributes: { 'data-route': item.route },
+    items.forEach((item) => {
+      const navListItem = elementCreator(document.createElement('li'), {
+        classNames: ['nav-list__item'],
       });
-      this.navContainer.append(button);
+      const anchorItem = elementCreator(document.createElement('a'), {
+        content: item.label,
+        attributes: { 'data-route': item.route, href: `#${item.route}` },
+      });
+      // if (index === 0) {
+      //   anchorItem.classList.add('active');
+      // }
+      navListItem.append(anchorItem);
+      navList.append(navListItem);
     });
+
+    userItem.append(cart, this.currentUserHead, logout);
+    this.navContainer.append(navList, userItem);
   }
 
   private buildCartElement(): HTMLElement {
-    const iconCart = elementCreator(document.createElement('img'), {
-      classNames: ['header__cart-icon'],
-      attributes: { src: '../assets/icons/header-icons/header-cart.svg', alt: 'cart-icon' },
+    const iconCart = elementCreator(document.createElement('svg'), {
+      classNames: ['nav-user__cart-icon', 'header__icon', 'header__icon-cart'],
+      attributes: { alt: 'cart-icon' },
     });
-    this.cartIconContainer.append(iconCart);
-    return this.cartIconContainer;
+    this.cartIconAnchor.append(iconCart);
+    return this.cartIconAnchor;
   }
 
   private buildLogoutElement(): HTMLElement {
-    const iconLogout = elementCreator(document.createElement('img'), {
-      classNames: ['header__logout-icon'],
-      attributes: { src: '../assets/icons/header-icons/header-logout.svg', alt: 'logout-icon' },
+    const iconLogout = elementCreator(document.createElement('svg'), {
+      classNames: ['header__logout-icon', 'header__icon', 'header__icon-logout'],
+      attributes: {},
     });
-    this.logoutContainer.append(iconLogout);
-    return this.logoutContainer;
+
+    this.logoutIconAnchor.append(iconLogout);
+    return this.logoutIconAnchor;
+  }
+
+  private buildHeader(): HTMLElement {
+    const headerWrapper = elementCreator(document.createElement('div'), { classNames: ['header__wrapper'] });
+    this.buildNavContainer();
+    const logo = this.buildLogoElement();
+    const buttonBM = this.buildButtonBm();
+    headerWrapper.append(logo, this.navContainer, buttonBM);
+    return headerWrapper;
+  }
+
+  private buildButtonBm(): HTMLButtonElement {
+    const dot = elementCreator(document.createElement('span'), {
+      classNames: ['burger-dot'],
+    });
+    this.buttonBM.append(dot);
+    return this.buttonBM;
   }
 }

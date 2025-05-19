@@ -5,3 +5,8 @@ export type RequiredField = {
 export type DataForm = {
   [id: string]: string;
 };
+
+export type HandlerInputFieldResult = {
+  result: boolean;
+  errorMessage?: string;
+};

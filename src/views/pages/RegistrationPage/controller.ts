@@ -1,21 +1,22 @@
 import { route } from '../../../app';
-import { CustomerService } from '../../../models/services/AuthService';
+import { AppModel } from '../../../models/state/AppState';
 import { RegistrationModel } from './model';
 import { RegistrationView } from './View/view';
 
 export class RegistrationController {
-  private readonly service: CustomerService;
-
   constructor(
+    private readonly appModel: AppModel,
     private readonly model: RegistrationModel,
     private readonly view: RegistrationView
   ) {
-    this.service = new CustomerService();
     this.handlerSubmitForm();
     this.navigateToSingIn();
     this.handlerViewPassword();
     this.eventCheckbox();
     this.handlerElementsForm();
+    this.handlerClickCheckboxShippingToBill();
+    this.model.subscribeSubmitButtonListener(() => this.handlerButtonSubmit());
+    this.model.subscribechekboxBillToShippingListener(() => this.toggleCheckboxDisableState());
   }
 
   private eventCheckbox(): void {
@@ -42,16 +43,13 @@ export class RegistrationController {
               modifiedElement = postalCode;
               element.addEventListener('change', () => {
                 this.model.updateData(modifiedElement);
-                this.view.changeButtonSubmit();
               });
             }
           } else {
             element.addEventListener('input', () => {
               this.model.updateData(modifiedElement);
-              this.view.changeButtonSubmit();
             });
           }
-
           this.model.updateData(element);
         }
       }
@@ -61,17 +59,35 @@ export class RegistrationController {
   private handlerSubmitForm(): void {
     const form = this.view.form;
 
-    form.addEventListener('submit', async (event: SubmitEvent) => {
+    form.addEventListener('submit', (event: SubmitEvent) => {
       event.preventDefault();
-
-      this.service.registerCustomer(this.model.createCustomerSignUpBody());
+      const currentUser = this.model.getDataForm()['first-name'];
+      this.appModel.setCurrentUser(currentUser);
+      console.log('getDataForm', this.model.getDataForm());
+      route.navigate('/home');
     });
   }
 
   private handlerViewPassword(): void {
-    this.view.buttonViewPassword.addEventListener('click', () => {
+    const buttonViewPassword = this.view.getButtonViewPassword();
+    buttonViewPassword.addEventListener('click', () => {
       this.view.updateViewPassword();
     });
+  }
+
+  private handlerClickCheckboxShippingToBill(): void {
+    const checkbox = this.view.getCheckboxBillToShipping().firstElementChild;
+    if (checkbox instanceof HTMLInputElement) {
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          this.model.copyDataShippingToBilling();
+          this.view.updateBillingFields();
+        } else {
+          this.model.clearDataBillingFields();
+          this.view.updateBillingFields();
+        }
+      });
+    }
   }
 
   private navigateToSingIn(): void {
@@ -86,5 +102,13 @@ export class RegistrationController {
         }
       }
     });
+  }
+
+  private handlerButtonSubmit(): void {
+    this.view.changeButtonSubmit();
+  }
+
+  private toggleCheckboxDisableState(): void {
+    this.view.updateViewChekboxShippingToBill();
   }
 }

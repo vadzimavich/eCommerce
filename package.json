@@ -14,7 +14,10 @@
     "lint:css": "stylelint --fix **/*.css",
     "lint:scss": "stylelint --fix **/*.scss",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest --bail --passWithNoTests",
+    "test:related": "jest --bail --findRelatedTests --passWithNoTests",
+    "test:all": "jest --passWithNoTests",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "Coders final",
@@ -61,12 +64,14 @@
   },
   "lint-staged": {
     "*.ts": [
+      "npm run format",
       "npm run lint",
-      "npm run format"
+      "npm run test:related"
     ],
     "*.js": [
+      "npm run format",
       "npm run lint",
-      "npm run format"
+      "npm run test:related"
     ],
     "*.css": [
       "npm run lint:css"

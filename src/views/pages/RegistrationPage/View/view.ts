@@ -1,27 +1,24 @@
 import { elementCreator } from '../../../../utils/dom-helpers';
 import * as content from './constant-content';
+import * as inputsFieldContent from '../../../components/InputField/constants-content';
 import * as formInputs from '../../../../utils/form-inputs';
 import { RegistrationModel } from '../model';
 
 export class RegistrationView {
-  public readonly form: HTMLFormElement;
-  public readonly inputPassword: HTMLInputElement;
-  public readonly buttonViewPassword: HTMLButtonElement;
-  public readonly linkNavigate: HTMLAnchorElement;
-  public readonly submitButton: HTMLButtonElement;
+  public form: HTMLFormElement;
+  public linkNavigate: HTMLAnchorElement;
   private container: HTMLElement;
-
+  private readonly submitButton: HTMLButtonElement;
+  private readonly buttonViewPassword: HTMLButtonElement;
+  private readonly inputPassword: HTMLInputElement;
+  private readonly checkboxBillToShipping: HTMLElement;
+  private readonly inputBillCountry: HTMLSelectElement;
+  private readonly inputBillCity: HTMLInputElement;
+  private readonly inputBillStreet: HTMLInputElement;
+  private readonly inputBillPostCode: HTMLInputElement;
   constructor(private readonly model: RegistrationModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['reg'] });
     this.form = elementCreator(document.createElement('form'), { classNames: ['form'] });
-    this.inputPassword = formInputs.createInputPassword('password');
-    this.buttonViewPassword = elementCreator(document.createElement('button'), {
-      classNames: ['password__button-view'],
-      attributes: {
-        type: 'button',
-        id: 'password-view',
-      },
-    });
     this.linkNavigate = elementCreator(document.createElement('a'), {
       classNames: ['navigate__link'],
       attributes: { 'data-route': '/sign-in' },
@@ -32,6 +29,21 @@ export class RegistrationView {
       attributes: { type: 'submit', disabled: '' },
       content: content.RegistrationContent.Button_form,
     });
+    this.buttonViewPassword = elementCreator(document.createElement('button'), {
+      classNames: ['password__button-view'],
+      attributes: {
+        type: 'button',
+        id: 'password-view',
+      },
+    });
+    this.inputPassword = formInputs.createInputPassword('password');
+    this.checkboxBillToShipping = this.createCheckbox('shipping', content.CheckboxSetting.Bill_Shipping_Address);
+    this.checkboxBillToShipping.classList.add('disabled');
+
+    this.inputBillCountry = formInputs.createSelectCountry('billing-country', inputsFieldContent.countries);
+    this.inputBillCity = formInputs.createInputCity('billing-city');
+    this.inputBillStreet = formInputs.createInputStreet('billing-street');
+    this.inputBillPostCode = formInputs.createInputPostalCode('billing-postal-code');
   }
 
   public render(): HTMLElement {
@@ -62,6 +74,33 @@ export class RegistrationView {
     }
   }
 
+  public updateViewChekboxShippingToBill(): void {
+    const isCompleteShippingForm = this.model.checkShippingFieldsValidation();
+
+    if (isCompleteShippingForm) {
+      this.checkboxBillToShipping.classList.remove('disabled');
+    } else {
+      this.checkboxBillToShipping.classList.add('disabled');
+    }
+  }
+
+  public updateBillingFields(): void {
+    const formData = this.model.getDataForm();
+
+    this.inputBillStreet.value = formData['billing-street'];
+    this.inputBillCountry.value = formData['billing-country'];
+    this.inputBillCity.value = formData['billing-city'];
+    this.inputBillPostCode.value = formData['billing-postal-code'];
+  }
+
+  public getButtonViewPassword(): HTMLButtonElement {
+    return this.buttonViewPassword;
+  }
+
+  public getCheckboxBillToShipping(): HTMLElement {
+    return this.checkboxBillToShipping;
+  }
+
   private createTitle(): void {
     const wrapper = elementCreator(document.createElement('div'), {
       classNames: ['reg__title__wrapper'],
@@ -87,9 +126,7 @@ export class RegistrationView {
     this.createPersonalInfo();
     this.createShippingAddress();
     this.createBillingAddress();
-
     this.form.append(this.submitButton);
-
     this.createRoutingSingIn();
 
     return this.form;
@@ -126,10 +163,9 @@ export class RegistrationView {
 
   private createAccountData(): void {
     const inputsWrapper = this.createInputsWrapper();
-
     inputsWrapper.append(
-      this.createInputWrapper(content.AccountDataLabel.Email, formInputs.createInputEmail('email')),
-      this.createInputWrapper(content.AccountDataLabel.Password, this.inputPassword, this.buttonViewPassword)
+      this.createInputWrapper(inputsFieldContent.AccountDataLabel.Email, formInputs.createInputEmail('email')),
+      this.createInputWrapper(inputsFieldContent.AccountDataLabel.Password, this.inputPassword, this.buttonViewPassword)
     );
   }
 
@@ -137,31 +173,35 @@ export class RegistrationView {
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Personal_Info);
 
     inputsWrapper.append(
-      this.createInputWrapper(content.PersonalInfoLabel.First_Name, formInputs.createInputFirstName('first-name')),
-      this.createInputWrapper(content.PersonalInfoLabel.Last_Name, formInputs.createInputLastName('last-name')),
-      this.createInputWrapper(content.PersonalInfoLabel.Birthday, formInputs.createInputBirthday('bday'))
+      this.createInputWrapper(
+        inputsFieldContent.PersonalInfoLabel.First_Name,
+        formInputs.createInputFirstName('first-name')
+      ),
+      this.createInputWrapper(
+        inputsFieldContent.PersonalInfoLabel.Last_Name,
+        formInputs.createInputLastName('last-name')
+      ),
+      this.createInputWrapper(inputsFieldContent.PersonalInfoLabel.Birthday, formInputs.createInputBirthday('bday'))
     );
   }
 
   private createShippingAddress(): void {
     const checkboxesWrapper = elementCreator(document.createElement('div'), { classNames: ['form__checkboxes'] });
-
-    const checkboxIsDefault = this.createCheckbox('shipping', content.CheckboxSetting.Bill_Shipping_Address);
     const checkboxBillShipping = this.createCheckbox('bill', content.CheckboxSetting.Shipping_Address);
 
-    checkboxesWrapper.append(checkboxIsDefault, checkboxBillShipping);
+    checkboxesWrapper.append(this.checkboxBillToShipping, checkboxBillShipping);
 
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Shipping_Address, checkboxesWrapper);
 
     inputsWrapper.append(
-      this.createInputWrapper(content.AddressLabel.Street, formInputs.createInputStreet('shipping-street')),
-      this.createInputWrapper(content.AddressLabel.City, formInputs.createInputCity('shipping-city')),
+      this.createInputWrapper(inputsFieldContent.AddressLabel.Street, formInputs.createInputStreet('shipping-street')),
+      this.createInputWrapper(inputsFieldContent.AddressLabel.City, formInputs.createInputCity('shipping-city')),
       this.createInputWrapper(
-        content.AddressLabel.Country,
-        formInputs.createSelectCountry('shipping-country', content.countries)
+        inputsFieldContent.AddressLabel.Country,
+        formInputs.createSelectCountry('shipping-country', inputsFieldContent.countries)
       ),
       this.createInputWrapper(
-        content.AddressLabel.Postal_Code,
+        inputsFieldContent.AddressLabel.Postal_Code,
         formInputs.createInputPostalCode('shipping-postal-code')
       )
     );
@@ -186,15 +226,7 @@ export class RegistrationView {
     checkboxesWrapper.append(checkboxIsDefault);
 
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Billing_Address, checkboxesWrapper);
-    inputsWrapper.append(
-      this.createInputWrapper(content.AddressLabel.Street, formInputs.createInputStreet('billing-street')),
-      this.createInputWrapper(content.AddressLabel.City, formInputs.createInputCity('billing-city')),
-      this.createInputWrapper(
-        content.AddressLabel.Country,
-        formInputs.createSelectCountry('billing-country', content.countries)
-      ),
-      this.createInputWrapper(content.AddressLabel.Postal_Code, formInputs.createInputPostalCode('billing-portal-code'))
-    );
+    inputsWrapper.append(this.inputBillStreet, this.inputBillCountry, this.inputBillCity, this.inputBillPostCode);
   }
 
   private createInputWrapper(
