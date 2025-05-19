@@ -3,6 +3,7 @@ import * as content from './constant-content';
 import * as inputsFieldContent from '../../../components/InputField/constants-content';
 import * as formInputs from '../../../../utils/form-inputs';
 import { RegistrationModel } from '../model';
+import { Modal } from '../../../../components/modal';
 
 export class RegistrationView {
   public form: HTMLFormElement;
@@ -16,6 +17,7 @@ export class RegistrationView {
   private readonly inputBillCity: HTMLInputElement;
   private readonly inputBillStreet: HTMLInputElement;
   private readonly inputBillPostCode: HTMLInputElement;
+  private readonly popup: Modal;
   constructor(private readonly model: RegistrationModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['reg'] });
     this.form = elementCreator(document.createElement('form'), { classNames: ['form'] });
@@ -44,6 +46,7 @@ export class RegistrationView {
     this.inputBillCity = formInputs.createInputCity('billing-city');
     this.inputBillStreet = formInputs.createInputStreet('billing-street');
     this.inputBillPostCode = formInputs.createInputPostalCode('billing-postal-code');
+    this.popup = new Modal();
   }
 
   public render(): HTMLElement {
@@ -99,6 +102,14 @@ export class RegistrationView {
 
   public getCheckboxBillToShipping(): HTMLElement {
     return this.checkboxBillToShipping;
+  }
+
+  public showSuccessModal(message: string): void {
+    this.popup.infoMessage(message);
+  }
+
+  public showErrorModal(message: string): void {
+    this.popup.errorMessage(message);
   }
 
   private createTitle(): void {

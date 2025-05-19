@@ -8,8 +8,6 @@ import {
 import { getEnvironmentValue } from '../../utils/helpers';
 import { createApiBuilderFromCtpClient, CustomerSignInResult } from '@commercetools/platform-sdk';
 import type { CustomerDraftBody, CustomerLoginData } from '../types/api-types';
-import { route } from '../../app';
-import { Modal } from '../../components/modal';
 
 export class CustomerService {
   private readonly projectKey = getEnvironmentValue('CTP_PROJECT_KEY');
@@ -19,7 +17,6 @@ export class CustomerService {
   private readonly scopes = getEnvironmentValue('CTP_SCOPES').split(' ');
   private readonly apiUrl = getEnvironmentValue('CTP_API_URL');
   private readonly httpMiddlewareOptions: HttpMiddlewareOptions;
-  private readonly modal: Modal;
   private readonly anonymousClient;
   private currentClient;
   constructor() {
@@ -47,25 +44,19 @@ export class CustomerService {
     ).withProjectKey({ projectKey: this.projectKey });
 
     this.currentClient = this.anonymousClient;
-    this.modal = new Modal();
   }
 
-  public async registerCustomer(body: CustomerDraftBody): Promise<void> {
+  public async registerCustomer(body: CustomerDraftBody): Promise<CustomerSignInResult | Error> {
     try {
-      const response = await this.anonymousClient.me().signup().post({ body }).execute();
-      console.log('User registered:', response.body.customer);
-      this.modal.infoMessage(`You have successfully registered`);
-      await this.loginCustomer({ email: body.email, password: body.password });
-      route.navigate('/home');
+      await this.anonymousClient.me().signup().post({ body }).execute();
+      return this.loginCustomer({ email: body.email, password: body.password });
     } catch (error) {
-      console.error('Registration failed:', error);
-      if (error instanceof Error) {
-        this.modal.errorMessage(error.message);
-      }
+      if (error instanceof Error) return error;
+      return new Error('Unknown registration error');
     }
   }
 
-  public async loginCustomer(customer: CustomerLoginData): Promise<CustomerSignInResult> {
+  public async loginCustomer(customer: CustomerLoginData): Promise<CustomerSignInResult | Error> {
     try {
       const passwordAuthOptions: PasswordAuthMiddlewareOptions = {
         host: this.authUrl,
@@ -85,14 +76,6 @@ export class CustomerService {
       const authorizedClient = createApiBuilderFromCtpClient(
         new ClientBuilder().withPasswordFlow(passwordAuthOptions).withHttpMiddleware(this.httpMiddlewareOptions).build()
       ).withProjectKey({ projectKey: this.projectKey });
-
-      // const response = authorizedClient
-      //   .me()
-      //   .login()
-      //   .post({
-      //     body: customer,
-      //   })
-      //   .execute();
 
       const loginResponse = await authorizedClient.me().login().post({ body: customer }).execute();
 
