@@ -36,3 +36,18 @@ export type CustomerLoginData = {
   email: string;
   password: string;
 };
+
+export type CTErrorBody = {
+  statusCode?: number;
+  message?: string;
+  errors?: {
+    code: string;
+    message: string;
+  }[];
+};
+
+export type ErrorResponse = {
+  body?: CTErrorBody;
+  message?: string;
+  statusCode?: number;
+};

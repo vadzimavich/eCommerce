@@ -6,7 +6,7 @@ export class LoginPageView {
   public readonly form: HTMLFormElement;
   public readonly emailInput: HTMLInputElement;
   public readonly passwordInput: HTMLInputElement;
-  public readonly passwordViewButton?: HTMLButtonElement;
+  public readonly passwordViewButton: HTMLButtonElement;
   public readonly submitButton: HTMLButtonElement;
   public readonly linkToRegistration: HTMLAnchorElement;
   private readonly container: HTMLElement;
@@ -18,6 +18,7 @@ export class LoginPageView {
 
     this.emailInput = formInputs.createInputEmail('login-email');
     this.passwordInput = formInputs.createInputPassword('login-password');
+
     this.passwordViewButton = elementCreator(document.createElement('button'), {
       classNames: ['password__button-view'],
       attributes: { type: 'button', 'aria-label': 'Show/hide password' },
@@ -46,13 +47,16 @@ export class LoginPageView {
     });
 
     const emailWrapper = this.createInputWrapper('Email', this.emailInput); // TODO: Email в константу
-    const passwordWrapper = this.createInputWrapper('Password', this.passwordInput); // TODO: Password в константу
-    const passwordFieldContainer = passwordWrapper.querySelector('.login__input__container');
-    if (passwordFieldContainer && this.passwordViewButton) {
-      this.passwordInput.classList.add('password-input-field');
-      passwordFieldContainer.classList.add('password__container');
-      passwordFieldContainer.append(this.passwordViewButton);
+
+    const passwordFieldWithButton = elementCreator(document.createElement('div'), {
+      classNames: ['password__container'],
+    });
+    this.passwordInput.classList.add('password-input-field');
+    passwordFieldWithButton.append(this.passwordInput);
+    if (this.passwordViewButton) {
+      passwordFieldWithButton.append(this.passwordViewButton);
     }
+    const passwordWrapper = this.createInputWrapper('Password', passwordFieldWithButton);
 
     const actionsContainer = elementCreator(document.createElement('div'), {
       classNames: ['login-form__actions'],
@@ -78,51 +82,66 @@ export class LoginPageView {
   }
 
   public displayLoginError(message: string): void {
-    // Заглушка
     this.clearLoginError();
     this.errorContainerGeneral = elementCreator(document.createElement('div'), {
       classNames: ['error-message', 'login-error'],
       content: message,
     });
-    if (this.submitButton.parentNode === this.form) {
-      this.form.insertBefore(this.errorContainerGeneral, this.submitButton);
+    const actionsContainer = this.form.querySelector('.login-form__actions');
+    if (actionsContainer) {
+      this.form.insertBefore(this.errorContainerGeneral, actionsContainer);
     } else {
       this.form.append(this.errorContainerGeneral);
     }
   }
 
   public clearLoginError(): void {
-    // Заглушка
     if (this.errorContainerGeneral) {
       this.errorContainerGeneral.remove();
       this.errorContainerGeneral = null;
     }
   }
 
-  private createInputWrapper(labelContent: string, inputElement: HTMLInputElement): HTMLElement {
+  public togglePasswordVisibility(): void {
+    if (this.passwordInput.type === 'password') {
+      this.passwordInput.type = 'text';
+      this.passwordViewButton.classList.add('view');
+    } else {
+      this.passwordInput.type = 'password';
+      this.passwordViewButton.classList.remove('view');
+    }
+  }
+
+  private createInputWrapper(labelContent: string, inputElementOrWrapper: HTMLElement): HTMLElement {
     const wrapper = elementCreator(document.createElement('div'), {
       classNames: ['reg__input__wrapper', 'login-form__input-wrapper'],
     });
 
-    if (!inputElement.id) {
-      inputElement.id = `${labelContent.toLowerCase().replace(/\s+/g, '-')}-${Math.random().toString(16).slice(2, 8)}`;
+    const inputField = inputElementOrWrapper.querySelector('input') || inputElementOrWrapper;
+    let inputId = '';
+    if (inputField instanceof HTMLInputElement) {
+      inputId = inputField.id;
+    }
+
+    if (!inputId) {
+      inputId = `${labelContent.toLowerCase().replace(/\s+/g, '-')}-${Math.random().toString(16).slice(2, 8)}`;
+      if (inputField instanceof HTMLElement) {
+        inputField.id = inputId;
+      }
     }
 
     const label = elementCreator(document.createElement('label'), {
-      attributes: { for: inputElement.id },
+      attributes: { for: inputId },
       content: labelContent,
     });
 
     const requiredSpan = elementCreator(document.createElement('span'), {
       classNames: ['input_required'],
-      content: ' *', // TODO: из констант
+      content: '*', // TODO: из констант
     });
     label.append(requiredSpan);
 
-    const inputContainer = elementCreator(document.createElement('div'), { classNames: ['login__input__container'] });
-    inputContainer.append(inputElement);
-    wrapper.append(label, inputContainer);
-
+    wrapper.append(label, inputElementOrWrapper);
     return wrapper;
   }
 }

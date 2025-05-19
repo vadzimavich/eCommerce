@@ -6,7 +6,7 @@ import {
   PasswordAuthMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import { createApiBuilderFromCtpClient, CustomerSignInResult } from '@commercetools/platform-sdk';
 import type { CustomerDraftBody, CustomerLoginData } from '../types/api-types';
 import { route } from '../../app';
 import { Modal } from '../../components/modal';
@@ -65,7 +65,7 @@ export class CustomerService {
     }
   }
 
-  public async loginCustomer(customer: CustomerLoginData): Promise<void> {
+  public async loginCustomer(customer: CustomerLoginData): Promise<CustomerSignInResult> {
     try {
       const passwordAuthOptions: PasswordAuthMiddlewareOptions = {
         host: this.authUrl,
@@ -85,15 +85,21 @@ export class CustomerService {
       const authorizedClient = createApiBuilderFromCtpClient(
         new ClientBuilder().withPasswordFlow(passwordAuthOptions).withHttpMiddleware(this.httpMiddlewareOptions).build()
       ).withProjectKey({ projectKey: this.projectKey });
-      const response = authorizedClient
-        .me()
-        .login()
-        .post({
-          body: customer,
-        })
-        .execute();
+
+      // const response = authorizedClient
+      //   .me()
+      //   .login()
+      //   .post({
+      //     body: customer,
+      //   })
+      //   .execute();
+
+      const loginResponse = await authorizedClient.me().login().post({ body: customer }).execute();
+
       this.currentClient = authorizedClient;
-      console.log('Succes of login for', (await response).body.customer.email);
+
+      console.log('Success of login for', loginResponse.body.customer.email);
+      return loginResponse.body;
     } catch (error) {
       console.error('Fail of login', error);
       throw error;
