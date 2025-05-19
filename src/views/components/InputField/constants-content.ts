@@ -40,7 +40,7 @@ export const enum NameErrorTooltips {
 }
 
 export const enum DateErrorTooltips {
-  Date_before = `The birthday cannot be before 1990.`,
+  Date_before = `The birthday cannot be before 1900.`,
   Date_future = `Birthday cannot be in the future.`,
   Date_old = `User must be at least 13 years old.`,
 }

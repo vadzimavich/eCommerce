@@ -89,7 +89,7 @@ export const handlerRequiredField = (value: string): HandlerInputFieldResult => 
 export const handlerDateField = (value: string): HandlerInputFieldResult => {
   const old = calculateAge(new Date(value));
 
-  if (new Date(value).getFullYear() < 1990) {
+  if (new Date(value).getFullYear() < 1900) {
     return { result: false, errorMessage: DateErrorTooltips.Date_before };
   }
 
