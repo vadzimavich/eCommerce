@@ -72,6 +72,9 @@ export class RegistrationModel {
 
   public clearDataBillingFields(): void {
     this.billingFields.forEach((field) => {
+      if (field === 'billing-country') {
+        return;
+      }
       this.setDataForm(field, '');
       this.setStatusForm(field, false);
     });
