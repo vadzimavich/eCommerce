@@ -226,7 +226,14 @@ export class RegistrationView {
     checkboxesWrapper.append(checkboxIsDefault);
 
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Billing_Address, checkboxesWrapper);
-    inputsWrapper.append(this.inputBillStreet, this.inputBillCountry, this.inputBillCity, this.inputBillPostCode);
+    const billingCountry = this.createInputWrapper(inputsFieldContent.AddressLabel.Country, this.inputBillCountry);
+    const billingCity = this.createInputWrapper(inputsFieldContent.AddressLabel.City, this.inputBillCity);
+    const billingStreet = this.createInputWrapper(inputsFieldContent.AddressLabel.Street, this.inputBillStreet);
+    const billingPostalCode = this.createInputWrapper(
+      inputsFieldContent.AddressLabel.Postal_Code,
+      this.inputBillPostCode
+    );
+    inputsWrapper.append(billingStreet, billingCountry, billingCity, billingPostalCode);
   }
 
   private createInputWrapper(
