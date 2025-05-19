@@ -10,7 +10,7 @@ export class LoginPageView {
   public readonly submitButton: HTMLButtonElement;
   public readonly linkToRegistration: HTMLAnchorElement;
   private readonly container: HTMLElement;
-  // private errorContainerGeneral: HTMLElement | null = null;
+  private errorContainerGeneral: HTMLElement | null = null;
 
   constructor(private readonly model: LoginPageModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['login-page', 'page-wrapper'] });
@@ -67,6 +67,36 @@ export class LoginPageView {
     this.form.append(title, emailWrapper, passwordWrapper, actionsContainer, navigationContainer);
     this.container.append(this.form);
     return this.container;
+  }
+
+  public updateSubmitButtonState(): void {
+    if (this.model.isFormValid()) {
+      this.submitButton.disabled = false;
+    } else {
+      this.submitButton.disabled = true;
+    }
+  }
+
+  public displayLoginError(message: string): void {
+    // Заглушка
+    this.clearLoginError();
+    this.errorContainerGeneral = elementCreator(document.createElement('div'), {
+      classNames: ['error-message', 'login-error'],
+      content: message,
+    });
+    if (this.submitButton.parentNode === this.form) {
+      this.form.insertBefore(this.errorContainerGeneral, this.submitButton);
+    } else {
+      this.form.append(this.errorContainerGeneral);
+    }
+  }
+
+  public clearLoginError(): void {
+    // Заглушка
+    if (this.errorContainerGeneral) {
+      this.errorContainerGeneral.remove();
+      this.errorContainerGeneral = null;
+    }
   }
 
   private createInputWrapper(labelContent: string, inputElement: HTMLInputElement): HTMLElement {

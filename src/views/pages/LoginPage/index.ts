@@ -11,10 +11,13 @@ export class LoginPage {
   constructor(appModel: AppModel) {
     this.model = new LoginPageModel();
     this.view = new LoginPageView(this.model);
+
     new LoginPageController(this.model, this.view);
   }
 
   public render(): HTMLElement {
-    return this.view.render();
+    const renderedView = this.view.render();
+
+    return renderedView;
   }
 }
