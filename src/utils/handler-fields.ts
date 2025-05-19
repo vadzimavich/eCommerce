@@ -104,30 +104,8 @@ export const handlerDateField = (value: string): HandlerInputFieldResult => {
   return { result: true };
 };
 
-export const handlerPostalCodeField = (country: string, value: string): HandlerInputFieldResult => {
+export const handlerPostalCodeField = (country: string, postalCode: string): HandlerInputFieldResult => {
   if (country === 'USA') {
-    const regex = /^\d{5}(-\d{4})?$/;
-
-    if (!regex.test(value)) {
-      return { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_USA };
-    }
-
-    return { result: true };
-  } else if (country === 'Canada') {
-    const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-
-    if (!regex.test(value)) {
-      return { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_Canada };
-    }
-
-    return { result: true };
-  }
-
-  return { result: false, errorMessage: PostalCodeErrorTooltips.Select_country };
-};
-
-export const handlerCountryField = (postalCode: string, value: string): HandlerInputFieldResult => {
-  if (value === 'USA') {
     const regex = /^\d{5}(-\d{4})?$/;
 
     if (!regex.test(postalCode)) {
@@ -135,7 +113,7 @@ export const handlerCountryField = (postalCode: string, value: string): HandlerI
     }
 
     return { result: true };
-  } else if (value === 'Canada') {
+  } else if (country === 'Canada') {
     const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
 
     if (!regex.test(postalCode)) {

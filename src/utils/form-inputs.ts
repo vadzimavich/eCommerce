@@ -207,7 +207,7 @@ export const createSelectCountry = (id: string, values: string[]): HTMLSelectEle
     if (wrapper instanceof HTMLElement) {
       const postalCode = wrapper.querySelector('input[name="postal-code"]');
       if (postalCode instanceof HTMLInputElement) {
-        const resultHandler = handlerField.handlerCountryField(postalCode.value, value);
+        const resultHandler = handlerField.handlerPostalCodeField(value, postalCode.value);
         postalCode.setAttribute('data-correct', resultHandler.result.toString());
         updateTooltip(postalCode, resultHandler);
       }
