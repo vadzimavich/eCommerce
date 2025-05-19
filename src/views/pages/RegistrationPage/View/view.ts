@@ -42,8 +42,8 @@ export class RegistrationView {
 
     this.inputBillCountry = formInputs.createSelectCountry('billing-country', inputsFieldContent.countries);
     this.inputBillCity = formInputs.createInputCity('billing-city');
-    this.inputBillStreet = formInputs.createInputCity('billing-street');
-    this.inputBillPostCode = formInputs.createInputCity('billing-portal-code');
+    this.inputBillStreet = formInputs.createInputStreet('billing-street');
+    this.inputBillPostCode = formInputs.createInputPostalCode('billing-postal-code');
   }
 
   public render(): HTMLElement {
@@ -90,7 +90,7 @@ export class RegistrationView {
     this.inputBillStreet.value = formData['billing-street'];
     this.inputBillCountry.value = formData['billing-country'];
     this.inputBillCity.value = formData['billing-city'];
-    this.inputBillPostCode.value = formData['billing-portal-code'];
+    this.inputBillPostCode.value = formData['billing-postal-code'];
   }
 
   public getButtonViewPassword(): HTMLButtonElement {
@@ -226,18 +226,7 @@ export class RegistrationView {
     checkboxesWrapper.append(checkboxIsDefault);
 
     const inputsWrapper = this.createInputsWrapper(content.RegistrationFormSection.Billing_Address, checkboxesWrapper);
-    inputsWrapper.append(
-      this.createInputWrapper(inputsFieldContent.AddressLabel.Street, formInputs.createInputStreet('billing-street')),
-      this.createInputWrapper(inputsFieldContent.AddressLabel.City, formInputs.createInputCity('billing-city')),
-      this.createInputWrapper(
-        inputsFieldContent.AddressLabel.Country,
-        formInputs.createSelectCountry('billing-country', inputsFieldContent.countries)
-      ),
-      this.createInputWrapper(
-        inputsFieldContent.AddressLabel.Postal_Code,
-        formInputs.createInputPostalCode('billing-portal-code')
-      )
-    );
+    inputsWrapper.append(this.inputBillStreet, this.inputBillCountry, this.inputBillCity, this.inputBillPostCode);
   }
 
   private createInputWrapper(
