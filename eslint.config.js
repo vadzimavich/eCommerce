@@ -19,6 +19,7 @@ export default [
       'eslint.config.js',
       '.commitlintrc.cjs',
       'jest.config.js',
+      'coverage/*',
     ],
   },
   {

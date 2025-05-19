@@ -79,7 +79,7 @@ export const handlerNameField = (value: string): HandlerInputFieldResult => {
 };
 
 export const handlerRequiredField = (value: string): HandlerInputFieldResult => {
-  if (value.length < 1) {
+  if (value.trim().length < 1) {
     return { result: false, errorMessage: NameErrorTooltips.Name_length };
   }
 
@@ -89,7 +89,7 @@ export const handlerRequiredField = (value: string): HandlerInputFieldResult => 
 export const handlerDateField = (value: string): HandlerInputFieldResult => {
   const old = calculateAge(new Date(value));
 
-  if (new Date(value).getFullYear() < 1990) {
+  if (new Date(value).getFullYear() < 1900) {
     return { result: false, errorMessage: DateErrorTooltips.Date_before };
   }
 
@@ -104,30 +104,8 @@ export const handlerDateField = (value: string): HandlerInputFieldResult => {
   return { result: true };
 };
 
-export const handlerPostalCodeField = (country: string, value: string): HandlerInputFieldResult => {
+export const handlerPostalCodeField = (country: string, postalCode: string): HandlerInputFieldResult => {
   if (country === 'USA') {
-    const regex = /^\d{5}(-\d{4})?$/;
-
-    if (!regex.test(value)) {
-      return { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_USA };
-    }
-
-    return { result: true };
-  } else if (country === 'Canada') {
-    const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-
-    if (!regex.test(value)) {
-      return { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_Canada };
-    }
-
-    return { result: true };
-  }
-
-  return { result: false, errorMessage: PostalCodeErrorTooltips.Select_country };
-};
-
-export const handlerCountryField = (postalCode: string, value: string): HandlerInputFieldResult => {
-  if (value === 'USA') {
     const regex = /^\d{5}(-\d{4})?$/;
 
     if (!regex.test(postalCode)) {
@@ -135,7 +113,7 @@ export const handlerCountryField = (postalCode: string, value: string): HandlerI
     }
 
     return { result: true };
-  } else if (value === 'Canada') {
+  } else if (country === 'Canada') {
     const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
 
     if (!regex.test(postalCode)) {
