@@ -13,6 +13,11 @@ const testCases = [
     expectedResult: { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_Canada },
   },
   {
+    country: '',
+    values: ['12345', 'A1B2C3'],
+    expectedResult: { result: false, errorMessage: PostalCodeErrorTooltips.Select_country },
+  },
+  {
     country: 'USA',
     values: ['12345'],
     expectedResult: { result: true },
