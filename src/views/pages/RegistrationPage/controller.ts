@@ -1,14 +1,17 @@
 import { route } from '../../../app';
+import { CustomerService } from '../../../models/services/AuthService';
 import { AppModel } from '../../../models/state/AppState';
 import { RegistrationModel } from './model';
 import { RegistrationView } from './View/view';
 
 export class RegistrationController {
+  private readonly service: CustomerService;
   constructor(
     private readonly appModel: AppModel,
     private readonly model: RegistrationModel,
     private readonly view: RegistrationView
   ) {
+    this.service = new CustomerService();
     this.handlerSubmitForm();
     this.navigateToSingIn();
     this.handlerViewPassword();
@@ -56,15 +59,37 @@ export class RegistrationController {
     });
   }
 
+  // private handlerSubmitForm(): void {
+  //   const form = this.view.form;
+
+  //   form.addEventListener('submit', (event: SubmitEvent) => {
+  //     event.preventDefault();
+  //     const currentUser = this.model.getDataForm()['first-name'];
+  //     this.appModel.setCurrentUser(currentUser);
+  //     console.log('getDataForm', this.model.getDataForm());
+  //     route.navigate('/home');
+  //   });
+  // }
+
   private handlerSubmitForm(): void {
     const form = this.view.form;
 
-    form.addEventListener('submit', (event: SubmitEvent) => {
+    form.addEventListener('submit', async (event: SubmitEvent) => {
       event.preventDefault();
-      const currentUser = this.model.getDataForm()['first-name'];
-      this.appModel.setCurrentUser(currentUser);
-      console.log('getDataForm', this.model.getDataForm());
-      route.navigate('/home');
+
+      const result = await this.service.registerCustomer(this.model.createCustomerSignUpBody());
+
+      if (result && !(result instanceof Error)) {
+        const currentUser = result.customer.firstName;
+
+        if (currentUser) {
+          this.appModel.setCurrentUser(currentUser);
+        }
+        this.view.showSuccessModal('You have successfully registered');
+        route.navigate('/home');
+      } else if (result instanceof Error) {
+        this.view.showErrorModal(result.message);
+      }
     });
   }
 

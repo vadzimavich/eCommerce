@@ -51,14 +51,16 @@ export class LoginPageController {
       this.view.submitButton.disabled = true;
     }
     try {
-      const signInResult: CustomerSignInResult = await this.customerService.loginCustomer(loginData);
-      const userName = signInResult.customer.firstName || signInResult.customer.email;
-      if (userName) {
-        this.appModel.setCurrentUser(userName);
-      } else {
-        this.appModel.setCurrentUser('Authenticated User');
+      const signInResult: CustomerSignInResult | Error = await this.customerService.loginCustomer(loginData);
+      if (signInResult && !(signInResult instanceof Error)) {
+        const userName = signInResult.customer.firstName || signInResult.customer.email;
+        if (userName) {
+          this.appModel.setCurrentUser(userName);
+        } else {
+          this.appModel.setCurrentUser('Authenticated User');
+        }
+        route.navigate('/');
       }
-      route.navigate('/');
     } catch (error) {
       let errorMessage = 'Login failed. Please check your credentials.'; // TODO: в константы
       if (error && typeof error === 'object' && 'body' in error) {
