@@ -1,5 +1,6 @@
 @use "./index" as *;
 @use "global";
+@use "./components/loginPage.scss";
 @use "./components/registrationPage.scss";
 @use "./components/modal.scss";
 @use "./components/header.scss";
