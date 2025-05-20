@@ -1,0 +1,162 @@
+@use '../index' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-big;
+
+  width: 100%;
+  padding: 3rem;
+  border-radius: $radius;
+
+  background-color: var(--color-bg-modal);
+
+  &__title {
+    font-size: 2rem;
+
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: $gap-middle;
+      align-items: flex-start;
+    }
+  }
+
+  &__description {
+    text-align: start;
+
+    @media (width <= 520px) {
+      text-align: center;
+    }
+  }
+
+  &__inputs__wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: $gap-big;
+    width: 100%;
+
+    @media (width <= 1400px) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media (width <= 1170px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (width <= 800px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__input__wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: $gap-small;
+    align-items: flex-start;
+
+    .input_required {
+      color: var(--color-red);
+    }
+  }
+
+  &__input {
+    width: 100%;
+    min-width: 220px;
+    padding: 1rem 1.5rem;
+    border: 0.1rem solid var(--color-border-input);
+    border-radius: $radius;
+
+    background-color: var(--color-white);
+  }
+
+  &__subtitle__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-big;
+    align-items: flex-start;
+  }
+
+  &__button {
+    width: 200px;
+    padding: 1rem 1.5rem;
+    border-radius: $radius;
+
+    font-weight: 600;
+    color: var(--color-white);
+
+    background-color: var(--color-breeze);
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &__checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-small;
+    align-items: flex-start;
+
+    font-size: 1.3rem;
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  label[for='bill'] {
+    @media (width <= 520px) {
+      text-align: start;
+    }
+  }
+
+  @media (width <= 520px) {
+    padding: 1.5rem;
+  }
+}
+
+.navigate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  width: 100%;
+
+  font-size: 1.3rem;
+
+  &__link {
+    color: var(--color-red);
+  }
+}
+
+.password {
+  &__container {
+    position: relative;
+    width: 100%;
+
+    .form__input {
+      padding-right: 3rem;
+    }
+  }
+
+  &__button-view {
+    position: absolute;
+    top: calc(50% - 10px);
+    right: 10px;
+
+    width: 20px;
+    height: 20px;
+
+    background-image: url('../../../assets/icons/eye-off.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+
+  &__button-view.view {
+    background-image: url('../../../assets/icons/eye.svg');
+  }
+}

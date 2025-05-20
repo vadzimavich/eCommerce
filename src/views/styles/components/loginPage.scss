@@ -1,68 +1,18 @@
-@use "../index"as *;
+@use '../index' as *;
 
 .login-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  @include container;
-}
+  justify-content: flex-start;
+  height: calc(100vh - 12rem);
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 400px;
-  padding: 2rem;
-  border-radius: $radius;
-  background-color: #f9f9f9;
+  .form {
+    max-width: 40rem;
 
-  &__title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: center;
-  }
-
-  &__navigation {
-    margin-top: 1rem;
-    text-align: center;
-  }
-}
-
-.login__input__container {
-  width: 100%;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: $gap-big;
-
-  width: 100%;
-  padding: 3rem;
-  border-radius: $radius;
-
-  background-color: var(--color-bg-modal);
-
-  &__button {
-    width: 200px;
-    padding: 1rem 1.5rem;
-    border-radius: $radius;
-
-    font-weight: 600;
-    color: var(--color-white);
-
-    background-color: var(--color-btn-bg);
-
-    &:disabled {
-      opacity: 0.5;
+    &__button {
+      width: 100%;
     }
+  }
+
+  @media (width <= 768px) {
+    height: calc(100vh - 8rem);
   }
 }

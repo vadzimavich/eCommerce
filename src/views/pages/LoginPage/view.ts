@@ -32,7 +32,7 @@ export class LoginPageView {
 
     this.linkToRegistration = elementCreator(document.createElement('a'), {
       classNames: ['login-form__link-to-reg', 'navigate__link'],
-      content: "Don't have an account? Sign Up", // TODO: Заменить на константу
+      content: 'Sign Up', // TODO: Заменить на константу
       attributes: { 'data-route': '/sign-up', href: '#/sign-up' },
     });
   }
@@ -66,7 +66,12 @@ export class LoginPageView {
     const navigationContainer = elementCreator(document.createElement('div'), {
       classNames: ['login-form__navigation', 'navigate'],
     });
-    navigationContainer.append(this.linkToRegistration);
+
+    const navigationDescription = elementCreator(document.createElement('p'), {
+      content: `Don't have an account?`, // TODO: Заменить на константу
+    });
+
+    navigationContainer.append(navigationDescription, this.linkToRegistration);
 
     this.form.append(title, emailWrapper, passwordWrapper, actionsContainer, navigationContainer);
     this.container.append(this.form);
@@ -114,7 +119,7 @@ export class LoginPageView {
 
   private createInputWrapper(labelContent: string, inputElementOrWrapper: HTMLElement): HTMLElement {
     const wrapper = elementCreator(document.createElement('div'), {
-      classNames: ['reg__input__wrapper', 'login-form__input-wrapper'],
+      classNames: ['form__input__wrapper', 'login-form__input-wrapper'],
     });
 
     const inputField = inputElementOrWrapper.querySelector('input') || inputElementOrWrapper;

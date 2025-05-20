@@ -39,7 +39,7 @@ export class RegistrationController {
           let modifiedElement = element;
 
           if (element.name === 'country') {
-            const wrapper = element.closest('.reg__inputs__wrapper');
+            const wrapper = element.closest('.form__inputs__wrapper');
             const postalCode = wrapper?.querySelector('input[name="postal-code"]');
 
             if (postalCode instanceof HTMLInputElement) {

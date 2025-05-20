@@ -1,12 +1,15 @@
 @use '../index' as *;
 
-.page-wrapper {
-  display: flex;
-  justify-content: center;
-  height: calc(100vh - 12rem);
-}
-
 .not-found {
+  &__page {
+    justify-content: center;
+    height: calc(100vh - 12rem);
+
+    @media (width <= 768px) {
+      height: calc(100vh - 8rem);
+    }
+  }
+
   &__content {
     display: flex;
     flex-direction: column;
@@ -47,11 +50,5 @@
     &:hover {
       background-color: var(--color-breeze);
     }
-  }
-}
-
-@media (width <= 768px) {
-  .page-wrapper {
-    height: calc(100vh - 8rem);
   }
 }
