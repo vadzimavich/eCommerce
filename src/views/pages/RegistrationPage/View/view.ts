@@ -3,6 +3,7 @@ import * as content from './constant-content';
 import * as inputsFieldContent from '../../../components/InputField/constants-content';
 import * as formInputs from '../../../../utils/form-inputs';
 import { RegistrationModel } from '../model';
+import { Modal } from '../../../../components/modal';
 
 export class RegistrationView {
   public form: HTMLFormElement;
