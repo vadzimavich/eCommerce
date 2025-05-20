@@ -2,7 +2,6 @@ import { AppModel } from '../../../models/state/AppState';
 import { LoginPageController } from './controller';
 import { LoginPageModel } from './model';
 import { LoginPageView } from './view';
-import { CustomerService } from '../../../models/services/AuthService';
 
 export class LoginPage {
   private readonly view: LoginPageView;
@@ -12,9 +11,7 @@ export class LoginPage {
     this.model = new LoginPageModel();
     this.view = new LoginPageView(this.model);
 
-    const customerService = new CustomerService();
-
-    new LoginPageController(this.model, this.view, customerService, appModel);
+    new LoginPageController(this.model, this.view, appModel);
     // this.controller = new LoginPageController(this.model, this.view, customerService, appModel);
   }
 

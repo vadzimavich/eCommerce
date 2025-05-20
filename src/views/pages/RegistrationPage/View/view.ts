@@ -3,7 +3,7 @@ import * as content from './constant-content';
 import * as inputsFieldContent from '../../../components/InputField/constants-content';
 import * as formInputs from '../../../../utils/form-inputs';
 import { RegistrationModel } from '../model';
-import { Modal } from '../../../../components/modal';
+import { Modal } from '../../../../components/popup';
 
 export class RegistrationView {
   public form: HTMLFormElement;
@@ -46,7 +46,7 @@ export class RegistrationView {
     this.inputBillCity = formInputs.createInputCity('billing-city');
     this.inputBillStreet = formInputs.createInputStreet('billing-street');
     this.inputBillPostCode = formInputs.createInputPostalCode('billing-postal-code');
-    this.popup = new Modal();
+    this.popup = Modal.getInstance();
   }
 
   public render(): HTMLElement {

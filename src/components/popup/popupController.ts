@@ -1,4 +1,4 @@
-import { ModalView } from './modalView';
+import { ModalView } from './popupView';
 
 export class ModalController {
   constructor(private readonly view: ModalView) {

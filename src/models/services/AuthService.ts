@@ -10,6 +10,7 @@ import { createApiBuilderFromCtpClient, CustomerSignInResult } from '@commerceto
 import type { CustomerDraftBody, CustomerLoginData } from '../types/api-types';
 
 export class CustomerService {
+  private static instance: CustomerService;
   private readonly projectKey = getEnvironmentValue('CTP_PROJECT_KEY');
   private readonly authUrl = getEnvironmentValue('CTP_AUTH_URL');
   private readonly clientId = getEnvironmentValue('CTP_CLIENT_ID');
@@ -44,6 +45,13 @@ export class CustomerService {
     ).withProjectKey({ projectKey: this.projectKey });
 
     this.currentClient = this.anonymousClient;
+  }
+
+  public static getInstance(): CustomerService {
+    if (!CustomerService.instance) {
+      CustomerService.instance = new CustomerService();
+    }
+    return CustomerService.instance;
   }
 
   public async registerCustomer(body: CustomerDraftBody): Promise<CustomerSignInResult | Error> {
