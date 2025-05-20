@@ -35,6 +35,7 @@ export class ModalView {
 
   public remove(): void {
     this.modal.close();
+    Array.from(this.modal.children).forEach((element) => element.remove());
     this.modal.remove();
   }
 
