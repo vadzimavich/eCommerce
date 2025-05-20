@@ -4,7 +4,9 @@ export class NotFoundView {
   private readonly container: HTMLElement;
   private readonly buttonToHome: HTMLButtonElement;
   constructor() {
-    this.container = elementCreator(document.createElement('div'), { classNames: ['page-wrapper'] });
+    this.container = elementCreator(document.createElement('div'), {
+      classNames: ['page-wrapper', 'not-found__page'],
+    });
     this.buttonToHome = elementCreator(document.createElement('button'), {
       classNames: ['button', 'not-found__button'],
       content: 'Go to HomePage',

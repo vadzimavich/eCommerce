@@ -19,7 +19,7 @@ export class RegistrationView {
   private readonly inputBillPostCode: HTMLInputElement;
   private readonly popup: Modal;
   constructor(private readonly model: RegistrationModel) {
-    this.container = elementCreator(document.createElement('section'), { classNames: ['reg'] });
+    this.container = elementCreator(document.createElement('section'), { classNames: ['page-wrapper'] });
     this.form = elementCreator(document.createElement('form'), { classNames: ['form'] });
     this.linkNavigate = elementCreator(document.createElement('a'), {
       classNames: ['navigate__link'],
@@ -114,16 +114,16 @@ export class RegistrationView {
 
   private createTitle(): void {
     const wrapper = elementCreator(document.createElement('div'), {
-      classNames: ['reg__title__wrapper'],
+      classNames: ['form__title__wrapper'],
     });
 
     const title = elementCreator(document.createElement('h1'), {
-      classNames: ['reg__title'],
+      classNames: ['form__title'],
       content: content.RegistrationContent.Title,
     });
 
     const description = elementCreator(document.createElement('p'), {
-      classNames: ['reg__description'],
+      classNames: ['form__description'],
       content: content.RegistrationContent.Description,
     });
 
@@ -145,16 +145,16 @@ export class RegistrationView {
 
   private createInputsWrapper(titleContent?: string, checkboxes?: HTMLElement): HTMLElement {
     const wrapper = elementCreator(document.createElement('section'), {
-      classNames: ['reg__subtitle__wrapper'],
+      classNames: ['form__subtitle__wrapper'],
     });
 
     const inputsWrapper = elementCreator(document.createElement('div'), {
-      classNames: ['reg__inputs__wrapper'],
+      classNames: ['form__inputs__wrapper'],
     });
 
     if (titleContent) {
       const title = elementCreator(document.createElement('h2'), {
-        classNames: ['reg__subtitle'],
+        classNames: ['form__subtitle'],
         content: titleContent,
       });
 
@@ -253,7 +253,7 @@ export class RegistrationView {
     button?: HTMLButtonElement
   ): HTMLElement {
     const wrapper = elementCreator(document.createElement('div'), {
-      classNames: ['reg__input__wrapper'],
+      classNames: ['form__input__wrapper'],
     });
 
     const labelInput = elementCreator(document.createElement('label'), {

@@ -4,7 +4,7 @@ import * as handlerField from './handler-fields';
 
 export const createInputEmail = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'email',
       type: 'email',
@@ -29,7 +29,7 @@ export const createInputEmail = (id: string): HTMLInputElement => {
 
 export const createInputPassword = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'password',
       type: 'password',
@@ -54,7 +54,7 @@ export const createInputPassword = (id: string): HTMLInputElement => {
 
 export const createInputFirstName = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'firstName',
       type: 'text',
@@ -79,7 +79,7 @@ export const createInputFirstName = (id: string): HTMLInputElement => {
 
 export const createInputLastName = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'lastName',
       type: 'text',
@@ -104,7 +104,7 @@ export const createInputLastName = (id: string): HTMLInputElement => {
 
 export const createInputBirthday = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'bday',
       type: 'date',
@@ -129,7 +129,7 @@ export const createInputBirthday = (id: string): HTMLInputElement => {
 
 export const createInputStreet = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'street',
       type: 'text',
@@ -154,7 +154,7 @@ export const createInputStreet = (id: string): HTMLInputElement => {
 
 export const createInputCity = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'city',
       type: 'text',
@@ -179,7 +179,7 @@ export const createInputCity = (id: string): HTMLInputElement => {
 
 export const createSelectCountry = (id: string, values: string[]): HTMLSelectElement => {
   const select = elementCreator(document.createElement('select'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'country',
       type: 'select',
@@ -202,7 +202,7 @@ export const createSelectCountry = (id: string, values: string[]): HTMLSelectEle
 
   select.addEventListener('change', () => {
     const value = select.value;
-    const wrapper = select.closest('.reg__inputs__wrapper');
+    const wrapper = select.closest('.form__inputs__wrapper');
 
     if (wrapper instanceof HTMLElement) {
       const postalCode = wrapper.querySelector('input[name="postal-code"]');
@@ -219,7 +219,7 @@ export const createSelectCountry = (id: string, values: string[]): HTMLSelectEle
 
 export const createInputPostalCode = (id: string): HTMLInputElement => {
   const input = elementCreator(document.createElement('input'), {
-    classNames: ['reg__input'],
+    classNames: ['form__input'],
     attributes: {
       name: 'postal-code',
       type: 'text',
@@ -234,7 +234,7 @@ export const createInputPostalCode = (id: string): HTMLInputElement => {
   input.addEventListener('input', () => {
     const value = input.value;
 
-    const wrapper = input.closest('.reg__inputs__wrapper');
+    const wrapper = input.closest('.form__inputs__wrapper');
     if (wrapper instanceof HTMLElement) {
       const county = wrapper.querySelector('select[name="country"]');
       if (county instanceof HTMLSelectElement) {

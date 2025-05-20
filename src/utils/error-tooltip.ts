@@ -2,7 +2,7 @@ import { HandlerInputFieldResult } from '../models/types/common-types';
 import { elementCreator } from './dom-helpers';
 
 const addErrorTooltip = (input: HTMLInputElement, message: string): void => {
-  const wrapper = input.closest('.reg__input__wrapper');
+  const wrapper = input.closest('.form__input__wrapper');
 
   if (wrapper instanceof HTMLElement) {
     const lastChildIndex = wrapper.children.length;
@@ -18,7 +18,7 @@ const addErrorTooltip = (input: HTMLInputElement, message: string): void => {
 };
 
 const removeErrorTooltip = (input: HTMLInputElement): void => {
-  const wrapper = input.closest('.reg__input__wrapper');
+  const wrapper = input.closest('.form__input__wrapper');
 
   if (wrapper instanceof HTMLElement) {
     const lastChildIndex = wrapper.children.length;
