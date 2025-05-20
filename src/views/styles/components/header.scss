@@ -1,4 +1,4 @@
-@use "../index" as *;
+@use '../index' as *;
 
 .header {
   width: 100%;
@@ -64,7 +64,7 @@
     &-cart {
       width: 2.4rem;
       height: 2.4rem;
-      mask: url("/assets/icons/header-icons/header-cart.svg") no-repeat center;
+      mask: url('/assets/icons/header-icons/header-cart.svg') no-repeat center;
 
       &:hover {
         background-color: var(--color-breeze);
@@ -74,7 +74,7 @@
     &-logout {
       width: 2rem;
       height: 2rem;
-      mask: url("/assets/icons/header-icons/header-logout.svg") no-repeat center;
+      mask: url('/assets/icons/header-icons/header-logout.svg') no-repeat center;
 
       &:hover {
         background-color: var(--color-red);
@@ -107,7 +107,7 @@
 
       &::before,
       &::after {
-        content: "";
+        content: '';
 
         position: absolute;
 

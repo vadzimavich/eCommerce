@@ -1,4 +1,4 @@
-@use "../index" as *;
+@use '../index' as *;
 
 .form {
   display: flex;
@@ -107,7 +107,7 @@
     }
   }
 
-  label[for="bill"] {
+  label[for='bill'] {
     @media (width <= 520px) {
       text-align: start;
     }
@@ -150,13 +150,13 @@
     width: 20px;
     height: 20px;
 
-    background-image: url("../../../assets/icons/eye-off.svg");
+    background-image: url('../../../assets/icons/eye-off.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
   }
 
   &__button-view.view {
-    background-image: url("../../../assets/icons/eye.svg");
+    background-image: url('../../../assets/icons/eye.svg');
   }
 }
