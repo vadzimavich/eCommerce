@@ -1,5 +1,5 @@
-import { ModalController } from './popupController';
-import { ModalView } from './popupView';
+import { ModalController } from './modalController';
+import { ModalView } from './modalView';
 
 export class Modal {
   private static instance: Modal;
