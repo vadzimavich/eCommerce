@@ -114,7 +114,6 @@ export class RegistrationModel {
     if (data.isBillingDefault) {
       body.defaultBillingAddress = billingAddressIndex;
     }
-
     return body;
   }
 
