@@ -13,7 +13,8 @@ export class Header {
     this.view = new HeaderView(this.appModel, this.model);
   }
   public render(): HTMLElement {
+    const headerElement = this.view.render();
     new HeaderController(this.appModel, this.model, this.view);
-    return this.view.render();
+    return headerElement;
   }
 }

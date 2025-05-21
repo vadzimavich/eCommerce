@@ -68,15 +68,16 @@ export class HeaderView {
   public updateCurrentUserState(): void {
     const singInSignUpItems = this.getSignInSignUpItems();
     const user = this.appModel.getCurrentUser();
+    console.log(singInSignUpItems);
     if (!user) {
       singInSignUpItems.forEach((item) => item.classList.remove('hidden'));
       this.logoutIconAnchor.classList.add('hidden');
       this.currentUserAnchor.classList.add('hidden');
-      return;
+    } else {
+      singInSignUpItems.forEach((item) => item.classList.add('hidden'));
+      this.currentUserAnchor.classList.remove('hidden');
+      this.logoutIconAnchor.classList.remove('hidden');
     }
-    singInSignUpItems.forEach((item) => item.classList.add('hidden'));
-    this.currentUserAnchor.classList.remove('hidden');
-    this.logoutIconAnchor.classList.remove('hidden');
   }
 
   public updateViewActivePage(): void {
@@ -224,6 +225,7 @@ export class HeaderView {
 
     for (let i = elements.length - 1; i >= 0 && elementsLiArray.length < coinElementsForHidden; i--) {
       const element = elements[i];
+      console.log(element);
       if (element instanceof HTMLElement) {
         elementsLiArray.push(element);
       }
