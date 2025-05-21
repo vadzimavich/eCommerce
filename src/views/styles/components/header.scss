@@ -12,7 +12,7 @@
     justify-content: space-between;
 
     height: 6rem;
-    padding: 0 2rem;
+    padding: 0 3rem;
     border-radius: 999.9rem;
 
     background: var(--color-white);
@@ -40,18 +40,9 @@
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--color-breeze);
+    text-align: center;
     word-break: break-all;
     overflow-wrap: break-word;
-  }
-
-  &__logout {
-    &.visible {
-      display: flex;
-    }
-
-    &:not(.visible) {
-      display: none;
-    }
   }
 
   &__icon {
@@ -188,12 +179,16 @@
   }
 }
 
+.hidden {
+  display: none;
+}
+
 @media (width <= 768px) {
   .header {
-    padding: 1rem 3rem;
+    padding: 3rem;
 
     &__wrapper {
-      padding: 0;
+      padding: 0 3rem;
       background: none;
       box-shadow: none;
     }

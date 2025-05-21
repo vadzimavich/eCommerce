@@ -65,15 +65,17 @@ export class HeaderView {
   }
 
   public updateCurrentUserState(): void {
+    const singInSignUpItems = this.getSignInSignUpItems();
     const user = this.appModel.getCurrentUser();
     if (!user) {
-      this.logoutIconAnchor.classList.remove('visible');
+      singInSignUpItems.forEach((item) => item.classList.remove('hidden'));
+      this.logoutIconAnchor.classList.add('hidden');
       this.currentUserHead.textContent = '';
       return;
     }
-
+    singInSignUpItems.forEach((item) => item.classList.add('hidden'));
     this.currentUserHead.textContent = user;
-    this.logoutIconAnchor.classList.add('visible');
+    this.logoutIconAnchor.classList.remove('hidden');
   }
 
   public updateViewActivePage(): void {
@@ -154,9 +156,7 @@ export class HeaderView {
         content: item.label,
         attributes: { 'data-route': item.route, href: `#${item.route}` },
       });
-      // if (index === 0) {
-      //   anchorItem.classList.add('active');
-      // }
+
       navListItem.append(anchorItem);
       navList.append(navListItem);
     });
@@ -199,5 +199,24 @@ export class HeaderView {
     });
     this.buttonBM.append(dot);
     return this.buttonBM;
+  }
+
+  private getSignInSignUpItems(): HTMLElement[] {
+    const coinElementsForHidden = 2;
+    const container = this.navContainer?.children[0];
+
+    if (!(container instanceof HTMLElement)) return [];
+
+    const elements = Array.from(container.children);
+    const elementsLiArray: HTMLElement[] = [];
+
+    for (let i = elements.length - 1; i >= 0 && elementsLiArray.length < coinElementsForHidden; i--) {
+      const element = elements[i];
+      if (element instanceof HTMLElement) {
+        elementsLiArray.push(element);
+      }
+    }
+
+    return elementsLiArray;
   }
 }
