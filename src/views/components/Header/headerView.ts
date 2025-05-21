@@ -7,7 +7,7 @@ export class HeaderView {
   private readonly navContainer: HTMLElement;
   private readonly logoContainer: HTMLElement;
   private readonly cartIconAnchor: HTMLAnchorElement;
-  private readonly currentUserHead: HTMLElement;
+  private readonly currentUserAnchor: HTMLElement;
   private readonly logoutIconAnchor: HTMLAnchorElement;
   private readonly buttonBM: HTMLButtonElement;
 
@@ -22,8 +22,9 @@ export class HeaderView {
       classNames: ['header__icon', 'header__icon-cart'],
       attributes: { 'data-route': '/cart', href: '#/cart', title: 'cart' },
     });
-    this.currentUserHead = elementCreator(document.createElement('span'), {
-      classNames: ['header__user', 'nav-user__user'],
+    this.currentUserAnchor = elementCreator(document.createElement('a'), {
+      classNames: ['header__icon', 'header__icon-account'],
+      attributes: { 'data-route': '/my-account', href: '#/my-account', title: 'my-account' },
     });
     this.logoutIconAnchor = elementCreator(document.createElement('a'), {
       classNames: ['header__icon', 'header__logout', 'header__icon-logout'],
@@ -53,7 +54,7 @@ export class HeaderView {
   }
 
   public getCurentUserHead(): HTMLElement {
-    return this.currentUserHead;
+    return this.currentUserAnchor;
   }
 
   public getLogoutAnchor(): HTMLAnchorElement {
@@ -70,11 +71,11 @@ export class HeaderView {
     if (!user) {
       singInSignUpItems.forEach((item) => item.classList.remove('hidden'));
       this.logoutIconAnchor.classList.add('hidden');
-      this.currentUserHead.textContent = '';
+      this.currentUserAnchor.classList.add('hidden');
       return;
     }
     singInSignUpItems.forEach((item) => item.classList.add('hidden'));
-    this.currentUserHead.textContent = user;
+    this.currentUserAnchor.classList.remove('hidden');
     this.logoutIconAnchor.classList.remove('hidden');
   }
 
@@ -147,6 +148,7 @@ export class HeaderView {
     const userItem = elementCreator(document.createElement('ul'), { classNames: ['header__nav-user'] });
     const cart = this.buildCartElement();
     const logout = this.buildLogoutElement();
+    const account = this.buildUserAccountElement();
 
     items.forEach((item) => {
       const navListItem = elementCreator(document.createElement('li'), {
@@ -161,7 +163,7 @@ export class HeaderView {
       navList.append(navListItem);
     });
 
-    userItem.append(cart, this.currentUserHead, logout);
+    userItem.append(cart, account, logout);
     this.navContainer.append(navList, userItem);
   }
 
@@ -177,7 +179,7 @@ export class HeaderView {
   private buildLogoutElement(): HTMLElement {
     const iconLogout = elementCreator(document.createElement('svg'), {
       classNames: ['header__logout-icon', 'header__icon', 'header__icon-logout'],
-      attributes: {},
+      attributes: { alt: 'logout-icon' },
     });
 
     this.logoutIconAnchor.append(iconLogout);
@@ -191,6 +193,16 @@ export class HeaderView {
     const buttonBM = this.buildButtonBm();
     headerWrapper.append(logo, this.navContainer, buttonBM);
     return headerWrapper;
+  }
+
+  private buildUserAccountElement(): HTMLElement {
+    const iconLogout = elementCreator(document.createElement('svg'), {
+      classNames: ['header__logout-icon', 'header__icon', 'header__icon-account'],
+      attributes: { alt: 'account-icon' },
+    });
+
+    this.currentUserAnchor.append(iconLogout);
+    return this.currentUserAnchor;
   }
 
   private buildButtonBm(): HTMLButtonElement {

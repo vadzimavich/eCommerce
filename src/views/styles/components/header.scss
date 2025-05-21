@@ -34,6 +34,8 @@
   }
 
   &__user {
+    gap: $gap-middle;
+
     width: 100%;
     max-width: 5rem;
 
@@ -63,12 +65,22 @@
     }
 
     &-logout {
-      width: 2rem;
-      height: 2rem;
+      width: 2.2rem;
+      height: 2.2rem;
       mask: url('/assets/icons/header-icons/header-logout.svg') no-repeat center;
 
       &:hover {
         background-color: var(--color-red);
+      }
+    }
+
+    &-account {
+      width: 2.2rem;
+      height: 2.2rem;
+      mask: url('/assets/icons/header-icons/header-account.svg') no-repeat center;
+
+      &:hover {
+        background-color: var(--color-breeze);
       }
     }
   }
@@ -166,9 +178,8 @@
 
   &-user {
     display: flex;
-    gap: $gap-small;
+    gap: $gap-big;
     align-items: center;
-    margin-left: $gap-middle;
 
     .nav-user__cart-wrapper,
     .nav-user__logout-wrapper {
