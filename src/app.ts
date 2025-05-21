@@ -12,6 +12,7 @@ import type { Routes } from './models/types/router-types';
 import { Header } from './views/components/Header';
 import { NotFoundPage } from './views/pages/NotFoundPage';
 import { HeaderModel } from './views/components/Header/headerModel';
+import { ProfilePage } from './views/pages/ProfilePage';
 
 class App {
   public readonly route: Router;
@@ -36,6 +37,7 @@ class App {
       '/sign-up': RegistrationPage,
       '/not-found': NotFoundPage,
       '/cart': CartPage,
+      '/my-account': ProfilePage,
     };
 
     this.route = new Router(routes, mainContainer, appModel);
