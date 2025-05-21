@@ -11,7 +11,7 @@ export class HeaderController {
     private readonly model: HeaderModel,
     private readonly view: HeaderView
   ) {
-    this.service = new CustomerService();
+    this.service = CustomerService.getInstance();
     this.addEventListeners();
     this.handleCurrentUserHead();
     this.handleCurrentPage();

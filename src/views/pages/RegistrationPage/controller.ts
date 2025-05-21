@@ -11,7 +11,7 @@ export class RegistrationController {
     private readonly model: RegistrationModel,
     private readonly view: RegistrationView
   ) {
-    this.service = new CustomerService();
+    this.service = CustomerService.getInstance();
     this.handlerSubmitForm();
     this.navigateToSingIn();
     this.handlerViewPassword();

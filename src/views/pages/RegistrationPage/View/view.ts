@@ -46,7 +46,7 @@ export class RegistrationView {
     this.inputBillCity = formInputs.createInputCity('billing-city');
     this.inputBillStreet = formInputs.createInputStreet('billing-street');
     this.inputBillPostCode = formInputs.createInputPostalCode('billing-postal-code');
-    this.popup = new Modal();
+    this.popup = Modal.getInstance();
   }
 
   public render(): HTMLElement {

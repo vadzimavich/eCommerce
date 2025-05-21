@@ -6,12 +6,13 @@ import { route } from '../../../app';
 import { CustomerSignInResult } from '@commercetools/platform-sdk';
 
 export class LoginPageController {
+  private readonly customerService: CustomerService;
   constructor(
     private readonly model: LoginPageModel,
     private readonly view: LoginPageView,
-    private readonly customerService: CustomerService,
     private readonly appModel: AppModel
   ) {
+    this.customerService = CustomerService.getInstance();
     this.attachInputListeners();
     this.attachFormSubmitListener();
     this.attachNavigationListeners();
