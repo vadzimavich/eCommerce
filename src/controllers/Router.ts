@@ -47,7 +47,12 @@ export class Router {
     const isAuthorized = this.appModel.getCurrentUser();
     // тут проверка на проперти нужна так как этот
     if (!isPublic && !isAuthorized && this.routes.hasOwnProperty(path)) {
-      this.navigate('/home');
+      if (path === '/my-account') {
+        this.navigate('/sign-in');
+      } else {
+        this.navigate('/home');
+      }
+
       return;
     }
 

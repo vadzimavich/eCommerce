@@ -12,7 +12,7 @@
     justify-content: space-between;
 
     height: 6rem;
-    padding: 0 2rem;
+    padding: 0 3rem;
     border-radius: 999.9rem;
 
     background: var(--color-white);
@@ -34,24 +34,17 @@
   }
 
   &__user {
+    gap: $gap-middle;
+
     width: 100%;
     max-width: 5rem;
 
     font-size: 1.2rem;
     font-weight: 600;
     color: var(--color-breeze);
+    text-align: center;
     word-break: break-all;
     overflow-wrap: break-word;
-  }
-
-  &__logout {
-    &.visible {
-      display: flex;
-    }
-
-    &:not(.visible) {
-      display: none;
-    }
   }
 
   &__icon {
@@ -72,12 +65,22 @@
     }
 
     &-logout {
-      width: 2rem;
-      height: 2rem;
+      width: 2.2rem;
+      height: 2.2rem;
       mask: url('/assets/icons/header-icons/header-logout.svg') no-repeat center;
 
       &:hover {
         background-color: var(--color-red);
+      }
+    }
+
+    &-account {
+      width: 2.2rem;
+      height: 2.2rem;
+      mask: url('/assets/icons/header-icons/header-account.svg') no-repeat center;
+
+      &:hover {
+        background-color: var(--color-breeze);
       }
     }
   }
@@ -175,9 +178,8 @@
 
   &-user {
     display: flex;
-    gap: $gap-small;
+    gap: $gap-big;
     align-items: center;
-    margin-left: $gap-middle;
 
     .nav-user__cart-wrapper,
     .nav-user__logout-wrapper {
@@ -188,12 +190,16 @@
   }
 }
 
+.hidden {
+  display: none;
+}
+
 @media (width <= 768px) {
   .header {
-    padding: 1rem 3rem;
+    padding: 3rem;
 
     &__wrapper {
-      padding: 0;
+      padding: 0 3rem;
       background: none;
       box-shadow: none;
     }
