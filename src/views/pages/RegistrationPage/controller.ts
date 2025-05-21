@@ -34,42 +34,24 @@ export class RegistrationController {
 
   private handlerElementsForm(): void {
     Array.from(this.view.form.elements).forEach((element) => {
-      if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
-        if (element.required === true) {
-          let modifiedElement = element;
-
-          if (element.name === 'country') {
-            const wrapper = element.closest('.form__inputs__wrapper');
-            const postalCode = wrapper?.querySelector('input[name="postal-code"]');
-
-            if (postalCode instanceof HTMLInputElement) {
-              modifiedElement = postalCode;
-              element.addEventListener('change', () => {
-                this.model.updateData(modifiedElement);
-              });
-            }
-          } else {
-            element.addEventListener('input', () => {
-              this.model.updateData(modifiedElement);
-            });
-          }
-          this.model.updateData(element);
+      if ((element instanceof HTMLInputElement || element instanceof HTMLSelectElement) && element.required) {
+        let eventType: 'input' | 'change';
+        if (element instanceof HTMLSelectElement) {
+          eventType = 'change';
+        } else if (element.type === 'checkbox') {
+          eventType = 'change';
+        } else {
+          eventType = 'input';
         }
+
+        element.addEventListener(eventType, () => {
+          this.model.updateData(element);
+        });
+
+        this.model.updateData(element);
       }
     });
   }
-
-  // private handlerSubmitForm(): void {
-  //   const form = this.view.form;
-
-  //   form.addEventListener('submit', (event: SubmitEvent) => {
-  //     event.preventDefault();
-  //     const currentUser = this.model.getDataForm()['first-name'];
-  //     this.appModel.setCurrentUser(currentUser);
-  //     console.log('getDataForm', this.model.getDataForm());
-  //     route.navigate('/home');
-  //   });
-  // }
 
   private handlerSubmitForm(): void {
     const form = this.view.form;

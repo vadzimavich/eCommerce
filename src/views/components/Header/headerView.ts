@@ -68,7 +68,6 @@ export class HeaderView {
   public updateCurrentUserState(): void {
     const singInSignUpItems = this.getSignInSignUpItems();
     const user = this.appModel.getCurrentUser();
-    console.log(singInSignUpItems);
     if (!user) {
       singInSignUpItems.forEach((item) => item.classList.remove('hidden'));
       this.logoutIconAnchor.classList.add('hidden');
@@ -225,7 +224,6 @@ export class HeaderView {
 
     for (let i = elements.length - 1; i >= 0 && elementsLiArray.length < coinElementsForHidden; i--) {
       const element = elements[i];
-      console.log(element);
       if (element instanceof HTMLElement) {
         elementsLiArray.push(element);
       }
