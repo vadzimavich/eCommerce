@@ -42,7 +42,7 @@ export class Router {
     }
 
     if (isAuthorized && (path === '/sign-in' || path === '/sign-up')) {
-      this.navigate('/my-account');
+      this.navigate('/home');
       return;
     }
 
