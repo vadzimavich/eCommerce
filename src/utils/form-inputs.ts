@@ -1,5 +1,6 @@
 import { elementCreator } from './dom-helpers';
 import { updateTooltip } from './error-tooltip';
+import { getCurrentDateInStringFormat } from './formatters';
 import * as handlerField from './handler-fields';
 
 export const createInputEmail = (id: string): HTMLInputElement => {
@@ -110,6 +111,7 @@ export const createInputBirthday = (id: string): HTMLInputElement => {
       type: 'date',
       id: id,
       min: '1900-01-01',
+      max: getCurrentDateInStringFormat(),
       autocomplete: 'bday',
       'data-correct': 'false',
       required: '',
