@@ -6,7 +6,11 @@ import {
   PasswordAuthMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
-import { createApiBuilderFromCtpClient, CustomerSignInResult } from '@commercetools/platform-sdk';
+import {
+  ByProjectKeyRequestBuilder,
+  createApiBuilderFromCtpClient,
+  CustomerSignInResult,
+} from '@commercetools/platform-sdk';
 import type { CustomerDraftBody, CustomerLoginData } from '../types/api-types';
 
 export class CustomerService {
@@ -18,7 +22,6 @@ export class CustomerService {
   private readonly scopes = getEnvironmentValue('CTP_SCOPES').split(' ');
   private readonly apiUrl = getEnvironmentValue('CTP_API_URL');
   private readonly httpMiddlewareOptions: HttpMiddlewareOptions;
-  private readonly anonymousClient;
   private currentClient;
   constructor() {
     this.httpMiddlewareOptions = {
@@ -26,25 +29,7 @@ export class CustomerService {
       fetch,
     };
 
-    const authMiddlewareOptions: AuthMiddlewareOptions = {
-      host: this.authUrl,
-      projectKey: this.projectKey,
-      credentials: {
-        clientId: this.clientId,
-        clientSecret: this.clientSecret,
-      },
-      scopes: this.scopes,
-      fetch,
-    };
-
-    this.anonymousClient = createApiBuilderFromCtpClient(
-      new ClientBuilder()
-        .withAnonymousSessionFlow(authMiddlewareOptions)
-        .withHttpMiddleware(this.httpMiddlewareOptions)
-        .build()
-    ).withProjectKey({ projectKey: this.projectKey });
-
-    this.currentClient = this.anonymousClient;
+    this.currentClient = this.createAnonymousClient();
   }
 
   public static getInstance(): CustomerService {
@@ -56,7 +41,7 @@ export class CustomerService {
 
   public async registerCustomer(body: CustomerDraftBody): Promise<CustomerSignInResult | Error> {
     try {
-      await this.anonymousClient.me().signup().post({ body }).execute();
+      await this.currentClient.me().signup().post({ body }).execute();
       return this.loginCustomer({ email: body.email, password: body.password });
     } catch (error) {
       if (error instanceof Error) return error;
@@ -98,7 +83,27 @@ export class CustomerService {
   }
 
   public logoutCustomer(): void {
-    this.currentClient = this.anonymousClient;
+    this.currentClient = this.createAnonymousClient();
     console.log('Switched to anonymous session');
+  }
+
+  private createAnonymousClient(): ByProjectKeyRequestBuilder {
+    const authMiddlewareOptions: AuthMiddlewareOptions = {
+      host: this.authUrl,
+      projectKey: this.projectKey,
+      credentials: {
+        clientId: this.clientId,
+        clientSecret: this.clientSecret,
+      },
+      scopes: this.scopes,
+      fetch,
+    };
+
+    return createApiBuilderFromCtpClient(
+      new ClientBuilder()
+        .withAnonymousSessionFlow(authMiddlewareOptions)
+        .withHttpMiddleware(this.httpMiddlewareOptions)
+        .build()
+    ).withProjectKey({ projectKey: this.projectKey });
   }
 }
