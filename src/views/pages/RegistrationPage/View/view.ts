@@ -244,7 +244,7 @@ export class RegistrationView {
       inputsFieldContent.AddressLabel.Postal_Code,
       this.inputBillPostCode
     );
-    inputsWrapper.append(billingStreet, billingCountry, billingCity, billingPostalCode);
+    inputsWrapper.append(billingStreet, billingCity, billingCountry, billingPostalCode);
   }
 
   private createInputWrapper(
