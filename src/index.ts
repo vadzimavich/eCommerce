@@ -1,3 +1,3 @@
-export function sum(a: number, b: number): number {
-  return a + b;
-}
+import './views/styles/main.scss';
+import './app.ts';
+import './views/styles/main.scss';

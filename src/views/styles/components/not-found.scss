@@ -1,0 +1,54 @@
+@use '../index' as *;
+
+.not-found {
+  &__page {
+    justify-content: center;
+    height: calc(100vh - 12rem);
+
+    @media (width <= 768px) {
+      height: calc(100vh - 8rem);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-big;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 3rem;
+  }
+
+  &__title {
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 8rem;
+    color: var(--color-dark-blue);
+  }
+
+  &__subtitle {
+    font-size: 1.6rem;
+    color: var(--color-dark-blue);
+    text-align: center;
+  }
+
+  &__button {
+    width: 20rem;
+    padding: 1rem 1.5rem;
+    border-radius: $radius;
+
+    font-weight: 600;
+    color: var(--color-white);
+
+    background-color: var(--color-dark-blue);
+
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--color-breeze);
+    }
+  }
+}

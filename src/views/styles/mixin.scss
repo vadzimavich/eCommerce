@@ -1,0 +1,14 @@
+@use './variables.scss';
+
+@mixin container {
+  width: 100%;
+  max-width: 144rem;
+  margin: 0 auto;
+  padding: variables.$padding-section-vertical variables.$padding-section-horizontal;
+
+  text-align: center;
+
+  @media (width <= 520px) {
+    padding: variables.$padding-section-vertical-sm variables.$padding-section-horizontal-sm;
+  }
+}

@@ -19,6 +19,7 @@ export default [
       'eslint.config.js',
       '.commitlintrc.cjs',
       'jest.config.js',
+      'coverage/*',
     ],
   },
   {
@@ -44,7 +45,7 @@ export default [
       'prettier/prettier': 'error',
       'import/extensions': 'off',
       'prettier/prettier': 'error',
-      'max-lines-per-function': ['error', 40],
+      'max-lines-per-function': ['error', 45],
       'import/prefer-default-export': 'off',
       'no-debugger': 'off',
       'no-console': 'off',
