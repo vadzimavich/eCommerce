@@ -1,26 +1,31 @@
+import { Customer } from '@commercetools/platform-sdk';
 import { Subscriber } from '../types';
+import { REFRESH_TOKEN } from '../../controllers/AuthController';
 
 export class AppModel {
-  private currentUser: string = '';
+  private currentUser: Partial<Customer> = {};
+  private isLogined: boolean = false;
   private currentHash: string = '/';
-  private currentUserListener: Subscriber[] = [];
+  private loginStateListener: Subscriber[] = [];
   private currentPageListener: Subscriber[] = [];
 
-  public setCurrentUser(user: string): void {
-    this.currentUser = user;
-    sessionStorage.setItem('currentUser', this.currentUser);
-    this.notifyUserListener();
-  }
-
   public initUserFromSession(): void {
-    const storedUser = sessionStorage.getItem('currentUser');
+    const storedUser = sessionStorage.getItem(REFRESH_TOKEN);
     if (storedUser) {
-      this.currentUser = storedUser;
-      this.notifyUserListener();
+      this.isLogined = true;
+      this.notifyLoginStateListener();
     }
   }
 
-  public getCurrentUser(): string {
+  public getLoginState(): boolean {
+    return this.isLogined;
+  }
+
+  public setCurrentUser(user: Customer): void {
+    this.currentUser = user;
+  }
+
+  public getCurrentUser(): Partial<Customer> {
     return this.currentUser;
   }
 
@@ -28,21 +33,34 @@ export class AppModel {
     return this.currentHash;
   }
 
+  public logout(): void {
+    this.currentUser = {};
+    this.isLogined = false;
+    sessionStorage.removeItem(REFRESH_TOKEN);
+    this.notifyLoginStateListener();
+  }
+
+  public login(customer: Customer): void {
+    this.currentUser = customer;
+    this.isLogined = true;
+    this.notifyLoginStateListener();
+  }
+
   public setCurrentHash(hash: string): void {
     this.currentHash = hash;
     this.notifyCurrentPageListener();
   }
 
-  public subscribeUsersListener(callback: () => void): void {
-    this.currentUserListener.push(callback);
+  public subscribeLoginStateListener(callback: () => void): void {
+    this.loginStateListener.push(callback);
   }
 
   public subscribeCurrentPageListener(callback: () => void): void {
     this.currentPageListener.push(callback);
   }
 
-  private notifyUserListener(): void {
-    this.currentUserListener.forEach((callback) => callback());
+  private notifyLoginStateListener(): void {
+    this.loginStateListener.forEach((callback) => callback());
   }
 
   private notifyCurrentPageListener(): void {

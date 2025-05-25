@@ -34,7 +34,7 @@ export class Router {
   private loadRoute(): void {
     const path = location.hash.slice(1) || '/';
     const view = this.routes[path] || this.routes['/not-found'];
-    const isAuthorized = this.appModel.getCurrentUser();
+    const isAuthorized = this.appModel.getLoginState();
 
     if (!isAuthorized && path === '/my-account') {
       this.navigate('/sign-in');

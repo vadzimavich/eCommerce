@@ -13,6 +13,7 @@ import { Header } from './views/components/Header';
 import { NotFoundPage } from './views/pages/NotFoundPage';
 import { HeaderModel } from './views/components/Header/headerModel';
 import { ProfilePage } from './views/pages/ProfilePage';
+import { AuthController } from './controllers/AuthController';
 
 class App {
   public readonly route: Router;
@@ -41,6 +42,7 @@ class App {
     };
 
     this.route = new Router(routes, mainContainer, appModel);
+    new AuthController(appModel).checkAuthorization();
   }
 }
 

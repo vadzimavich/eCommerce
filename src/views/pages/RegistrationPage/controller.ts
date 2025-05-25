@@ -62,11 +62,8 @@ export class RegistrationController {
       const result = await this.service.registerCustomer(this.model.createCustomerSignUpBody());
 
       if (result && !(result instanceof Error)) {
-        const currentUser = result.customer.firstName;
+        this.appModel.login(result.customer);
 
-        if (currentUser) {
-          this.appModel.setCurrentUser(currentUser);
-        }
         this.view.showSuccessModal('You have successfully registered');
         route.navigate('/home');
       } else if (result instanceof Error) {
