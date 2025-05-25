@@ -1,10 +1,19 @@
-export class CatalogPage {
-  public render(): HTMLElement {
-    const container = document.createElement('div');
-    // Заглушка класс для страниц потом удалим
-    container.classList.add('plug');
-    container.innerHTML = 'catalogPage';
+import { CatalogController } from './catalogController';
+import { CatalogModel } from './catalogModel';
+import { CatalogView } from './view/catalodView';
 
-    return container;
+export class CatalogPage {
+  private readonly view: CatalogView;
+  private readonly model: CatalogModel;
+
+  constructor() {
+    this.model = new CatalogModel();
+    this.view = new CatalogView(this.model);
+  }
+
+  public render(): HTMLElement {
+    const render = this.view.render();
+    new CatalogController(this.model, this.view);
+    return render;
   }
 }
