@@ -13,9 +13,9 @@ export class HeaderController {
   ) {
     this.service = CustomerService.getInstance();
     this.addEventListeners();
-    this.handleCurrentUserHead();
+    this.handleLoginState();
     this.handleCurrentPage();
-    this.appModel.subscribeUsersListener(() => this.handleCurrentUserHead());
+    this.appModel.subscribeLoginStateListener(() => this.handleLoginState());
     this.appModel.subscribeCurrentPageListener(() => this.handleCurrentPage());
     this.model.subscribeBurgerMenuListener(() => this.view.toggleShowBurgerMenu());
   }
@@ -57,13 +57,13 @@ export class HeaderController {
   private handleLogoutClick(): void {
     const logoutContainer = this.view.getLogoutAnchor();
     logoutContainer.addEventListener('click', () => {
+      this.appModel.logout();
       this.service.logoutCustomer();
       route.navigate('/home');
-      this.appModel.setCurrentUser('');
     });
   }
 
-  private handleCurrentUserHead(): void {
+  private handleLoginState(): void {
     this.view.updateCurrentUserState();
   }
 

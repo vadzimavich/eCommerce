@@ -3,7 +3,7 @@ import { CustomerService } from '../../../models/services/AuthService';
 import { LoginPageModel } from './model';
 import { LoginPageView } from './view';
 import { route } from '../../../app';
-import { CustomerSignInResult } from '@commercetools/platform-sdk';
+// import { CustomerSignInResult } from '@commercetools/platform-sdk';
 
 export class LoginPageController {
   private readonly customerService: CustomerService;
@@ -52,14 +52,9 @@ export class LoginPageController {
       this.view.submitButton.disabled = true;
     }
     try {
-      const signInResult: CustomerSignInResult | Error = await this.customerService.loginCustomer(loginData);
+      const signInResult = await this.customerService.loginCustomer(loginData);
       if (signInResult && !(signInResult instanceof Error)) {
-        const userName = signInResult.customer.firstName || signInResult.customer.email;
-        if (userName) {
-          this.appModel.setCurrentUser(userName);
-        } else {
-          this.appModel.setCurrentUser('Authenticated User');
-        }
+        this.appModel.login(signInResult.customer);
         route.navigate('/');
       }
     } catch (error) {

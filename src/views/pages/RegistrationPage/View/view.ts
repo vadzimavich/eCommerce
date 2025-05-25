@@ -89,7 +89,6 @@ export class RegistrationView {
 
   public updateBillingFields(): void {
     const formData = this.model.getDataForm();
-    console.log(formData);
     this.inputBillStreet.value = formData['billing-street'];
     this.inputBillCountry.value = formData['billing-country'];
     this.inputBillCity.value = formData['billing-city'];
