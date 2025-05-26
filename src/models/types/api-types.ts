@@ -51,3 +51,15 @@ export type ErrorResponse = {
   message?: string;
   statusCode?: number;
 };
+
+export type ProductData = {
+  id: string;
+  title: string;
+  description: string;
+  price?: number;
+  discountPrice?: number;
+  image?: string;
+  ecoScale?: string;
+  sku?: string;
+  slug?: string;
+};
