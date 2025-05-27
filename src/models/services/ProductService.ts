@@ -1,24 +1,34 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import type { ProductProjection } from '@commercetools/platform-sdk';
 import { CustomerService } from './AuthService';
 
-export class ProductService {
-  private static instance: ProductService;
+export class ProductsService {
+  private static instance: ProductsService;
   private readonly service = CustomerService.getInstance();
 
-  public static getInstance(): ProductService {
-    if (!ProductService.instance) {
-      ProductService.instance = new ProductService();
+  public static getInstance(): ProductsService {
+    if (!ProductsService.instance) {
+      ProductsService.instance = new ProductsService();
     }
-    return ProductService.instance;
+    return ProductsService.instance;
   }
 
-  public async getProduct(idProduct: string): Promise<ProductProjection | Error> {
+  public async getAllProducts(): Promise<ProductProjection[] | Error> {
     try {
-      const response = await this.service.currentClient.productProjections().withId({ ID: idProduct }).get().execute();
-      return response.body;
+      const response = await this.service.getCurrentClient().productProjections().get().execute();
+      return response.body.results;
     } catch (error) {
       if (error instanceof Error) return error;
-      return new Error('Unknown error');
+      return new Error('Unknown registration error');
     }
+  }
+
+  public async getProductById(productId: string): Promise<ProductProjection> {
+    const response = await this.service
+      .getCurrentClient()
+      .productProjections()
+      .withId({ ID: productId })
+      .get()
+      .execute();
+    return response.body;
   }
 }
