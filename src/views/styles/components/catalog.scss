@@ -1,6 +1,6 @@
 @use '../index' as *;
 
-.catalog-right {
+.catalog-right__products {
   display: flex;
   flex-wrap: wrap;
   gap: $gap-big;

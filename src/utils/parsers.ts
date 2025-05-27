@@ -2,9 +2,7 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 import { ProductData } from '../models/types/api-types';
 
 export function parseProduct(rawProduct: ProductProjection): ProductData {
-  const titleAttribute = rawProduct.masterVariant.attributes?.find((attribute) => attribute.name === 'title');
-  const title = titleAttribute?.value?.['en-US'] || 'No title';
-
+  const title = rawProduct.name?.['en-US'] || 'No title';
   const description = rawProduct.description?.['en-US'] || 'No description';
 
   const priceCents = rawProduct.masterVariant.prices?.[0]?.value?.centAmount;

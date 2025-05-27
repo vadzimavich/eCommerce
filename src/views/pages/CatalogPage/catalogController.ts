@@ -14,11 +14,12 @@ export class CatalogController {
     this.service = ProductsService.getInstance();
     console.log(this.service.getAllProducts());
     this.initProducts();
+    this.handlerProductsContainer();
 
     this.model.subscribeProductsListener(() => this.handlerProducts());
   }
 
-  public async initProducts(): Promise<void> {
+  private async initProducts(): Promise<void> {
     try {
       const resultProducts = await this.service.getAllProducts();
 
@@ -29,6 +30,23 @@ export class CatalogController {
     } catch (error) {
       console.error('Error loading products', error);
     }
+  }
+
+  private handlerProductsContainer(): void {
+    const container = this.productsView.getProductsContainer();
+
+    container.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target;
+
+      if (target instanceof HTMLElement) {
+        const card = target.closest('.product-card');
+
+        if (card instanceof HTMLElement) {
+          const cardId = card.getAttribute('data-id');
+          console.log(cardId);
+        }
+      }
+    });
   }
 
   private handlerProducts(): void {
