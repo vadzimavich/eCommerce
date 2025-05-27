@@ -13,7 +13,15 @@
   --color-error-tooltip-bg: #fff4ea;
   --color-error-tooltip-border: #fee9d6;
   --color-error-tooltip-text: #f67804;
+  --color-card-title: #3c4563;
+  --color-card-desc: #7c8191;
+  --color-card-price: #313131;
+  --color-card-price-discount: red;
+  --color-card-button: #0c99ac;
+  --color-card-background: #fff;
 }
+
+$box-shadow: 0 4px 16px var(--color-shadow);
 
 $padding-section-horizontal: 60px;
 $padding-section-vertical: 30px;
