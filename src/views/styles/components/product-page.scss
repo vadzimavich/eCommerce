@@ -45,6 +45,12 @@
       }
     }
 
+    &__attributes {
+      display: flex;
+      flex-direction: column;
+      gap: $gap-middle;
+    }
+
     &__img {
       cursor: pointer;
     }
@@ -70,6 +76,7 @@
 
   &__price {
     font-size: 1.2em;
+    font-weight: 600;
   }
 
   &__discount {

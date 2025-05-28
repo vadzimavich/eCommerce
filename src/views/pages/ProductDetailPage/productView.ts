@@ -59,14 +59,19 @@ export class ProductView {
     wrapper.append(title);
 
     this.createDescription(wrapper);
-    this.createEcoClass(wrapper);
 
-    wrapper.append(this.createPriceWrapper());
+    const wrapperAttributes = elementCreator(document.createElement('div'), {
+      classNames: ['product__wrapper__attributes'],
+    });
+    this.createAttribute(wrapperAttributes, 'eco-class');
+    this.createAttribute(wrapperAttributes, 'color');
+
+    wrapper.append(wrapperAttributes, this.createPriceWrapper());
     return wrapper;
   }
 
-  private createEcoClass(wrapper: HTMLDivElement): void {
-    const content = this.model.dataProduct?.attributes?.filter((item) => item.name === 'eco-class');
+  private createAttribute(wrapper: HTMLDivElement, attributeName: string): void {
+    const content = this.model.dataProduct?.attributes?.filter((item) => item.name === attributeName);
 
     if (content) {
       const wrapperContent = elementCreator(document.createElement('div'), {
@@ -75,12 +80,22 @@ export class ProductView {
 
       const key = elementCreator(document.createElement('span'), {
         classNames: ['product__content__key'],
-        content: 'Eco-class: ',
+        content: `${attributeName[0].toUpperCase() + attributeName.slice(1)}: `,
       });
+
+      let valueContent: string;
+
+      if (typeof content[0].value === 'object') {
+        valueContent = content[0].value.label['en-US'];
+      } else {
+        valueContent = content[0].value;
+      }
+
+      console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
 
       const value = elementCreator(document.createElement('span'), {
         classNames: ['product__content__value'],
-        content: content[0].value.label['en-US'].toUpperCase(),
+        content: valueContent,
       });
 
       wrapperContent.append(key, value);
