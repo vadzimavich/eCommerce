@@ -2,9 +2,13 @@ import { elementCreator } from '../../../../utils/dom-helpers';
 import { ProductCard } from '../../../../utils/product-card';
 import { CatalogModel } from '../catalogModel';
 
+import { sortOptions, sortValues } from '../../../components/InputField/constants-content';
+import { createSelectCatalogSort } from '../../../../utils/form-inputs';
+
 export class ProductsView {
   private readonly container: HTMLElement;
   private readonly productsContainer: HTMLElement;
+  private readonly sortSelect: HTMLSelectElement;
 
   constructor(private readonly model: CatalogModel) {
     this.container = elementCreator(document.createElement('div'), {
@@ -13,11 +17,13 @@ export class ProductsView {
     this.productsContainer = elementCreator(document.createElement('div'), {
       classNames: ['catalog-right__products'],
     });
+    this.sortSelect = createSelectCatalogSort('billing-country', sortOptions, sortValues);
   }
 
   public render(): HTMLElement {
     this.renderCards();
-    this.container.append(this.productsContainer);
+    const sortContainer = this.buildSortItemsContainer();
+    this.container.append(sortContainer, this.productsContainer);
     return this.container;
   }
 
@@ -36,5 +42,13 @@ export class ProductsView {
       const card = new ProductCard(product).create();
       this.productsContainer.appendChild(card);
     });
+  }
+
+  private buildSortItemsContainer(): HTMLElement {
+    const container = elementCreator(document.createElement('div'), {
+      classNames: ['catalog-right__sort'],
+    });
+    container.appendChild(this.sortSelect);
+    return container;
   }
 }

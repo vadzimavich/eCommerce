@@ -14,7 +14,11 @@ export class ProductsService {
 
   public async getAllProducts(): Promise<ProductProjection[] | Error> {
     try {
-      const response = await this.service.getCurrentClient().productProjections().get().execute();
+      const response = await this.service
+        .getCurrentClient()
+        .productProjections()
+        .get({ queryArgs: { sort: 'name.en-Us ' } })
+        .execute();
       return response.body.results;
     } catch (error) {
       if (error instanceof Error) return error;

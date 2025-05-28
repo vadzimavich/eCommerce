@@ -250,3 +250,28 @@ export const createInputPostalCode = (id: string): HTMLInputElement => {
 
   return input;
 };
+
+export const createSelectCatalogSort = (id: string, optoins: string[], values: string[]): HTMLSelectElement => {
+  const select = elementCreator(document.createElement('select'), {
+    classNames: ['form__input'],
+    attributes: {
+      name: 'country',
+      type: 'select',
+      id: id,
+      'data-correct': 'true',
+      required: '',
+    },
+  });
+
+  optoins.forEach((item, index) => {
+    const option = elementCreator(document.createElement('option'), {
+      attributes: {
+        value: values[index],
+      },
+      content: item[0].toUpperCase() + item.slice(1),
+    });
+
+    select.append(option);
+  });
+  return select;
+};
