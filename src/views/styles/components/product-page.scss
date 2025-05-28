@@ -1,0 +1,55 @@
+@use '../index' as *;
+
+.product {
+  height: calc(100vh - 12rem);
+
+  &__wrapper {
+    display: flex;
+    gap: $gap-big;
+
+    width: 100%;
+    padding: 3rem;
+    border-radius: $radius;
+
+    background-color: var(--color-bg-modal);
+
+    &__desc {
+      display: flex;
+      flex-direction: column;
+      gap: $gap-middle;
+      width: 50%;
+
+      > * {
+        padding: 0.5em;
+      }
+    }
+
+    &__price {
+      display: flex;
+      gap: $gap-small;
+      text-align: left;
+    }
+
+    &__images {
+      overflow: hidden;
+      display: flex;
+
+      width: 50%;
+      border-radius: $radius;
+
+      box-shadow: 0 0 1px 0 var(--color-shadow);
+    }
+  }
+
+  &__title {
+    border-bottom: 0.1em solid var(--color-border-input);
+  }
+
+  &__price {
+    font-size: 1.2em;
+  }
+
+  &__discount {
+    font-size: 1.5em;
+  }
+}

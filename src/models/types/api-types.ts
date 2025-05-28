@@ -58,7 +58,9 @@ export type ProductData = {
   description: string;
   price?: number;
   discountPrice?: number;
+  currency?: string;
   image?: string;
+  images?: string[];
   ecoScale?: string;
   sku?: string;
   slug?: string;

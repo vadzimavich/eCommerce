@@ -53,16 +53,6 @@
       display: flex;
       gap: $gap-small;
       align-items: center;
-
-      .price-old {
-        color: var(--color-card-price);
-        text-decoration: line-through;
-      }
-
-      .price-new {
-        font-weight: bold;
-        color: var(--color-card-price-discount);
-      }
     }
 
     &-btn {
