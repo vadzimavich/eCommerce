@@ -1,3 +1,5 @@
+import { Attribute } from '@commercetools/platform-sdk';
+
 export type CustomerAddress = {
   streetName: string;
   postalCode: string;
@@ -64,4 +66,5 @@ export type ProductData = {
   ecoScale?: string;
   sku?: string;
   slug?: string;
+  attributes?: Attribute[];
 };

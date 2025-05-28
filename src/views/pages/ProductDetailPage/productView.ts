@@ -43,12 +43,12 @@ export class ProductView {
   private createWrapper(): void {
     const wrapper = elementCreator(document.createElement('div'), { classNames: ['product__wrapper'] });
 
-    wrapper.append(this.createSwiperElements(), this.createDescription());
+    wrapper.append(this.createSwiperElements(), this.createContent());
     this.container.append(wrapper);
     this.initializeSwiper();
   }
 
-  private createDescription(): HTMLDivElement {
+  private createContent(): HTMLDivElement {
     const wrapper = elementCreator(document.createElement('div'), { classNames: ['product__wrapper__desc'] });
 
     const title = elementCreator(document.createElement('h2'), {
@@ -56,13 +56,49 @@ export class ProductView {
       content: this.model.dataProduct?.title || '',
     });
 
-    const description = elementCreator(document.createElement('p'), {
-      classNames: ['product__description'],
-      content: this.model.dataProduct?.description || '',
-    });
+    wrapper.append(title);
 
-    wrapper.append(title, description, this.createPriceWrapper());
+    this.createDescription(wrapper);
+    this.createEcoClass(wrapper);
+
+    wrapper.append(this.createPriceWrapper());
     return wrapper;
+  }
+
+  private createEcoClass(wrapper: HTMLDivElement): void {
+    const content = this.model.dataProduct?.attributes?.filter((item) => item.name === 'eco-class');
+
+    if (content) {
+      const wrapperContent = elementCreator(document.createElement('div'), {
+        classNames: ['product__content__wrapper'],
+      });
+
+      const key = elementCreator(document.createElement('span'), {
+        classNames: ['product__content__key'],
+        content: 'Eco-class: ',
+      });
+
+      const value = elementCreator(document.createElement('span'), {
+        classNames: ['product__content__value'],
+        content: content[0].value.label['en-US'].toUpperCase(),
+      });
+
+      wrapperContent.append(key, value);
+      wrapper.append(wrapperContent);
+    }
+  }
+
+  private createDescription(wrapper: HTMLDivElement): void {
+    const content = this.model.dataProduct?.attributes?.filter((item) => item.name === 'description');
+
+    if (content) {
+      const description = elementCreator(document.createElement('p'), {
+        classNames: ['product__content__description'],
+        content: content[0].value['en-US'],
+      });
+
+      wrapper.append(description);
+    }
   }
 
   private createPriceWrapper(): HTMLDivElement {
@@ -81,7 +117,7 @@ export class ProductView {
     if (this.model.dataProduct?.discountPrice) {
       const discountPrice = elementCreator(document.createElement('p'), {
         classNames: ['product__discount', 'price-new'],
-        content: this.model.dataProduct?.discountPrice?.toString() || '',
+        content: currency + this.model.dataProduct.discountPrice || '',
       });
 
       wrapper.append(discountPrice);

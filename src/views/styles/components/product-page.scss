@@ -35,8 +35,10 @@
     &__sliders {
       overflow: hidden;
       width: 50%;
-      border-radius: $radius;
-      box-shadow: 0 0 1px 0 var(--color-shadow);
+
+      .swiper {
+        border-radius: $radius;
+      }
 
       @media (width <= 768px) {
         width: 100%;
@@ -72,6 +74,18 @@
 
   &__discount {
     font-size: 1.5em;
+  }
+
+  &__content__description {
+    border-bottom: 0.1em solid var(--color-border-input);
+  }
+
+  &__content__wrapper {
+    text-align: left;
+  }
+
+  &__content__key {
+    color: var(--color-dark-blue);
   }
 
   @media (width <= 1110px) {

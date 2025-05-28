@@ -16,6 +16,8 @@ export function parseProduct(rawProduct: ProductProjection): ProductData {
   const image = rawProduct.masterVariant.images?.[0]?.url;
   const images = rawProduct.masterVariant.images?.map((item) => item.url);
 
+  const attributes = rawProduct.masterVariant.attributes;
+
   return {
     id: rawProduct.id,
     title,
@@ -26,5 +28,6 @@ export function parseProduct(rawProduct: ProductProjection): ProductData {
     image,
     images,
     sku: rawProduct.masterVariant.sku,
+    attributes,
   };
 }
