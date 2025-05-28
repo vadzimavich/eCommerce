@@ -1,8 +1,6 @@
 @use '../index' as *;
 
 .product {
-  height: calc(100vh - 12rem);
-
   &__wrapper {
     display: flex;
     gap: $gap-big;
@@ -22,6 +20,10 @@
       > * {
         padding: 0.5em;
       }
+
+      @media (width <= 768px) {
+        width: 100%;
+      }
     }
 
     &__price {
@@ -30,14 +32,33 @@
       text-align: left;
     }
 
-    &__images {
+    &__sliders {
       overflow: hidden;
-      display: flex;
-
       width: 50%;
       border-radius: $radius;
-
       box-shadow: 0 0 1px 0 var(--color-shadow);
+
+      @media (width <= 768px) {
+        width: 100%;
+      }
+    }
+
+    &__img {
+      cursor: pointer;
+    }
+
+    &__thumbs-swiper {
+      .swiper-slide {
+        opacity: 0.4;
+      }
+
+      .swiper-slide-thumb-active {
+        opacity: 1;
+      }
+    }
+
+    @media (width <= 768px) {
+      flex-direction: column;
     }
   }
 
@@ -51,5 +72,17 @@
 
   &__discount {
     font-size: 1.5em;
+  }
+
+  @media (width <= 1110px) {
+    height: 100vh;
+  }
+
+  @media (width <= 768px) {
+    height: calc(100vh + 25rem);
+  }
+
+  @media (width <= 520px) {
+    height: 100vh;
   }
 }
