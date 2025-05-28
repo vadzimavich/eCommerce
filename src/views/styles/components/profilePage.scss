@@ -1,0 +1,13 @@
+@use '../index' as *;
+
+.profile-page {
+  height: 100vh;
+
+  &__title {
+    margin-bottom: $gap-middle;
+  }
+
+  &__content-wrapper {
+    text-align: left;
+  }
+}
