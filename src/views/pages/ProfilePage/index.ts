@@ -15,7 +15,10 @@ export class ProfilePage {
   }
 
   public render(): HTMLElement {
-    console.log('Rendering ProfilePage');
-    return this.view.render();
+    console.log('ProfilePage/index.ts: render() called');
+    const renderedElement = this.view.render();
+    console.log('ProfilePage/index.ts: view.render() finished. Initializing controller listeners...');
+    this.controller.initializePageListeners();
+    return renderedElement;
   }
 }

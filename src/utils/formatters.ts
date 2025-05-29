@@ -25,7 +25,7 @@ export const formatDateOfBirth = (dateString: string | undefined): string => {
     if (Number.isNaN(date.getTime())) {
       return 'Invalid date';
     }
-    return date.toLocaleDateString('ru-RU', {
+    return date.toLocaleDateString('en-EN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

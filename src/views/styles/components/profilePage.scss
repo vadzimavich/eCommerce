@@ -68,4 +68,28 @@
       color: var(--color-breeze);
     }
   }
+
+  &__button {
+    margin-right: $gap-small;
+    padding: 0.8em 1.5em;
+    border-radius: $radius;
+    background-color: var(--color-shadow);
+
+    &:hover {
+      background-color: var(--color-border);
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .button--save {
+    color: var(--color-white);
+    background-color: var(--color-breeze);
+
+    &:hover {
+      background-color: var(--color-breeze-light);
+    }
+  }
 }
