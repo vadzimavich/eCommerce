@@ -22,3 +22,10 @@ export function parseProduct(rawProduct: ProductProjection): ProductData {
     sku: rawProduct.masterVariant.sku,
   };
 }
+
+export function parserSortRequest(sortMethod: string): string {
+  const typeSortPrice = 'price';
+  const directionSort = sortMethod.slice(sortMethod.indexOf('-') + 1, sortMethod.length);
+
+  return sortMethod.includes(typeSortPrice) ? `price ${directionSort}` : `name.en-US ${directionSort}`;
+}

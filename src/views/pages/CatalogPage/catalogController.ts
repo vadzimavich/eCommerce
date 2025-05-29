@@ -1,5 +1,6 @@
 import { ProductsService } from '../../../models/services/ProductService';
-import { parseProduct } from '../../../utils/parsers';
+import { ProductQueryParameters } from '../../../models/types/api-types';
+import { parseProduct, parserSortRequest } from '../../../utils/parsers';
 import { CatalogModel } from './catalogModel';
 import { CatalogView } from './view/catalodView';
 import { ProductsView } from './view/productsView';
@@ -12,16 +13,16 @@ export class CatalogController {
     private readonly productsView: ProductsView
   ) {
     this.service = ProductsService.getInstance();
-    console.log(this.service.getAllProducts());
-    this.initProducts();
-    this.handlerProductsContainer();
 
+    this.handlerProductsContainer();
+    this.handlerSortSelect();
+    // this.initProducts({});
     this.model.subscribeProductsListener(() => this.handlerProducts());
   }
 
-  private async initProducts(): Promise<void> {
+  private async initProducts(parameters: ProductQueryParameters): Promise<void> {
     try {
-      const resultProducts = await this.service.getAllProducts();
+      const resultProducts = await this.service.getAllProducts(parameters);
 
       if (resultProducts && !(resultProducts instanceof Error)) {
         const parsedProducts = resultProducts.map((item) => parseProduct(item));
@@ -46,6 +47,18 @@ export class CatalogController {
           console.log(cardId);
         }
       }
+    });
+  }
+
+  private handlerSortSelect(): void {
+    const select = this.productsView.getSortSelect();
+
+    const initialSort = parserSortRequest(select.value);
+    this.initProducts({ sort: initialSort });
+
+    select.addEventListener('change', () => {
+      const sortString = parserSortRequest(select.value);
+      this.initProducts({ sort: sortString });
     });
   }
 

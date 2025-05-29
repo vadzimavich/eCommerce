@@ -51,5 +51,5 @@ export const enum PostalCodeErrorTooltips {
   Select_country = `Select a country.`,
 }
 
-export const sortOptions = ['Price from low to high', 'Price from high to low', 'Name from A to Z', 'Name from Z to A'];
-export const sortValues = ['a', 'b', 'asc', 'desc'];
+export const sortOptions = ['Name from A to Z', 'Name from Z to A', 'Price from low to high', 'Price from high to low'];
+export const sortValues = ['name-asc', 'name-desc', 'price-asc', 'price-desc'];

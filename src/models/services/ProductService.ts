@@ -1,5 +1,6 @@
-import type { ProductProjection } from '@commercetools/platform-sdk';
+import type { ProductProjection, QueryParam } from '@commercetools/platform-sdk';
 import { CustomerService } from './AuthService';
+import { ProductQueryParameters } from '../types/api-types';
 
 export class ProductsService {
   private static instance: ProductsService;
@@ -12,12 +13,18 @@ export class ProductsService {
     return ProductsService.instance;
   }
 
-  public async getAllProducts(): Promise<ProductProjection[] | Error> {
+  public async getAllProducts(parameters: ProductQueryParameters): Promise<ProductProjection[] | Error> {
     try {
+      const queryArguments: Record<string, QueryParam> = {
+        sort: parameters.sort,
+        limit: parameters.limit,
+      };
+
       const response = await this.service
         .getCurrentClient()
         .productProjections()
-        .get({ queryArgs: { sort: 'name.en-Us ' } })
+        .search()
+        .get({ queryArgs: queryArguments })
         .execute();
       return response.body.results;
     } catch (error) {

@@ -17,18 +17,22 @@ export class ProductsView {
     this.productsContainer = elementCreator(document.createElement('div'), {
       classNames: ['catalog-right__products'],
     });
-    this.sortSelect = createSelectCatalogSort('billing-country', sortOptions, sortValues);
+    this.sortSelect = createSelectCatalogSort('catalog-sort', sortOptions, sortValues);
   }
 
   public render(): HTMLElement {
     this.renderCards();
-    const sortContainer = this.buildSortItemsContainer();
-    this.container.append(sortContainer, this.productsContainer);
+    const headContainer = this.buildHeadContainer();
+    this.container.append(headContainer, this.productsContainer);
     return this.container;
   }
 
   public getProductsContainer(): HTMLElement {
     return this.productsContainer;
+  }
+
+  public getSortSelect(): HTMLSelectElement {
+    return this.sortSelect;
   }
 
   public renderCards(): void {
@@ -44,9 +48,9 @@ export class ProductsView {
     });
   }
 
-  private buildSortItemsContainer(): HTMLElement {
-    const container = elementCreator(document.createElement('div'), {
-      classNames: ['catalog-right__sort'],
+  private buildHeadContainer(): HTMLElement {
+    const container = elementCreator(document.createElement('header'), {
+      classNames: ['catalog-right__head'],
     });
     container.appendChild(this.sortSelect);
     return container;

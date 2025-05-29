@@ -63,3 +63,8 @@ export type ProductData = {
   sku?: string;
   slug?: string;
 };
+
+export type ProductQueryParameters = {
+  sort?: string;
+  limit?: number;
+};

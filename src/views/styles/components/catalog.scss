@@ -1,10 +1,25 @@
 @use '../index' as *;
 
-.catalog-right__products {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $gap-big;
-  justify-content: space-evenly;
+.catalog-right {
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    padding: $padding-section-vertical-sm;
+
+    &-sort {
+      width: 100%;
+      max-width: 25rem;
+    }
+  }
+
+  &__products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $gap-big;
+    justify-content: space-between;
+
+    padding: $padding-section-vertical-sm;
+  }
 }
 
 .product-card {
@@ -16,6 +31,7 @@
   justify-content: space-between;
 
   max-width: 25rem;
+  height: 34rem;
   padding: 1.5rem;
   border: 1px solid var(--color-border);
   border-radius: $radius;
