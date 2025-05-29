@@ -15,3 +15,23 @@ export const getCurrentDateInStringFormat = (): string => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const formatDateOfBirth = (dateString: string | undefined): string => {
+  if (!dateString) {
+    return 'Not specified';
+  }
+  try {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+    return date.toLocaleDateString('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid date format';
+  }
+};
