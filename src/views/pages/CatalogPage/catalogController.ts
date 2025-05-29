@@ -13,7 +13,7 @@ export class CatalogController {
     private readonly productsView: ProductsView
   ) {
     this.service = ProductsService.getInstance();
-
+    this.initProducts({});
     this.handlerProductsContainer();
     this.handlerSortSelect();
     this.handlerSearchForm();
@@ -24,12 +24,21 @@ export class CatalogController {
     try {
       const resultProducts = await this.service.getAllProducts(parameters);
 
-      if (resultProducts && !(resultProducts instanceof Error)) {
-        const parsedProducts = resultProducts.map((item) => parseProduct(item));
-        this.model.setProducts(parsedProducts);
+      if (resultProducts instanceof Error) {
+        this.productsView.renderMessage(resultProducts.message);
+        return;
       }
+
+      if (resultProducts.length === 0) {
+        this.productsView.renderMessage('No products found.');
+        return;
+      }
+
+      const parsedProducts = resultProducts.map(parseProduct);
+      this.model.setProducts(parsedProducts);
+      this.productsView.renderCards();
     } catch (error) {
-      console.error('Error loading products', error);
+      console.error('Error loading products:', error);
     }
   }
 
@@ -53,9 +62,6 @@ export class CatalogController {
   private handlerSortSelect(): void {
     const select = this.productsView.getSortSelect();
 
-    const initialSort = parserSortRequest(select.value);
-    this.initProducts({ sort: initialSort });
-
     select.addEventListener('change', () => {
       const sortString = parserSortRequest(select.value);
       this.initProducts({ sort: sortString });
@@ -64,10 +70,18 @@ export class CatalogController {
 
   private handlerSearchForm(): void {
     const form = this.productsView.getFormSearch();
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      const query = this.productsView.getSearchInput().value.trim();
-      this.initProducts({ searchText: query });
+      const input = this.productsView.getSearchInput();
+      const query = input.value.trim();
+
+      if (query === '') {
+        this.initProducts({});
+      } else {
+        this.initProducts({ searchText: query });
+      }
+      input.value = '';
     });
   }
 

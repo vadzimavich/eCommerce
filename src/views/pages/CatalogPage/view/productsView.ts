@@ -35,6 +35,7 @@ export class ProductsView {
     this.renderCards();
     const headContainer = this.buildHeadContainer();
     this.container.append(headContainer, this.productsContainer);
+    this.renderMessage('Loading products...');
     return this.container;
   }
 
@@ -54,12 +55,15 @@ export class ProductsView {
     return this.searchInput;
   }
 
+  public renderMessage(message: string): void {
+    this.productsContainer.replaceChildren();
+    const messageContainer = this.buildErrorsMessage(message);
+    this.productsContainer.appendChild(messageContainer);
+  }
+
   public renderCards(): void {
     const dataProducts = this.model.getProducts();
-    if (!dataProducts || dataProducts.length === 0) {
-      this.productsContainer.textContent = 'Wait our products';
-      return;
-    }
+
     this.productsContainer.replaceChildren();
     dataProducts.forEach((product) => {
       const card = new ProductCard(product).create();
@@ -75,6 +79,14 @@ export class ProductsView {
     this.formSearch.append(this.searchInput, this.searchButton);
     container.append(this.formSearch, this.sortSelect);
 
+    return container;
+  }
+
+  private buildErrorsMessage(message: string): HTMLElement {
+    const container = elementCreator(document.createElement('div'), {
+      classNames: ['catalog-right__message'],
+      content: message,
+    });
     return container;
   }
 }

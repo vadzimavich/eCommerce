@@ -16,13 +16,14 @@ export class ProductsService {
   public async getAllProducts(parameters: ProductQueryParameters): Promise<ProductProjection[] | Error> {
     try {
       const queryArguments: Record<string, QueryParam> = {
-        sort: parameters.sort,
+        sort: parameters.sort ?? 'name.en-US asc',
         limit: parameters.limit,
-        search: parameters.searchText,
       };
 
       if (parameters.searchText) {
         queryArguments['text.en-US'] = parameters.searchText;
+        queryArguments['fuzzy'] = true;
+        queryArguments['fuzzyLevel'] = 1;
       }
 
       const response = await this.service
@@ -33,8 +34,8 @@ export class ProductsService {
         .execute();
       return response.body.results;
     } catch (error) {
-      if (error instanceof Error) return error;
-      return new Error('Unknown registration error');
+      console.error('getAllProducts error:', error);
+      return new Error('Failed to fetch products');
     }
   }
 
