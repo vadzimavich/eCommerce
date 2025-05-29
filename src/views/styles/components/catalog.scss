@@ -7,8 +7,52 @@
     padding: $padding-section-vertical-sm;
 
     &-sort {
+      cursor: pointer;
       width: 100%;
       max-width: 25rem;
+    }
+
+    &-search {
+      cursor: pointer;
+
+      display: flex;
+
+      border: 1px solid var(--color-border);
+      border-radius: $radius;
+
+      background-color: var(--color-white);
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 3rem;
+        padding: 0.5rem;
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+
+        background-color: var(--color-dark);
+
+        mask: url('/assets/icons/header-icons/header-search.svg') no-repeat center;
+
+        transition: background-color 0.2s ease-in;
+
+        &:hover {
+          background-color: var(--color-breeze);
+        }
+      }
+
+      input,
+      select {
+        border: none;
+
+        &:focus,
+        &:focus-visible {
+          outline: none;
+        }
+      }
     }
   }
 

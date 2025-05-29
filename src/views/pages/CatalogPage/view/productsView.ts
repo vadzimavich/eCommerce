@@ -3,12 +3,15 @@ import { ProductCard } from '../../../../utils/product-card';
 import { CatalogModel } from '../catalogModel';
 
 import { sortOptions, sortValues } from '../../../components/InputField/constants-content';
-import { createSelectCatalogSort } from '../../../../utils/form-inputs';
+import { createInputCatalogSearch, createSelectCatalogSort } from '../../../../utils/form-inputs';
 
 export class ProductsView {
   private readonly container: HTMLElement;
   private readonly productsContainer: HTMLElement;
   private readonly sortSelect: HTMLSelectElement;
+  private readonly searchInput: HTMLInputElement;
+  private readonly searchButton: HTMLButtonElement;
+  private readonly formSearch: HTMLFormElement;
 
   constructor(private readonly model: CatalogModel) {
     this.container = elementCreator(document.createElement('div'), {
@@ -18,6 +21,14 @@ export class ProductsView {
       classNames: ['catalog-right__products'],
     });
     this.sortSelect = createSelectCatalogSort('catalog-sort', sortOptions, sortValues);
+    this.searchInput = createInputCatalogSearch('catalog-search');
+    this.searchButton = elementCreator(document.createElement('button'), {
+      classNames: ['form__button', 'button'],
+      attributes: { type: 'submit' },
+    });
+    this.formSearch = elementCreator(document.createElement('form'), {
+      classNames: ['catalog-right__head-search'],
+    });
   }
 
   public render(): HTMLElement {
@@ -52,7 +63,10 @@ export class ProductsView {
     const container = elementCreator(document.createElement('header'), {
       classNames: ['catalog-right__head'],
     });
-    container.appendChild(this.sortSelect);
+
+    this.formSearch.append(this.searchInput, this.searchButton);
+    container.append(this.formSearch, this.sortSelect);
+
     return container;
   }
 }

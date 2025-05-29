@@ -273,3 +273,17 @@ export const createSelectCatalogSort = (id: string, optoins: string[], values: s
   });
   return select;
 };
+
+export const createInputCatalogSearch = (id: string): HTMLInputElement => {
+  const input = elementCreator(document.createElement('input'), {
+    classNames: ['form__input'],
+    attributes: {
+      name: 'catalog-search',
+      type: 'text',
+      id: id,
+      placeholder: 'Search for...',
+    },
+  });
+
+  return input;
+};
