@@ -67,4 +67,5 @@ export type ProductData = {
 export type ProductQueryParameters = {
   sort?: string;
   limit?: number;
+  searchText?: string;
 };

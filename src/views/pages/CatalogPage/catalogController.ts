@@ -16,7 +16,7 @@ export class CatalogController {
 
     this.handlerProductsContainer();
     this.handlerSortSelect();
-    // this.initProducts({});
+    this.handlerSearchForm();
     this.model.subscribeProductsListener(() => this.handlerProducts());
   }
 
@@ -59,6 +59,15 @@ export class CatalogController {
     select.addEventListener('change', () => {
       const sortString = parserSortRequest(select.value);
       this.initProducts({ sort: sortString });
+    });
+  }
+
+  private handlerSearchForm(): void {
+    const form = this.productsView.getFormSearch();
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const query = this.productsView.getSearchInput().value.trim();
+      this.initProducts({ searchText: query });
     });
   }
 

@@ -18,7 +18,12 @@ export class ProductsService {
       const queryArguments: Record<string, QueryParam> = {
         sort: parameters.sort,
         limit: parameters.limit,
+        search: parameters.searchText,
       };
+
+      if (parameters.searchText) {
+        queryArguments['text.en-US'] = parameters.searchText;
+      }
 
       const response = await this.service
         .getCurrentClient()

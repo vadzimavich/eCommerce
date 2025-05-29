@@ -46,6 +46,14 @@ export class ProductsView {
     return this.sortSelect;
   }
 
+  public getFormSearch(): HTMLFormElement {
+    return this.formSearch;
+  }
+
+  public getSearchInput(): HTMLInputElement {
+    return this.searchInput;
+  }
+
   public renderCards(): void {
     const dataProducts = this.model.getProducts();
     if (!dataProducts || dataProducts.length === 0) {
