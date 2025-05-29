@@ -8,8 +8,8 @@
 
     &-sort {
       cursor: pointer;
-      width: 100%;
-      max-width: 25rem;
+      width: auto;
+      min-width: 25rem;
     }
 
     &-search {
@@ -52,6 +52,16 @@
         &:focus-visible {
           outline: none;
         }
+      }
+    }
+
+    @media (width <= 768px) {
+      flex-direction: column;
+      gap: $gap-middle;
+      width: 100%;
+
+      .form__input {
+        min-width: unset;
       }
     }
   }
