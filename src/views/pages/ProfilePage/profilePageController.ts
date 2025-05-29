@@ -16,8 +16,11 @@ export class ProfilePageController {
     });
 
     this.model.subscribePersonalInfoEdit((): void => {
-      console.log('Personal info edit mode changed, re-attaching personal info listeners.'); // debug log
-      this.attachPersonalInfoActionListeners();
+      console.log('Personal info edit mode changed in model.'); // debug log
+      const saveButton = this.view.getSavePersonalInfoButton();
+      if (saveButton && this.model.getIsEditingPersonalInfo()) {
+        saveButton.disabled = !this.view.isPersonalInfoFormValid();
+      }
     });
   }
 
@@ -130,6 +133,7 @@ export class ProfilePageController {
   }
 
   private handleCancelEditPersonalInfo(): void {
+    console.log('Cancel Edit Personal Info button CLICKED');
     this.model.setIsEditingPersonalInfo(false);
   }
 }

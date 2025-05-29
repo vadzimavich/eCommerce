@@ -3,6 +3,76 @@
 .profile-page {
   height: 100vh;
 
+  &__fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-middle;
+    margin-bottom: $gap-middle;
+  }
+
+  .form__input--readonly {
+    cursor: default;
+
+    padding-right: 0;
+    padding-left: 0;
+    border-color: transparent;
+
+    color: var(--color-dark);
+
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  .form__input--readonly[type='date'] {
+    display: inline-block;
+
+    width: auto;
+
+    appearance: none;
+    appearance: none;
+    appearance: none;
+
+    &::-webkit-calendar-picker-indicator,
+    &::-webkit-inner-spin-button,
+    &::-webkit-clear-button {
+      display: none;
+      appearance: none;
+    }
+  }
+
+  .form__input--editable {
+    cursor: text;
+    border-color: var(--color-border-input);
+    background-color: var(--color-white);
+
+    &:focus {
+      border-color: var(--color-breeze);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(var(--color-breeze-rgb), 0.2);
+    }
+  }
+
+  .form__input--editable[type='date'] {
+    display: block;
+
+    width: 100%;
+
+    appearance: revert;
+    appearance: revert;
+    appearance: auto;
+
+    &::-webkit-calendar-picker-indicator,
+    &::-webkit-inner-spin-button,
+    &::-webkit-clear-button {
+      display: initial;
+      appearance: revert;
+    }
+  }
+
   &__title {
     margin-bottom: $gap-middle;
   }
@@ -36,14 +106,12 @@
     color: var(--color-dark-blue);
   }
 
-  &__info-item,
   &__address-item {
     margin-bottom: $gap-small;
     font-size: 1.4rem;
     line-height: 1.6;
   }
 
-  &__info-item strong,
   &__address-item strong {
     margin-right: $gap-small;
     font-weight: 500;

@@ -1,6 +1,6 @@
 import { AppModel } from '../../../models/state/AppState';
 import { elementCreator } from '../../../utils/dom-helpers';
-import { formatDateOfBirth } from '../../../utils/formatters';
+// import { formatDateOfBirth } from '../../../utils/formatters';
 import * as formInputs from '../../../utils/form-inputs';
 import { ProfilePageModel } from './profilePageModel';
 import type { Address } from '@commercetools/platform-sdk';
@@ -12,7 +12,9 @@ export class ProfilePageView {
   private editPersonalInfoButton!: HTMLButtonElement;
   private savePersonalInfoButton!: HTMLButtonElement;
   private cancelPersonalInfoButton!: HTMLButtonElement;
+
   private personalInfoSectionElement!: HTMLElement;
+  private personalInfoFieldsContainer!: HTMLElement;
 
   private firstNameInput!: HTMLInputElement;
   private lastNameInput!: HTMLInputElement;
@@ -30,7 +32,7 @@ export class ProfilePageView {
       classNames: ['profile-page__content-wrapper', 'section-item'],
     });
 
-    this.model.subscribePersonalInfoEdit(() => this.reRenderPersonalInfoSection());
+    this.model.subscribePersonalInfoEdit(() => this.togglePersonalInfoEditMode());
   }
 
   public render(): HTMLElement {
@@ -105,100 +107,103 @@ export class ProfilePageView {
     );
   }
 
-  private renderPersonalInfo(): HTMLElement {
-    this.personalInfoSectionElement = elementCreator(document.createElement('div'), {
-      classNames: ['profile-page__section'],
-      attributes: { id: 'personal-info-section' },
-    });
-    const title = elementCreator(document.createElement('h2'), {
-      classNames: ['profile-page__section-title'],
-      content: 'Personal Information',
-    });
-    this.personalInfoSectionElement.append(title);
-
-    if (this.model.getIsEditingPersonalInfo()) {
-      this.renderPersonalInfoEditForm();
-    } else {
-      this.renderPersonalInfoDisplay();
-    }
-    return this.personalInfoSectionElement;
-  }
-
-  private renderPersonalInfoDisplay(): void {
+  private createPersonalInfoInputs(): void {
     const currentUser = this.appModel.getCurrentUser();
-    const items = [
-      { label: 'First Name:', value: currentUser.firstName || 'Not specified', id: 'display-firstName' },
-      { label: 'Last Name:', value: currentUser.lastName || 'Not specified', id: 'display-lastName' },
-      { label: 'Email:', value: currentUser.email || 'Not specified', id: 'display-email' },
-      {
-        label: 'Date of Birth:',
-        value: formatDateOfBirth(currentUser.dateOfBirth),
-        id: 'display-dateOfBirth',
-      },
-    ];
-
-    items.forEach((item) => {
-      const p = elementCreator(document.createElement('p'), {
-        classNames: ['profile-page__info-item'],
-        attributes: { id: item.id },
-      });
-      const strong = elementCreator(document.createElement('strong'), { content: item.label });
-      p.append(strong, document.createTextNode(item.value));
-      this.personalInfoSectionElement.append(p);
+    this.personalInfoFieldsContainer = elementCreator(document.createElement('div'), {
+      classNames: ['profile-page__fields-container'],
     });
-
-    this.editPersonalInfoButton = elementCreator(document.createElement('button'), {
-      classNames: ['profile-page__button', 'button'],
-      content: 'Edit Personal Info',
-      attributes: { id: 'edit-personal-info-btn' },
-    });
-
-    this.personalInfoSectionElement.append(this.editPersonalInfoButton);
-
-    const testButtonInDisplay = document.getElementById('edit-personal-info-btn');
-    console.log('View: Test find #edit-personal-info-btn immediately after append:', testButtonInDisplay); // debug log
-  }
-
-  private renderPersonalInfoEditForm(): void {
-    const currentUser = this.appModel.getCurrentUser();
-    const formWrapper = elementCreator(document.createElement('div'), { classNames: ['profile-page__edit-form'] });
 
     this.firstNameInput = formInputs.createInputFirstName('profile-firstName');
     this.firstNameInput.value = currentUser.firstName || '';
-    this.firstNameInput.dispatchEvent(new Event('input'));
-    formWrapper.append(this.createInputWrapper('First Name:', this.firstNameInput));
+    this.personalInfoFieldsContainer.append(this.createInputWrapper('First Name:', this.firstNameInput));
 
     this.lastNameInput = formInputs.createInputLastName('profile-lastName');
     this.lastNameInput.value = currentUser.lastName || '';
-    this.lastNameInput.dispatchEvent(new Event('input'));
-    formWrapper.append(this.createInputWrapper('Last Name:', this.lastNameInput));
+    this.personalInfoFieldsContainer.append(this.createInputWrapper('Last Name:', this.lastNameInput));
 
     this.emailInput = formInputs.createInputEmail('profile-email');
     this.emailInput.value = currentUser.email || '';
-    this.emailInput.dispatchEvent(new Event('input'));
-    formWrapper.append(this.createInputWrapper('Email:', this.emailInput));
+    this.personalInfoFieldsContainer.append(this.createInputWrapper('Email:', this.emailInput));
 
     this.dateOfBirthInput = formInputs.createInputBirthday('profile-dateOfBirth');
     if (currentUser.dateOfBirth) {
       this.dateOfBirthInput.value = currentUser.dateOfBirth;
     }
-    this.dateOfBirthInput.dispatchEvent(new Event('input'));
-    formWrapper.append(this.createInputWrapper('Date of Birth:', this.dateOfBirthInput));
+    this.personalInfoFieldsContainer.append(this.createInputWrapper('Date of Birth:', this.dateOfBirthInput));
+  }
 
-    this.personalInfoSectionElement.append(formWrapper);
+  private togglePersonalInfoEditMode(): void {
+    const isEditing = this.model.getIsEditingPersonalInfo();
+    const inputs = [this.firstNameInput, this.lastNameInput, this.emailInput, this.dateOfBirthInput];
 
-    const actionsBar = elementCreator(document.createElement('div'), { classNames: ['profile-page__actions-bar'] });
-    this.savePersonalInfoButton = elementCreator(document.createElement('button'), {
-      classNames: ['profile-page__button', 'button', 'button--save'],
-      content: 'Save Changes',
+    inputs.forEach((input) => {
+      if (input) {
+        input.readOnly = !isEditing;
+        input.classList.toggle('form__input--readonly', !isEditing);
+        input.classList.toggle('form__input--editable', isEditing);
+
+        if (!isEditing) {
+          const currentUser = this.appModel.getCurrentUser();
+          if (input === this.firstNameInput) input.value = currentUser.firstName || '';
+          if (input === this.lastNameInput) input.value = currentUser.lastName || '';
+          if (input === this.emailInput) input.value = currentUser.email || '';
+          if (input === this.dateOfBirthInput) input.value = currentUser.dateOfBirth || '';
+        }
+
+        if (isEditing) {
+          input.dispatchEvent(new Event('input'));
+        }
+      }
     });
-    this.cancelPersonalInfoButton = elementCreator(document.createElement('button'), {
-      classNames: ['profile-page__button', 'button', 'button--cancel'],
-      content: 'Cancel',
-    });
 
-    actionsBar.append(this.savePersonalInfoButton, this.cancelPersonalInfoButton);
-    this.personalInfoSectionElement.append(actionsBar);
+    if (this.editPersonalInfoButton) this.editPersonalInfoButton.classList.toggle('hidden', isEditing);
+    if (this.savePersonalInfoButton) this.savePersonalInfoButton.classList.toggle('hidden', !isEditing);
+    if (this.cancelPersonalInfoButton) this.cancelPersonalInfoButton.classList.toggle('hidden', !isEditing);
+
+    if (isEditing && this.savePersonalInfoButton) {
+      this.savePersonalInfoButton.disabled = !this.isPersonalInfoFormValid();
+    }
+  }
+
+  private renderPersonalInfo(): HTMLElement {
+    if (!this.personalInfoSectionElement || !document.body.contains(this.personalInfoSectionElement)) {
+      this.personalInfoSectionElement = elementCreator(document.createElement('div'), {
+        classNames: ['profile-page__section'],
+        attributes: { id: 'personal-info-section' },
+      });
+
+      const title = elementCreator(document.createElement('h2'), {
+        classNames: ['profile-page__section-title'],
+        content: 'Personal Information',
+      });
+      this.personalInfoSectionElement.append(title);
+
+      this.createPersonalInfoInputs();
+      this.personalInfoSectionElement.append(this.personalInfoFieldsContainer);
+
+      const actionsBar = elementCreator(document.createElement('div'), { classNames: ['profile-page__actions-bar'] });
+      this.editPersonalInfoButton = elementCreator(document.createElement('button'), {
+        classNames: ['profile-page__button', 'button'],
+        content: 'Edit Personal Info',
+        attributes: { id: 'edit-personal-info-btn' },
+      });
+      this.savePersonalInfoButton = elementCreator(document.createElement('button'), {
+        classNames: ['profile-page__button', 'button', 'button--save'],
+        content: 'Save Changes',
+        attributes: { id: 'save-personal-info-btn' },
+      });
+      this.cancelPersonalInfoButton = elementCreator(document.createElement('button'), {
+        classNames: ['profile-page__button', 'button', 'button--cancel'],
+        content: 'Cancel',
+        attributes: { id: 'cancel-personal-info-btn' },
+      });
+      actionsBar.append(this.editPersonalInfoButton, this.savePersonalInfoButton, this.cancelPersonalInfoButton);
+      this.personalInfoSectionElement.append(actionsBar);
+    }
+
+    this.togglePersonalInfoEditMode();
+
+    return this.personalInfoSectionElement;
   }
 
   private getAddressDetailsHTML(address: Address): string[] {
@@ -308,17 +313,5 @@ export class ProfilePageView {
     });
     wrapper.append(label, inputElement);
     return wrapper;
-  }
-
-  private reRenderPersonalInfoSection(): void {
-    const sectionContainer = document.getElementById('personal-info-section');
-    if (sectionContainer) {
-      console.log('Re-rendering personal info section...'); // debug log
-      const newSectionContent = this.renderPersonalInfo();
-      sectionContainer.replaceWith(newSectionContent);
-    } else {
-      console.warn('#personal-info-section not found for re-render, doing full render.'); // debug log
-      this.render();
-    }
   }
 }
