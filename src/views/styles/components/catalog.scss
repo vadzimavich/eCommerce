@@ -22,26 +22,26 @@
   padding: 1.5rem;
   padding-top: 3rem;
 
+  color: var(--color-dark-blue);
+
   &__title {
     color: var(--color-breeze);
   }
 
   &__section {
     cursor: pointer;
-
     width: 100%;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--color-breeze);
 
-    transition: color 0.3s ease-in;
-
-    &:hover {
-      color: var(--color-breeze);
-    }
-
     summary {
       height: 100%;
       padding: 1rem 0;
+      transition: color 0.3s ease-in;
+
+      &:hover {
+        color: var(--color-breeze);
+      }
     }
   }
 }
@@ -49,6 +49,23 @@
 .filter-select {
   width: -webkit-fill-available;
   min-width: auto;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-small;
+  align-items: start;
+  justify-content: space-between;
+
+  label {
+    cursor: pointer;
+    transition: color 0.3s ease-in;
+
+    &:hover {
+      color: var(--color-breeze);
+    }
+  }
 }
 
 .catalog-right {

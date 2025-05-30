@@ -49,6 +49,8 @@ export function parserFilters(filters: ProductFilter): string[] {
       } else {
         filterResult.push(`variants.attributes.${key}.key:"${value}"`);
       }
+    } else if ((key === 'discount-price' || key === 'bestsaller') && typeof value === 'boolean') {
+      filterResult.push(`variants.attributes.${key}:"${value}"`);
     }
   }
 

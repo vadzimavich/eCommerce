@@ -123,3 +123,24 @@ export const createEcoClassSelect = (
   });
   return select;
 };
+
+export const createCheckbox = (idInput: string, contentText: string): HTMLElement => {
+  const wrapper = elementCreator(document.createElement('div'));
+  const checkbox = elementCreator(document.createElement('input'), { attributes: { type: 'checkbox', id: idInput } });
+  const label = elementCreator(document.createElement('label'), {
+    attributes: { for: idInput },
+    content: contentText,
+  });
+
+  wrapper.append(checkbox, label);
+  return wrapper;
+};
+
+export const createCheckboxContainer = (checkboxCategory: { key: string; label: string }[]): HTMLElement => {
+  const container = elementCreator(document.createElement('div'), { classNames: ['checkbox-container'] });
+  checkboxCategory.forEach((item) => {
+    const checkbox = createCheckbox(item.key, item.label);
+    container.appendChild(checkbox);
+  });
+  return container;
+};

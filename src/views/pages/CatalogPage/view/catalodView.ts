@@ -1,6 +1,6 @@
 import { elementCreator } from '../../../../utils/dom-helpers';
 import { CatalogModel } from '../catalogModel';
-import { ECO_CLASSES, FiltersContent } from './constant-conrent';
+import { ECO_CLASSES, FiltersContent, Promo_Actions } from './constant-conrent';
 import * as filersItems from '../../../../utils/catalog-inputs';
 import { createOptionsSelectCategory } from '../../../../utils/catalog-inputs';
 
@@ -79,9 +79,13 @@ export class CatalogView {
     const categorySection = filersItems.createFilterSection(FiltersContent.Summary_Categoty, this.categorySelect);
     const ecoSection = filersItems.createFilterSection(
       FiltersContent.Summary_Eco,
-      filersItems.createEcoClassSelect('eco-class', ECO_CLASSES, FiltersContent.Category_Default_Option)
+      filersItems.createEcoClassSelect('eco-class', ECO_CLASSES, FiltersContent.Ecology_Default_option)
+    );
+    const PromoActionsSection = filersItems.createFilterSection(
+      FiltersContent.Summary_Actions,
+      filersItems.createCheckboxContainer(Promo_Actions)
     );
 
-    this.filtersContainer.append(filtersTitle, categorySection, ecoSection);
+    this.filtersContainer.append(filtersTitle, categorySection, ecoSection, PromoActionsSection);
   }
 }
