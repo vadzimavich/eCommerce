@@ -100,6 +100,13 @@ export class ProfilePageView {
     };
   }
 
+  public getPersonalInfoFormInputs(): HTMLInputElement[] {
+    if (this.firstNameInput && this.lastNameInput && this.emailInput && this.dateOfBirthInput) {
+      return [this.firstNameInput, this.lastNameInput, this.emailInput, this.dateOfBirthInput];
+    }
+    return [];
+  }
+
   public isPersonalInfoFormValid(): boolean {
     if (!this.model.getIsEditingPersonalInfo()) return false;
     return [this.firstNameInput, this.lastNameInput, this.emailInput, this.dateOfBirthInput].every(

@@ -9,13 +9,16 @@ import {
 } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
 import {
-  ByProjectKeyRequestBuilder,
-  createApiBuilderFromCtpClient,
   Customer,
   CustomerSignInResult,
+  MyCustomerUpdateAction,
+  ByProjectKeyRequestBuilder,
+  createApiBuilderFromCtpClient,
 } from '@commercetools/platform-sdk';
 import type { CustomerDraftBody, CustomerLoginData } from '../types/api-types';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
+import { Modal } from '../../components/modal';
+import { isCtErrorWithBodyMessage, isStandardError } from '../types/api-types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tokenCache: any = {
@@ -32,6 +35,7 @@ const tokenCache: any = {
 
 export class CustomerService {
   private static instance: CustomerService;
+  public readonly modal: Modal;
   private currentClient: ByProjectKeyRequestBuilder;
   private readonly projectKey = getEnvironmentValue('CTP_PROJECT_KEY');
   private readonly authUrl = getEnvironmentValue('CTP_AUTH_URL');
@@ -48,6 +52,7 @@ export class CustomerService {
     };
 
     this.currentClient = this.createAnonymousClient();
+    this.modal = Modal.getInstance();
   }
 
   public static getInstance(): CustomerService {
@@ -66,7 +71,7 @@ export class CustomerService {
       await this.currentClient.me().signup().post({ body }).execute();
       return this.loginCustomer({ email: body.email, password: body.password });
     } catch (error) {
-      if (error instanceof Error) return error;
+      if (isStandardError(error)) return error;
       return new Error('Unknown registration error');
     }
   }
@@ -98,7 +103,10 @@ export class CustomerService {
       return loginResponse.body;
     } catch (error) {
       console.error('Fail of login', error);
-      throw error;
+      const ctMessage = this.getSpecificErrorMessage(error);
+      if (ctMessage) throw new Error(ctMessage);
+      if (isStandardError(error)) throw error;
+      throw new Error('Login failed due to an unknown error.');
     }
   }
 
@@ -125,8 +133,11 @@ export class CustomerService {
       this.currentClient = authorizedClient;
       return loginResponse.body;
     } catch (error) {
-      console.error('Fail of login', error);
-      throw error;
+      console.error('Fail of login with refresh token', error);
+      const ctMessage = this.getSpecificErrorMessage(error);
+      if (ctMessage) return new Error(ctMessage);
+      if (isStandardError(error)) return error;
+      return new Error('Login with refresh token failed.');
     }
   }
 
@@ -138,6 +149,34 @@ export class CustomerService {
   public logoutCustomer(): void {
     this.currentClient = this.createAnonymousClient();
     console.log('Switched to anonymous session');
+    sessionStorage.removeItem(REFRESH_TOKEN);
+  }
+
+  public async updateCustomerPersonalInfo(
+    currentVersion: number,
+    actions: MyCustomerUpdateAction[]
+  ): Promise<Customer | Error> {
+    if (!this.currentClient) {
+      const errorMessage = 'Client not initialized for update.';
+      this.modal.errorMessage(errorMessage);
+      return new Error(errorMessage);
+    }
+    try {
+      const response = await this.currentClient
+        .me()
+        .post({
+          body: {
+            version: currentVersion,
+            actions: actions,
+          },
+        })
+        .execute();
+
+      this.modal.infoMessage('Personal information updated successfully!');
+      return response.body;
+    } catch (error) {
+      return this.handleErrorUpdateCustomer(error);
+    }
   }
 
   private createAnonymousClient(): ByProjectKeyRequestBuilder {
@@ -158,5 +197,39 @@ export class CustomerService {
         .withHttpMiddleware(this.httpMiddlewareOptions)
         .build()
     ).withProjectKey({ projectKey: this.projectKey });
+  }
+
+  private getSpecificErrorMessage(error: unknown): string | null {
+    if (isCtErrorWithBodyMessage(error)) {
+      if (
+        error.body.errors &&
+        Array.isArray(error.body.errors) &&
+        error.body.errors.length > 0 &&
+        error.body.errors[0].message
+      ) {
+        return error.body.errors[0].message;
+      }
+      return error.body.message;
+    }
+    return null;
+  }
+
+  private handleErrorUpdateCustomer(error: unknown): Error {
+    console.error('Error updating customer:', error);
+    const defaultMessage = 'Failed to update personal information.';
+
+    const specificCtMessage = this.getSpecificErrorMessage(error);
+    if (specificCtMessage) {
+      this.modal.errorMessage(specificCtMessage);
+      return new Error(specificCtMessage);
+    }
+
+    if (isStandardError(error)) {
+      this.modal.errorMessage(error.message);
+      return error;
+    }
+
+    this.modal.errorMessage(defaultMessage);
+    return new Error(defaultMessage);
   }
 }
