@@ -1,17 +1,17 @@
 import { elementCreator } from '../../../../utils/dom-helpers';
 import { CatalogModel } from '../catalogModel';
-import { FiltersContent } from './constant-conrent';
+import { ECO_CLASSES, FiltersContent } from './constant-conrent';
 import * as filersItems from '../../../../utils/catalog-inputs';
 import { createOptionsSelectCategory } from '../../../../utils/catalog-inputs';
 
 export class CatalogView {
   private readonly container: HTMLElement;
   private readonly filtersContainer: HTMLFormElement;
-  private categorySelect: HTMLSelectElement;
+  private readonly categorySelect: HTMLSelectElement;
   constructor(private readonly model: CatalogModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['page-wrapper', 'catalog'] });
     this.filtersContainer = elementCreator(document.createElement('form'), {
-      classNames: ['catalog-left', 'section-item'],
+      classNames: ['catalog-left', 'section-item', 'filters'],
     });
     this.categorySelect = filersItems.createCategorySelect(
       'categoryId',
@@ -77,7 +77,11 @@ export class CatalogView {
     });
 
     const categorySection = filersItems.createFilterSection(FiltersContent.Summary_Categoty, this.categorySelect);
+    const ecoSection = filersItems.createFilterSection(
+      FiltersContent.Summary_Eco,
+      filersItems.createEcoClassSelect('eco-class', ECO_CLASSES, FiltersContent.Category_Default_Option)
+    );
 
-    this.filtersContainer.append(filtersTitle, categorySection);
+    this.filtersContainer.append(filtersTitle, categorySection, ecoSection);
   }
 }

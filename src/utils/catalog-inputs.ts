@@ -45,7 +45,7 @@ export const createInputCatalogSearch = (id: string): HTMLInputElement => {
 
 export const createFilterSection = (title: string, content: HTMLElement): HTMLElement => {
   const details = elementCreator(document.createElement('details'), {
-    classNames: ['filter-section'],
+    classNames: ['filters__section', 'filter-section'],
     attributes: { open: '' },
   });
   const summary = elementCreator(document.createElement('summary'), { content: title });
@@ -93,4 +93,33 @@ export const createOptionsSelectCategory = (select: HTMLSelectElement, options: 
     });
     select.appendChild(category);
   });
+};
+
+export const createEcoClassSelect = (
+  id: string,
+  categories: { key: string; label: string }[],
+  defaultValue: string
+): HTMLSelectElement => {
+  const select = elementCreator(document.createElement('select'), {
+    classNames: ['form__input', 'filter-select'],
+    attributes: {
+      name: 'eco-class',
+      type: 'select',
+      id: id,
+    },
+  });
+  const defaultOption = elementCreator(document.createElement('option'), { content: defaultValue });
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  select.appendChild(defaultOption);
+  categories.forEach((item) => {
+    const category = elementCreator(document.createElement('option'), {
+      content: item.label,
+      attributes: {
+        value: item.key,
+      },
+    });
+    select.appendChild(category);
+  });
+  return select;
 };

@@ -8,3 +8,9 @@ export const enum FiltersContent {
   Category_Default_Option = 'Select Category',
   Category_Error = 'No data',
 }
+
+export const ECO_CLASSES = [
+  { key: 'A', label: 'high' },
+  { key: 'B', label: 'medium' },
+  { key: 'C', label: 'low' },
+];
