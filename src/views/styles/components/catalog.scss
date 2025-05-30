@@ -1,5 +1,26 @@
 @use '../index' as *;
 
+.catalog {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.catalog-left {
+  width: 100%;
+  max-width: 25rem;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.filter-section {
+  .filter-select {
+    width: fit-content;
+    min-width: 0;
+  }
+}
+
 .catalog-right {
   &__head {
     display: flex;

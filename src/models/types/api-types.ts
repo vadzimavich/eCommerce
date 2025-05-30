@@ -64,8 +64,18 @@ export type ProductData = {
   slug?: string;
 };
 
+export type ProductFilter = {
+  [id: string]: string | boolean;
+};
+
 export type ProductQueryParameters = {
   sort?: string;
   limit?: number;
   searchText?: string;
+  filters?: ProductFilter;
+};
+
+export type CategoryData = {
+  id: string;
+  name: string;
 };

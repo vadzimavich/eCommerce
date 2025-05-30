@@ -1,5 +1,5 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
-import { ProductData } from '../models/types/api-types';
+import { Category, ProductProjection } from '@commercetools/platform-sdk';
+import { CategoryData, ProductData, ProductFilter } from '../models/types/api-types';
 
 export function parseProduct(rawProduct: ProductProjection): ProductData {
   const title = rawProduct.name?.['en-US'] || 'No title';
@@ -28,4 +28,29 @@ export function parserSortRequest(sortMethod: string): string {
   const directionSort = sortMethod.slice(sortMethod.indexOf('-') + 1, sortMethod.length);
 
   return sortMethod.includes(typeSortPrice) ? `price ${directionSort}` : `name.en-US ${directionSort}`;
+}
+
+export function parserCategories(categories: Category[]): CategoryData[] {
+  return categories.map((item) => ({
+    id: item.id,
+    name: item.name['en-US'].toString(),
+  }));
+}
+
+export function parserFilters(filters: ProductFilter): string[] {
+  const filterResult: string[] = [];
+
+  for (const key in filters) {
+    const value = filters[key];
+
+    if (typeof value === 'string') {
+      if (key === 'categoryId') {
+        filterResult.push(`categories.id:"${value}"`);
+      } else {
+        filterResult.push(`variants.attributes.${key}.key:"${value}"`);
+      }
+    }
+  }
+
+  return filterResult;
 }

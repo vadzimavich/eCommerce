@@ -3,7 +3,7 @@ import { ProductCard } from '../../../../utils/product-card';
 import { CatalogModel } from '../catalogModel';
 
 import { sortOptions, sortValues } from '../../../components/InputField/constants-content';
-import { createInputCatalogSearch, createSelectCatalogSort } from '../../../../utils/form-inputs';
+import { createInputCatalogSearch, createSelectCatalogSort } from '../../../../utils/catalog-inputs';
 
 export class ProductsView {
   private readonly container: HTMLElement;
@@ -20,7 +20,7 @@ export class ProductsView {
     this.productsContainer = elementCreator(document.createElement('div'), {
       classNames: ['catalog-right__products'],
     });
-    this.sortSelect = createSelectCatalogSort('catalog-sort', sortOptions, sortValues);
+    this.sortSelect = createSelectCatalogSort('catalog-sort', sortOptions, sortValues, ['catalog-right__head-sort']);
     this.searchInput = createInputCatalogSearch('catalog-search');
     this.searchButton = elementCreator(document.createElement('button'), {
       classNames: ['form__button', 'button'],

@@ -1,6 +1,8 @@
-import type { ProductProjection, QueryParam } from '@commercetools/platform-sdk';
+import type { Category, ProductProjection, QueryParam } from '@commercetools/platform-sdk';
 import { CustomerService } from './AuthService';
 import { ProductQueryParameters } from '../types/api-types';
+import { parserFilters } from '../../utils/parsers';
+// import { parserFilters } from '../../utils/parsers';
 
 export class ProductsService {
   private static instance: ProductsService;
@@ -26,6 +28,13 @@ export class ProductsService {
         queryArguments['fuzzyLevel'] = 1;
       }
 
+      if (parameters.filters) {
+        const filterExpressions = parserFilters(parameters.filters);
+        if (filterExpressions.length > 0) {
+          queryArguments.filter = filterExpressions;
+        }
+      }
+
       const response = await this.service
         .getCurrentClient()
         .productProjections()
@@ -36,6 +45,16 @@ export class ProductsService {
     } catch (error) {
       console.error('getAllProducts error:', error);
       return new Error('Failed to fetch products');
+    }
+  }
+
+  public async getAllCategories(): Promise<Category[] | Error> {
+    try {
+      const response = await this.service.getCurrentClient().categories().get().execute();
+      return response.body.results;
+    } catch (error) {
+      console.error('getAllCategories error:', error);
+      return new Error('Failed to fetch categories');
     }
   }
 

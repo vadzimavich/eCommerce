@@ -14,10 +14,13 @@ export class CatalogController {
   ) {
     this.service = ProductsService.getInstance();
     this.initProducts({});
+    this.handlerFocusSelectCategory();
     this.handlerProductsContainer();
     this.handlerSortSelect();
     this.handlerSearchForm();
+    this.handlerFiltersContainer();
     this.model.subscribeProductsListener(() => this.handlerProducts());
+    this.model.subscribeToCategoryUpdate(() => this.updateSelectCategory());
   }
 
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
@@ -36,9 +39,21 @@ export class CatalogController {
 
       const parsedProducts = resultProducts.map(parseProduct);
       this.model.setProducts(parsedProducts);
-      this.productsView.renderCards();
     } catch (error) {
       console.error('Error loading products:', error);
+    }
+  }
+
+  private async getCategories(): Promise<void> {
+    try {
+      const resultCategories = await this.service.getAllCategories();
+      if (resultCategories instanceof Error || resultCategories.length === 0) {
+        this.view.showNoCategoryOption();
+        return;
+      }
+      this.model.setCategories(resultCategories);
+    } catch (error) {
+      console.error('Error loading categories:', error);
     }
   }
 
@@ -83,6 +98,41 @@ export class CatalogController {
       }
       input.value = '';
     });
+  }
+
+  private handlerFocusSelectCategory(): void {
+    const select = this.view.getSelectCategory();
+    select.addEventListener('focus', () => {
+      this.getCategories();
+    });
+  }
+
+  private async handlerFiltersContainer(): Promise<void> {
+    const container = this.view.getFiltersContainer();
+
+    Array.from(container.elements).forEach((element) => {
+      if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
+        let eventType: 'input' | 'change';
+        if (element instanceof HTMLSelectElement) {
+          eventType = 'change';
+        } else if (element.type === 'checkbox') {
+          eventType = 'change';
+        } else {
+          eventType = 'input';
+        }
+
+        element.addEventListener(eventType, () => {
+          const filter = { [element.id]: element.type === 'checkbox' ? element.checked : element.value };
+          this.model.setFilters(filter);
+          const allFilters = this.model.getFilters();
+          this.initProducts({ filters: allFilters });
+        });
+      }
+    });
+  }
+
+  private updateSelectCategory(): void {
+    this.view.updateCategories();
   }
 
   private handlerProducts(): void {
