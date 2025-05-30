@@ -77,7 +77,7 @@ export class ProductView {
   private createAttribute(wrapper: HTMLDivElement, attributeName: string): void {
     const content = this.model.dataProduct?.attributes?.filter((item) => item.name === attributeName);
 
-    if (content) {
+    if (content && content.length > 0) {
       const wrapperContent = elementCreator(document.createElement('div'), {
         classNames: ['product__content__wrapper'],
       });
@@ -89,10 +89,13 @@ export class ProductView {
 
       let valueContent: string;
 
+      console.log('🚀 ~ ProductView ~ createAttribute ~ content[0].value:', content[0].value);
       if (typeof content[0].value === 'object') {
         valueContent = content[0].value.label['en-US'];
+        console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
       } else {
         valueContent = content[0].value;
+        console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
       }
 
       const value = elementCreator(document.createElement('span'), {
@@ -122,7 +125,7 @@ export class ProductView {
     const wrapper = elementCreator(document.createElement('div'), { classNames: ['product__wrapper__price'] });
 
     const currency = this.model.dataProduct?.currency || '';
-    const priceContent = currency + this.model.dataProduct?.price?.toString();
+    const priceContent = currency + this.model.dataProduct?.price?.toFixed(2);
 
     const price = elementCreator(document.createElement('p'), {
       classNames: ['product__price'],
@@ -134,7 +137,7 @@ export class ProductView {
     if (this.model.dataProduct?.discountPrice) {
       const discountPrice = elementCreator(document.createElement('p'), {
         classNames: ['product__discount', 'price-new'],
-        content: currency + this.model.dataProduct.discountPrice || '',
+        content: currency + this.model.dataProduct.discountPrice.toFixed(2) || '',
       });
 
       wrapper.append(discountPrice);

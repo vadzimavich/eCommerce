@@ -20,7 +20,7 @@ export class ProductController {
   private async initProduct(): Promise<void> {
     try {
       //const idProduct = window.location.hash.split('/').at(-1) || '';
-      const data = await this.service.getProductById('364444e3-4e66-4897-aeaf-146e46edb5c1');
+      const data = await this.service.getProductById('3a06a607-0674-44c3-8a90-a14b8e373c11');
 
       if (data && !(data instanceof Error)) {
         const parsedProducts = parseProduct(data);
