@@ -1,5 +1,5 @@
-import { handlerEmailField } from '../utils/handler-fields';
-import { EmailErrorTooltips } from '../views/components/InputField/constants-content';
+import { handlerEmailField } from '../../../utils/handler-fields';
+import { EmailErrorTooltips } from '../../../views/components/InputField/constants-content';
 
 const testCases = [
   {

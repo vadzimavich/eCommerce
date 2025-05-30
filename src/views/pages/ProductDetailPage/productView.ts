@@ -40,6 +40,10 @@ export class ProductView {
     this.createWrapper();
   }
 
+  public getContainer(): HTMLElement {
+    return this.container;
+  }
+
   private createWrapper(): void {
     const wrapper = elementCreator(document.createElement('div'), { classNames: ['product__wrapper'] });
 
@@ -90,8 +94,6 @@ export class ProductView {
       } else {
         valueContent = content[0].value;
       }
-
-      console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
 
       const value = elementCreator(document.createElement('span'), {
         classNames: ['product__content__value'],

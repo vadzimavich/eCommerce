@@ -12,7 +12,6 @@ export class ProductModel {
   public setProducts(data: ProductData): void {
     this.dataProduct = data;
     this.notifyProductListeners();
-    console.log(this.dataProduct);
   }
 
   public subscribeProductListener(callback: () => void): void {

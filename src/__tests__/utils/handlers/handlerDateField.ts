@@ -1,5 +1,5 @@
-import { handlerDateField } from '../utils/handler-fields';
-import { DateErrorTooltips } from '../views/components/InputField/constants-content';
+import { handlerDateField } from '../../../utils/handler-fields';
+import { DateErrorTooltips } from '../../../views/components/InputField/constants-content';
 
 const today = new Date();
 const day = today.getDate();
