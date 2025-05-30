@@ -1,12 +1,12 @@
 import { Category } from '@commercetools/platform-sdk';
 import { Subscriber } from '../../../models/types';
-import { CategoryData, ProductData, ProductFilter } from '../../../models/types/api-types';
+import { CategoryData, ProductData, ProductQueryParameters } from '../../../models/types/api-types';
 import { parserCategories } from '../../../utils/parsers';
 
 export class CatalogModel {
   private products: ProductData[] = [];
   private categories: CategoryData[] = [];
-  private filters: ProductFilter = {};
+  private currentParameters: ProductQueryParameters = {};
   private productsListener: Subscriber[] = [];
 
   private categoryListeners: Subscriber[] = [];
@@ -26,13 +26,25 @@ export class CatalogModel {
     this.notifyCategoryListeners();
   }
 
-  public setFilters(filterUpdate: ProductFilter): void {
-    this.filters = { ...this.filters, ...filterUpdate };
-    console.log(this.filters);
+  public setParameters(update: ProductQueryParameters): void {
+    if (update.filters) {
+      this.currentParameters.filters = {
+        ...this.currentParameters.filters,
+        ...update.filters,
+      };
+    }
+
+    if (update.sort !== undefined) {
+      this.currentParameters.sort = update.sort;
+    }
+
+    if (update.searchText !== undefined) {
+      this.currentParameters.searchText = update.searchText;
+    }
   }
 
-  public getFilters(): ProductFilter {
-    return this.filters;
+  public getParameters(): ProductQueryParameters {
+    return { ...this.currentParameters };
   }
 
   public getCategories(): CategoryData[] {

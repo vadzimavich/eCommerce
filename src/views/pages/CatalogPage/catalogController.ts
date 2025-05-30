@@ -79,7 +79,8 @@ export class CatalogController {
 
     select.addEventListener('change', () => {
       const sortString = parserSortRequest(select.value);
-      this.initProducts({ sort: sortString });
+      this.model.setParameters({ sort: sortString });
+      this.initProducts(this.model.getParameters());
     });
   }
 
@@ -107,7 +108,7 @@ export class CatalogController {
     });
   }
 
-  private async handlerFiltersContainer(): Promise<void> {
+  private handlerFiltersContainer(): void {
     const container = this.view.getFiltersContainer();
 
     Array.from(container.elements).forEach((element) => {
@@ -123,9 +124,9 @@ export class CatalogController {
 
         element.addEventListener(eventType, () => {
           const filter = { [element.id]: element.type === 'checkbox' ? element.checked : element.value };
-          this.model.setFilters(filter);
-          const allFilters = this.model.getFilters();
-          this.initProducts({ filters: allFilters });
+          this.model.setParameters({ filters: filter });
+          const allFilters = this.model.getParameters();
+          this.initProducts(allFilters);
         });
       }
     });
