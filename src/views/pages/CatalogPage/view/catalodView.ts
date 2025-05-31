@@ -8,6 +8,7 @@ export class CatalogView {
   private readonly container: HTMLElement;
   private readonly filtersContainer: HTMLFormElement;
   private readonly categorySelect: HTMLSelectElement;
+  private readonly clearFilterButton: HTMLButtonElement;
   constructor(private readonly model: CatalogModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['page-wrapper', 'catalog'] });
     this.filtersContainer = elementCreator(document.createElement('form'), {
@@ -19,6 +20,10 @@ export class CatalogView {
       FiltersContent.Category_Default_Option,
       FiltersContent.Category_Error
     );
+    this.clearFilterButton = elementCreator(document.createElement('button'), {
+      classNames: ['form__button', 'button'],
+      content: FiltersContent.Button_Clear,
+    });
   }
 
   public render(): HTMLElement {
@@ -33,6 +38,10 @@ export class CatalogView {
 
   public getSelectCategory(): HTMLSelectElement {
     return this.categorySelect;
+  }
+
+  public getButtonClearFilter(): HTMLButtonElement {
+    return this.clearFilterButton;
   }
 
   public updateCategories(): void {
@@ -70,6 +79,15 @@ export class CatalogView {
     this.categorySelect.append(defaultOption, noDataOption);
   }
 
+  public changeClearButton(): void {
+    const isFilters = this.model.checkIsFiltred();
+    if (!isFilters) {
+      this.clearFilterButton.disabled = true;
+    } else {
+      this.clearFilterButton.disabled = false;
+    }
+  }
+
   private buildFilters(): void {
     const filtersTitle = elementCreator(document.createElement('h3'), {
       content: FiltersContent.Title,
@@ -86,6 +104,12 @@ export class CatalogView {
       filersItems.createCheckboxContainer(Promo_Actions)
     );
 
-    this.filtersContainer.append(filtersTitle, categorySection, ecoSection, PromoActionsSection);
+    this.filtersContainer.append(
+      filtersTitle,
+      categorySection,
+      ecoSection,
+      PromoActionsSection,
+      this.clearFilterButton
+    );
   }
 }

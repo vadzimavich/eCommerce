@@ -19,7 +19,11 @@ export class CatalogController {
     this.handlerSortSelect();
     this.handlerSearchForm();
     this.handlerFiltersContainer();
-    this.model.subscribeProductsListener(() => this.handlerProducts());
+    this.handlerClearButton();
+    this.model.subscribeProductsListener(() => {
+      this.handlerProducts();
+      this.updateCleanButton();
+    });
     this.model.subscribeToCategoryUpdate(() => this.updateSelectCategory());
   }
 
@@ -132,11 +136,42 @@ export class CatalogController {
     });
   }
 
+  private handlerClearButton(): void {
+    const button = this.view.getButtonClearFilter();
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.model.clearParametrs();
+      this.resetFormInputs();
+      this.initProducts(this.model.getParameters());
+    });
+  }
+
+  private resetFormInputs(): void {
+    const container = this.view.getFiltersContainer();
+    Array.from(container.elements).forEach((element) => {
+      if (element instanceof HTMLInputElement) {
+        if (element.type === 'checkbox') {
+          element.checked = false;
+        } else {
+          element.value = '';
+        }
+      }
+
+      if (element instanceof HTMLSelectElement) {
+        element.selectedIndex = 0;
+      }
+    });
+  }
+
   private updateSelectCategory(): void {
     this.view.updateCategories();
   }
 
   private handlerProducts(): void {
     this.productsView.renderCards();
+  }
+
+  private updateCleanButton(): void {
+    this.view.changeClearButton();
   }
 }

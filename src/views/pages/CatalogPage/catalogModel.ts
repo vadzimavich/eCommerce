@@ -7,14 +7,13 @@ export class CatalogModel {
   private products: ProductData[] = [];
   private categories: CategoryData[] = [];
   private currentParameters: ProductQueryParameters = {};
-  private productsListener: Subscriber[] = [];
 
+  private productsListener: Subscriber[] = [];
   private categoryListeners: Subscriber[] = [];
 
   public setProducts(data: ProductData[]): void {
     this.products = data;
     this.notifyProductsListeners();
-    console.log(this.products);
   }
 
   public getProducts(): ProductData[] {
@@ -32,6 +31,7 @@ export class CatalogModel {
         ...this.currentParameters.filters,
         ...update.filters,
       };
+      this.checkIsFiltred();
     }
 
     if (update.sort !== undefined) {
@@ -45,6 +45,17 @@ export class CatalogModel {
 
   public getParameters(): ProductQueryParameters {
     return { ...this.currentParameters };
+  }
+
+  public clearParametrs(): void {
+    this.currentParameters.filters = {};
+    this.checkIsFiltred();
+  }
+
+  public checkIsFiltred(): boolean {
+    const filters = this.currentParameters.filters;
+    if (!filters) return false;
+    return Object.values(filters).some((item) => item);
   }
 
   public getCategories(): CategoryData[] {
