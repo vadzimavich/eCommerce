@@ -41,9 +41,9 @@ export function parserFilters(filters: ProductFilter): string[] {
     const value = filters[key];
 
     if (key === 'priceMin') {
-      priceMin = +value.toString();
+      priceMin = +value;
     } else if (key === 'priceMax') {
-      priceMax = +value.toString();
+      priceMax = +value;
     } else if (typeof value === 'string') {
       if (key === 'categoryId') {
         filterResult.push(`categories.id:"${value}"`);

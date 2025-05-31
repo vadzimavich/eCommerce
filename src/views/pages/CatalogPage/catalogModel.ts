@@ -32,7 +32,6 @@ export class CatalogModel {
         ...update.filters,
       };
       this.checkIsFiltred();
-      console.log(this.checkIsFiltred());
     }
 
     if (update.sort !== undefined) {
