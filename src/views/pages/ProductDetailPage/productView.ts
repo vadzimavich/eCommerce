@@ -1,14 +1,17 @@
 import { elementCreator } from '../../../utils/dom-helpers';
+import { ProductModalSwiperView } from './modalSwiperView';
 import { ProductModel } from './productModel';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 
 export class ProductView {
-  private swiper: HTMLDivElement;
-  private thumbsSwiper: HTMLDivElement;
-  private container: HTMLElement;
+  public readonly swiper: HTMLDivElement;
+  public readonly modalSwiper: ProductModalSwiperView;
+  private readonly thumbsSwiper: HTMLDivElement;
+  private readonly container: HTMLElement;
 
   constructor(private readonly model: ProductModel) {
+    this.modalSwiper = new ProductModalSwiperView(this.model);
     this.container = elementCreator(document.createElement('section'), {
       classNames: ['page-wrapper', 'product'],
     });
@@ -89,13 +92,10 @@ export class ProductView {
 
       let valueContent: string;
 
-      console.log('🚀 ~ ProductView ~ createAttribute ~ content[0].value:', content[0].value);
       if (typeof content[0].value === 'object') {
         valueContent = content[0].value.label['en-US'];
-        console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
       } else {
         valueContent = content[0].value;
-        console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
       }
 
       const value = elementCreator(document.createElement('span'), {
