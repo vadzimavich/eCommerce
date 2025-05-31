@@ -1,6 +1,6 @@
 import { ProductsService } from '../../../models/services/ProductService';
 import { ProductQueryParameters } from '../../../models/types/api-types';
-import { parseProduct, parserSortRequest } from '../../../utils/parsers';
+import { parserSortRequest } from '../../../utils/parsers';
 import { CatalogModel } from './catalogModel';
 import { CatalogView } from './view/catalodView';
 import { ProductsView } from './view/productsView';
@@ -41,8 +41,7 @@ export class CatalogController {
         return;
       }
 
-      const parsedProducts = resultProducts.map(parseProduct);
-      this.model.setProducts(parsedProducts);
+      this.model.setProducts(resultProducts);
     } catch (error) {
       console.error('Error loading products:', error);
     }

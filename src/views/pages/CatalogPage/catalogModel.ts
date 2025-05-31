@@ -1,7 +1,7 @@
-import { Category } from '@commercetools/platform-sdk';
+import { Category, ProductProjection } from '@commercetools/platform-sdk';
 import { Subscriber } from '../../../models/types';
 import { CategoryData, ProductData, ProductQueryParameters } from '../../../models/types/api-types';
-import { parserCategories } from '../../../utils/parsers';
+import { parseProduct, parserCategories } from '../../../utils/parsers';
 
 export class CatalogModel {
   private products: ProductData[] = [];
@@ -11,8 +11,8 @@ export class CatalogModel {
   private productsListener: Subscriber[] = [];
   private categoryListeners: Subscriber[] = [];
 
-  public setProducts(data: ProductData[]): void {
-    this.products = data;
+  public setProducts(data: ProductProjection[]): void {
+    this.products = parseProduct(data);
     this.notifyProductsListeners();
   }
 
