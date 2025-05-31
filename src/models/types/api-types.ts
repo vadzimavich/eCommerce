@@ -68,3 +68,19 @@ export type ProductData = {
   slug?: string;
   attributes?: Attribute[];
 };
+
+export type ProductFilter = {
+  [id: string]: string | boolean | number;
+};
+
+export type ProductQueryParameters = {
+  sort?: string;
+  limit?: number;
+  searchText?: string;
+  filters?: ProductFilter;
+};
+
+export type CategoryData = {
+  id: string;
+  name: string;
+};
