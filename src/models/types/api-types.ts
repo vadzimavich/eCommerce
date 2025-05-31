@@ -63,3 +63,19 @@ export type ProductData = {
   sku?: string;
   slug?: string;
 };
+
+export type ProductFilter = {
+  [id: string]: string | boolean | number;
+};
+
+export type ProductQueryParameters = {
+  sort?: string;
+  limit?: number;
+  searchText?: string;
+  filters?: ProductFilter;
+};
+
+export type CategoryData = {
+  id: string;
+  name: string;
+};
