@@ -50,6 +50,3 @@ export const enum PostalCodeErrorTooltips {
   Postal_code_Canada = `Postal code must follow the format for Canada (e.g., A1B 2C3).`,
   Select_country = `Select a country.`,
 }
-
-export const sortOptions = ['Name from A to Z', 'Name from Z to A', 'Price from low to high', 'Price from high to low'];
-export const sortValues = ['name-asc', 'name-desc', 'price-asc', 'price-desc'];

@@ -10,6 +10,10 @@ export const enum FiltersContent {
   Category_Error = 'No data',
 }
 
+export const enum SortHeaderContent {
+  Placeholder_Search = 'Search for...',
+}
+
 export const ECO_CLASSES = [
   { key: 'A', label: 'high' },
   { key: 'B', label: 'medium' },
@@ -20,3 +24,11 @@ export const Promo_Actions = [
   { key: 'discount-price', label: 'Discount' },
   { key: 'bestsaller', label: 'Bestsaller' },
 ];
+
+export const Price_Range = [
+  { id: 'priceMin', placeholder: 'from' },
+  { id: 'priceMax', placeholder: 'to' },
+];
+
+export const sortOptions = ['Name from A to Z', 'Name from Z to A', 'Price from low to high', 'Price from high to low'];
+export const sortValues = ['name-asc', 'name-desc', 'price-asc', 'price-desc'];

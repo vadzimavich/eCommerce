@@ -32,6 +32,7 @@ export class CatalogModel {
         ...update.filters,
       };
       this.checkIsFiltred();
+      console.log(this.checkIsFiltred());
     }
 
     if (update.sort !== undefined) {
@@ -55,7 +56,12 @@ export class CatalogModel {
   public checkIsFiltred(): boolean {
     const filters = this.currentParameters.filters;
     if (!filters) return false;
-    return Object.values(filters).some((item) => item);
+    return Object.values(filters).some((item) => {
+      if (+item <= 0) {
+        return false;
+      }
+      return item;
+    });
   }
 
   public getCategories(): CategoryData[] {

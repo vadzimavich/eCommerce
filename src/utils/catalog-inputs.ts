@@ -144,3 +144,29 @@ export const createCheckboxContainer = (checkboxCategory: { key: string; label: 
   });
   return container;
 };
+
+export const createInputPriceRange = (id: string, placeholder: string): HTMLInputElement => {
+  const input = elementCreator(document.createElement('input'), {
+    classNames: ['form__input'],
+    attributes: {
+      name: 'price-range',
+      type: 'number',
+      id,
+      min: '0',
+      placeholder,
+    },
+  });
+
+  return input;
+};
+
+export const createPriceRnageContainer = (priceRangeCategory: { id: string; placeholder: string }[]): HTMLElement => {
+  const container = elementCreator(document.createElement('div'), {
+    classNames: ['price-range-container'],
+  });
+  priceRangeCategory.forEach((item) => {
+    const input = createInputPriceRange(item.id, item.placeholder);
+    container.appendChild(input);
+  });
+  return container;
+};

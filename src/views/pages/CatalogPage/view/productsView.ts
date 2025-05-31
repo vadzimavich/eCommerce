@@ -2,8 +2,8 @@ import { elementCreator } from '../../../../utils/dom-helpers';
 import { ProductCard } from '../../../../utils/product-card';
 import { CatalogModel } from '../catalogModel';
 
-import { sortOptions, sortValues } from '../../../components/InputField/constants-content';
 import { createInputCatalogSearch, createSelectCatalogSort } from '../../../../utils/catalog-inputs';
+import { sortOptions, sortValues } from './constant-conrent';
 
 export class ProductsView {
   private readonly container: HTMLElement;

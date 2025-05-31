@@ -40,10 +40,17 @@ export function parserCategories(categories: Category[]): CategoryData[] {
 export function parserFilters(filters: ProductFilter): string[] {
   const filterResult: string[] = [];
 
+  let priceMin: number = 0;
+  let priceMax: number = 0;
+
   for (const key in filters) {
     const value = filters[key];
 
-    if (typeof value === 'string') {
+    if (key === 'priceMin') {
+      priceMin = +value.toString();
+    } else if (key === 'priceMax') {
+      priceMax = +value.toString();
+    } else if (typeof value === 'string') {
       if (key === 'categoryId') {
         filterResult.push(`categories.id:"${value}"`);
       } else {
@@ -52,6 +59,13 @@ export function parserFilters(filters: ProductFilter): string[] {
     } else if ((key === 'discount-price' || key === 'bestsaller') && typeof value === 'boolean') {
       filterResult.push(`variants.attributes.${key}:"${value}"`);
     }
+  }
+
+  if (priceMin > 0 || priceMax > 0) {
+    const min = priceMin > 0 ? priceMin : 0;
+    const max = priceMax > 0 ? priceMax : '*';
+    console.log(`variants.scopedPrice.centAmount:range(${min * 100} to ${max})`);
+    filterResult.push(`variants.price.centAmount:range(${min * 100} to ${max})`);
   }
 
   return filterResult;

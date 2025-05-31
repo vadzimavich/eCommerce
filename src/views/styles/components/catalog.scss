@@ -3,7 +3,7 @@
 .catalog {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
 
   text-align: start;
@@ -65,6 +65,17 @@
     &:hover {
       color: var(--color-breeze);
     }
+  }
+}
+
+.price-range-container {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-small;
+
+  input {
+    width: -webkit-fill-available;
+    min-width: auto;
   }
 }
 
@@ -271,6 +282,11 @@
   .filters {
     width: 100%;
     max-width: none;
+    padding: 3rem;
+  }
+
+  .price-range-container {
+    flex-direction: row;
   }
 }
 
@@ -281,5 +297,9 @@
 
   .product-card {
     width: 25rem;
+  }
+
+  .price-range-container {
+    flex-direction: column;
   }
 }

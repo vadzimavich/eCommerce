@@ -65,7 +65,7 @@ export type ProductData = {
 };
 
 export type ProductFilter = {
-  [id: string]: string | boolean;
+  [id: string]: string | boolean | number;
 };
 
 export type ProductQueryParameters = {
