@@ -27,8 +27,7 @@ export class CatalogView {
   }
 
   public render(): HTMLElement {
-    this.buildFilters();
-    this.container.append(this.filtersContainer);
+    this.container.append(this.buildFilters());
     return this.container;
   }
 
@@ -88,11 +87,15 @@ export class CatalogView {
     }
   }
 
-  private buildFilters(): void {
+  private buildFilters(): HTMLElement {
     const filtersTitle = elementCreator(document.createElement('h3'), {
       content: FiltersContent.Title,
       classNames: ['filters__title'],
     });
+
+    const filterCommonSection = filersItems.createFilterSection(FiltersContent.Title, this.filtersContainer, [
+      'filter-details',
+    ]);
 
     const categorySection = filersItems.createFilterSection(FiltersContent.Summary_Categoty, this.categorySelect);
     const ecoSection = filersItems.createFilterSection(
@@ -116,5 +119,7 @@ export class CatalogView {
       priceRange,
       this.clearFilterButton
     );
+    filterCommonSection.appendChild(this.filtersContainer);
+    return filterCommonSection;
   }
 }

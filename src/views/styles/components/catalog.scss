@@ -274,19 +274,43 @@
   }
 }
 
+.filter-details {
+  width: auto;
+  border: none;
+}
+
+.filters__section.filter-details:first-of-type > summary {
+  display: none;
+}
+
 @media (width <= 960px) {
   .catalog {
     flex-direction: column;
   }
 
   .filters {
-    width: 100%;
+    width: auto;
     max-width: none;
     padding: 3rem;
   }
 
+  .filters__title {
+    display: none;
+  }
+
   .price-range-container {
     flex-direction: row;
+  }
+
+  .filter-details {
+    width: 100%;
+    border: none;
+  }
+
+  .filters__section.filter-details:first-of-type > summary {
+    display: list-item;
+    font-size: 1.8rem;
+    color: var(--color-breeze);
   }
 }
 

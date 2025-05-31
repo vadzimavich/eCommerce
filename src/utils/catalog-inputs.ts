@@ -43,9 +43,11 @@ export const createInputCatalogSearch = (id: string): HTMLInputElement => {
   return input;
 };
 
-export const createFilterSection = (title: string, content: HTMLElement): HTMLElement => {
+export const createFilterSection = (title: string, content: HTMLElement, classes?: string[]): HTMLElement => {
+  const baseClass = ['filters__section', 'filter-section'];
+  const allClasses = classes ? [...baseClass, ...classes] : baseClass;
   const details = elementCreator(document.createElement('details'), {
-    classNames: ['filters__section', 'filter-section'],
+    classNames: allClasses,
     attributes: { open: '' },
   });
   const summary = elementCreator(document.createElement('summary'), { content: title });
