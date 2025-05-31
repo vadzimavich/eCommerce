@@ -89,13 +89,10 @@ export class ProductView {
 
       let valueContent: string;
 
-      console.log('🚀 ~ ProductView ~ createAttribute ~ content[0].value:', content[0].value);
       if (typeof content[0].value === 'object') {
         valueContent = content[0].value.label['en-US'];
-        console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
       } else {
         valueContent = content[0].value;
-        console.log('🚀 ~ ProductView ~ createAttribute ~ valueContent:', valueContent);
       }
 
       const value = elementCreator(document.createElement('span'), {

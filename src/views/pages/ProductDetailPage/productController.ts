@@ -23,8 +23,8 @@ export class ProductController {
       const data = await this.service.getProductById('3a06a607-0674-44c3-8a90-a14b8e373c11');
 
       if (data && !(data instanceof Error)) {
-        const parsedProducts = parseProduct(data);
-        this.model.setProducts(parsedProducts);
+        const parsedProducts = parseProduct([data]);
+        this.model.setProducts(parsedProducts[0]);
       }
     } catch {
       route.navigate('/not-found');

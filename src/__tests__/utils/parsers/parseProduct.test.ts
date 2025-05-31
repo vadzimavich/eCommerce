@@ -104,7 +104,7 @@ const rawProduct: ProductProjection = {
         value: {
           key: 'A',
           label: {
-            'en-US': 'heght',
+            'en-US': 'high',
           },
         },
       },
@@ -126,6 +126,7 @@ const rawProduct: ProductProjection = {
   lastModifiedAt: '2025-05-28T21:51:35.011Z',
 };
 
+// eslint-disable-next-line max-lines-per-function
 describe('parseProduct', () => {
   it('should parse a product correctly', () => {
     const expected: ProductData = {
@@ -150,7 +151,7 @@ describe('parseProduct', () => {
           value: {
             key: 'A',
             label: {
-              'en-US': 'heght',
+              'en-US': 'high',
             },
           },
         },
@@ -167,7 +168,7 @@ describe('parseProduct', () => {
       ],
     };
 
-    const result = parseProduct(rawProduct);
-    expect(result).toEqual(expected);
+    const result = parseProduct([rawProduct]);
+    expect(result[0]).toEqual(expected);
   });
 });
