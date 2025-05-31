@@ -5,6 +5,7 @@ export function parseProduct(rawProducts: ProductProjection[]): ProductData[] {
   return rawProducts.map((item) => {
     const priceCents = item.masterVariant.prices?.[0]?.value?.centAmount;
     const discountCents = item.masterVariant.prices?.[0]?.discounted?.value.centAmount;
+    const priceCurrencyCode = item.masterVariant.prices?.[0]?.value?.currencyCode;
 
     return {
       id: item.id,
@@ -13,10 +14,14 @@ export function parseProduct(rawProducts: ProductProjection[]): ProductData[] {
       price: priceCents ? priceCents / 100 : undefined,
       discountPrice: discountCents ? discountCents / 100 : undefined,
       image: item.masterVariant.images?.[0]?.url,
+      images: item.masterVariant.images?.map((img) => img.url),
       sku: item.masterVariant.sku,
+      currency: priceCurrencyCode === 'USD' ? '$' : undefined,
+      attributes: item.masterVariant.attributes,
     };
   });
 }
+
 export function parserSortRequest(sortMethod: string): string {
   const typeSortPrice = 'price';
   const directionSort = sortMethod.slice(sortMethod.indexOf('-') + 1, sortMethod.length);

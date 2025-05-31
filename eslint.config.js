@@ -18,8 +18,9 @@ export default [
       'webpack.config.js',
       'eslint.config.js',
       '.commitlintrc.cjs',
-      'jest.config.js',
+      'jest.config.cjs',
       'coverage/*',
+      'babel.config.cjs',
     ],
   },
   {

@@ -14,6 +14,7 @@ import { NotFoundPage } from './views/pages/NotFoundPage';
 import { HeaderModel } from './views/components/Header/headerModel';
 import { ProfilePage } from './views/pages/ProfilePage';
 import { AuthController } from './controllers/AuthController';
+import { ProductPage } from './views/pages/ProductDetailPage';
 
 class App {
   public readonly route: Router;
@@ -39,6 +40,7 @@ class App {
       '/not-found': NotFoundPage,
       '/cart': CartPage,
       '/my-account': ProfilePage,
+      '/product': ProductPage,
     };
 
     this.route = new Router(routes, mainContainer, appModel);

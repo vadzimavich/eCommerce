@@ -1,5 +1,5 @@
-import { handlerPostalCodeField } from '../utils/handler-fields';
-import { PostalCodeErrorTooltips } from '../views/components/InputField/constants-content';
+import { handlerPostalCodeField } from '../../../utils/handler-fields';
+import { PostalCodeErrorTooltips } from '../../../views/components/InputField/constants-content';
 
 const testCases = [
   {

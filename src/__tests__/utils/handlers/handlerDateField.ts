@@ -1,5 +1,5 @@
-import { handlerDateField } from '../utils/handler-fields';
-import { DateErrorTooltips } from '../views/components/InputField/constants-content';
+import { handlerDateField } from '../../../utils/handler-fields';
+import { DateErrorTooltips } from '../../../views/components/InputField/constants-content';
 
 const today = new Date();
 const day = today.getDate();
@@ -9,7 +9,8 @@ const getTwoDigit = (value: number): string => {
   return value > 9 ? value.toString() : '0' + value;
 };
 
-const formateToday = `${today.getFullYear()}-${getTwoDigit(month + 1)}-${day}`;
+const formateToday = `${today.getFullYear()}-${getTwoDigit(month + 1)}-${getTwoDigit(day)}`;
+
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 const formateTomorrow = `${tomorrow.getFullYear()}-${getTwoDigit(tomorrow.getMonth() + 1)}-${getTwoDigit(tomorrow.getDate())}`;
