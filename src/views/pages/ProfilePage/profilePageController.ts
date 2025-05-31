@@ -3,6 +3,10 @@ import { ProfilePageModel } from './profilePageModel';
 import { ProfilePageView } from './profilePageView';
 import type { Customer, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 import { CustomerService } from '../../../models/services/AuthService';
+import { route } from '../../../app';
+import * as handlerFields from '../../../utils/handler-fields';
+import * as errorTooltip from '../../../utils/error-tooltip';
+import type { HandlerInputFieldResult } from '../../../models/types/common-types';
 
 export class ProfilePageController {
   private customerService: CustomerService;
@@ -15,53 +19,48 @@ export class ProfilePageController {
     this.customerService = CustomerService.getInstance();
 
     this.appModel.subscribeLoginStateListener((): void => {
-      console.log('Login state changed, re-rendering ProfilePage view and re-attaching ALL listeners.'); // debug log
+      console.log('Controller: Login state changed, calling view.render() and initializePageListeners().');
       this.view.render();
       this.initializePageListeners();
     });
 
     this.model.subscribePersonalInfoEdit((): void => {
-      console.log('Personal info edit mode changed in model. Updating save button state.'); // debug log
+      console.log('Controller: Personal info edit mode changed. Updating save button state.');
       this.updateSaveButtonState();
+    });
+
+    this.model.subscribePasswordEditMode((): void => {
+      console.log('Controller: Password edit mode changed. Forcing update of SaveNewPasswordButton state.');
+      this.updateSaveNewPasswordButtonState();
     });
   }
 
   public initializePageListeners(): void {
-    console.log('ProfilePageController: Initializing ALL page listeners.'); // debug log
-    this.attachStaticButtonListeners();
-    this.attachPersonalInfoInputListeners();
+    console.log('Controller: Initializing ALL page listeners.');
+    this.attachPersonalInfoActionListeners();
+    this.attachChangePasswordActionListeners();
   }
 
-  private attachStaticButtonListeners(): void {
-    console.log('Attaching listeners for static profile buttons (Edit, Save, Cancel)...'); // debug log
-
+  // personal info
+  private attachPersonalInfoActionListeners(): void {
+    console.log('Controller: Attaching listeners for personal info buttons...');
     const editButton = this.view.getEditPersonalInfoButton();
     if (editButton) {
       editButton.onclick = (): void => this.handleEditPersonalInfo();
-    } else {
-      console.warn('Edit Personal Info button NOT FOUND during initial listener attachment.'); // debug log
-    }
+    } else console.warn('Controller: Edit Personal Info button NOT FOUND during listener attachment.');
 
     const saveButton = this.view.getSavePersonalInfoButton();
     if (saveButton) {
-      saveButton.onclick = null;
       saveButton.onclick = (): void => {
         this.handleSavePersonalInfo();
       };
-    } else {
-      console.warn('Save Personal Info button NOT FOUND during initial listener attachment.'); // debug log
-    }
+    } else console.warn('Controller: Save Personal Info button NOT FOUND during listener attachment.');
 
     const cancelButton = this.view.getCancelPersonalInfoButton();
     if (cancelButton) {
       cancelButton.onclick = (): void => this.handleCancelEditPersonalInfo();
-    } else {
-      console.warn('Cancel Personal Info button NOT FOUND during initial listener attachment.'); // debug log
-    }
-  }
+    } else console.warn('Controller: Cancel Personal Info button NOT FOUND during listener attachment.');
 
-  private attachPersonalInfoInputListeners(): void {
-    console.log('Attaching input listeners for personal info fields...');
     const inputs = this.view.getPersonalInfoFormInputs();
     if (inputs.length > 0) {
       inputs.forEach((input) => {
@@ -69,7 +68,7 @@ export class ProfilePageController {
         input.addEventListener('input', this.updateSaveButtonState);
       });
     } else {
-      console.warn('Personal info input fields NOT FOUND for attaching input listeners.');
+      console.warn('Controller: Personal info inputs not found for attaching listeners.');
     }
   }
 
@@ -81,7 +80,6 @@ export class ProfilePageController {
   };
 
   private handleEditPersonalInfo(): void {
-    console.log('Edit Personal Info button CLICKED');
     this.model.setIsEditingPersonalInfo(true);
   }
 
@@ -99,10 +97,14 @@ export class ProfilePageController {
     if (newValues.email !== (currentUser.email || '')) {
       actions.push({ action: 'changeEmail', email: newValues.email });
     }
-    if (newValues.dateOfBirth && newValues.dateOfBirth !== (currentUser.dateOfBirth || '')) {
+    if (
+      newValues.dateOfBirth &&
+      newValues.dateOfBirth.trim() !== '' &&
+      newValues.dateOfBirth !== (currentUser.dateOfBirth || '')
+    ) {
       actions.push({ action: 'setDateOfBirth', dateOfBirth: newValues.dateOfBirth });
-    } else if (!newValues.dateOfBirth && currentUser.dateOfBirth) {
-      console.warn('Date of birth cleared, not sending update action for it.');
+    } else if ((!newValues.dateOfBirth || newValues.dateOfBirth.trim() === '') && currentUser.dateOfBirth) {
+      console.warn('Date of birth cleared by user, not sending setDateOfBirth action.');
     }
     return actions;
   }
@@ -131,22 +133,157 @@ export class ProfilePageController {
     const saveButton = this.view.getSavePersonalInfoButton();
     if (saveButton) saveButton.disabled = true;
 
-    console.log('Attempting to update customer with version:', currentUser.version, 'and actions:', actions);
     const result = await this.customerService.updateCustomerPersonalInfo(currentUser.version, actions);
 
     if (saveButton) saveButton.disabled = !this.view.isPersonalInfoFormValid();
 
     if (result && !(result instanceof Error)) {
-      console.log('Customer updated successfully by API:', result);
       this.appModel.setCurrentUser(result);
       this.model.setIsEditingPersonalInfo(false);
-    } else {
-      console.error('Failed to update customer via API:', result);
     }
   }
 
   private handleCancelEditPersonalInfo(): void {
-    console.log('Cancel Edit Personal Info button CLICKED');
+    console.log('Cancel Personal Info button CLICKED in controller');
     this.model.setIsEditingPersonalInfo(false);
+  }
+
+  // change password logic
+  private attachChangePasswordActionListeners(): void {
+    console.log('Controller: Attaching listeners for change password actions...');
+    const changePassMainButton = this.view.getMainChangePasswordButton();
+    if (changePassMainButton) {
+      changePassMainButton.onclick = (): void => this.handleChangePasswordBtnClick();
+    } else console.warn('Controller: "Change Password" main button not found.');
+
+    const saveNewPassButton = this.view.getSaveNewPasswordButton();
+    if (saveNewPassButton) {
+      saveNewPassButton.onclick = (): void => {
+        this.handleSaveNewPassword();
+      };
+    } else console.warn('Controller: "Save New Password" button not found.');
+
+    const cancelChangePassButton = this.view.getCancelChangePasswordButton();
+    if (cancelChangePassButton) {
+      cancelChangePassButton.onclick = (): void => this.handleCancelChangePasswordClick();
+    } else console.warn('Controller: "Cancel Change Password" button not found.');
+
+    const currentPassInput = this.view.getCurrentPasswordInput();
+    const newPassInput = this.view.getNewPasswordInput();
+    const confirmPassInput = this.view.getConfirmPasswordInput();
+
+    [currentPassInput, newPassInput, confirmPassInput].forEach((input) => {
+      if (input) {
+        input.removeEventListener('input', this.handlePasswordFormInputChange);
+        input.addEventListener('input', this.handlePasswordFormInputChange);
+      }
+    });
+
+    this.addPasswordViewToggleListener(this.view.getCurrentPasswordInput(), this.view.getCurrentPasswordViewButton());
+    this.addPasswordViewToggleListener(this.view.getNewPasswordInput(), this.view.getNewPasswordViewButton());
+    this.addPasswordViewToggleListener(this.view.getConfirmPasswordInput(), this.view.getConfirmPasswordViewButton());
+  }
+
+  private addPasswordViewToggleListener(input: HTMLInputElement | null, button: HTMLButtonElement | null): void {
+    if (input && button) {
+      button.onclick = (): void => {
+        if (input.type === 'password') {
+          input.type = 'text';
+          button.classList.add('view');
+        } else {
+          input.type = 'password';
+          button.classList.remove('view');
+        }
+      };
+    }
+  }
+
+  private handlePasswordFormInputChange = (event: Event): void => {
+    const inputElement = event.target;
+    if (inputElement instanceof HTMLInputElement) {
+      const fieldId = inputElement.id;
+      let isSpecificValidationCorrect: boolean | undefined;
+      let validationResultForTooltip: HandlerInputFieldResult = { result: false };
+
+      if (fieldId === 'profile-current-password') {
+        const isValid = inputElement.value.trim() !== '';
+        isSpecificValidationCorrect = isValid;
+        validationResultForTooltip = {
+          result: isValid,
+          errorMessage: isValid ? undefined : 'Current password cannot be empty.',
+        };
+      } else if (fieldId === 'profile-new-password') {
+        const validationResult = handlerFields.handlerPasswordField(inputElement.value);
+        isSpecificValidationCorrect = validationResult.result;
+        validationResultForTooltip = validationResult;
+      } else if (fieldId === 'profile-confirm-password') {
+        const newPassInput = this.view.getNewPasswordInput();
+        if (newPassInput) {
+          const newPassValue = newPassInput.value;
+          const confirmPassValue = inputElement.value;
+          const isNewPassFieldValidByOwnValidation = newPassInput.dataset.correct === 'true';
+          const isMatching = newPassValue === confirmPassValue && newPassValue.length > 0;
+          const isConfirmValid = isMatching && isNewPassFieldValidByOwnValidation;
+          validationResultForTooltip = {
+            result: isConfirmValid,
+            errorMessage: isConfirmValid ? undefined : 'Passwords do not match or new password is not valid.',
+          };
+        } else {
+          validationResultForTooltip = { result: false, errorMessage: 'New password field not found.' };
+        }
+      }
+      console.log(`Tooltip update for ${inputElement.id}:`, JSON.stringify(validationResultForTooltip)); // debug
+      errorTooltip.updateTooltip(inputElement, validationResultForTooltip);
+      inputElement.setAttribute('data-correct', validationResultForTooltip.result.toString());
+      this.model.updateChangePasswordFieldState(inputElement, isSpecificValidationCorrect);
+    }
+  };
+
+  private updateSaveNewPasswordButtonState(): void {
+    const saveButton = this.view.getSaveNewPasswordButton();
+    if (saveButton && this.model.getIsPasswordEditModeActive()) {
+      const isFormValid = this.model.isChangePasswordFormValid();
+      saveButton.disabled = !isFormValid;
+      console.log('Updating SaveNewPasswordButton, isFormValid:', isFormValid, 'disabled:', saveButton.disabled); // debug
+      console.log('Model status for validity check:', JSON.stringify(this.model.changePasswordStatusForm)); // debug
+    }
+  }
+
+  private handleChangePasswordBtnClick(): void {
+    console.log('Controller: handleChangePasswordBtnClick');
+    this.model.setIsPasswordEditModeActive(true);
+  }
+
+  private async handleSaveNewPassword(): Promise<void> {
+    if (!this.model.isChangePasswordFormValid()) {
+      this.customerService.modal.errorMessage('Please correct the errors in the change password form.');
+      return;
+    }
+    const formData = this.model.changePasswordDataForm;
+    const currentPassword = formData['profile-current-password'];
+    const newPassword = formData['profile-new-password'];
+    const currentUser = this.appModel.getCurrentUser();
+
+    if (!currentUser.id || typeof currentUser.version !== 'number' || !currentUser.email) {
+      this.customerService.modal.errorMessage('Cannot change password: user data is incomplete.');
+      return;
+    }
+
+    const saveButton = this.view.getSaveNewPasswordButton();
+    if (saveButton) saveButton.disabled = true;
+
+    const result = await this.customerService.changeCustomerPassword(currentUser.version, currentPassword, newPassword);
+
+    if (result && !(result instanceof Error)) {
+      this.model.setIsPasswordEditModeActive(false);
+      this.appModel.logout();
+      route.navigate('/sign-in');
+    } else {
+      if (saveButton) saveButton.disabled = false;
+    }
+  }
+
+  private handleCancelChangePasswordClick(): void {
+    this.model.setIsPasswordEditModeActive(false);
   }
 }

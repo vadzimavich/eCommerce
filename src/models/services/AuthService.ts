@@ -12,6 +12,7 @@ import {
   Customer,
   CustomerSignInResult,
   MyCustomerUpdateAction,
+  MyCustomerChangePassword,
   ByProjectKeyRequestBuilder,
   createApiBuilderFromCtpClient,
 } from '@commercetools/platform-sdk';
@@ -138,6 +139,42 @@ export class CustomerService {
       if (ctMessage) return new Error(ctMessage);
       if (isStandardError(error)) return error;
       return new Error('Login with refresh token failed.');
+    }
+  }
+
+  public async changeCustomerPassword(
+    currentVersion: number,
+    currentPasswordValue: string,
+    newPasswordValue: string
+  ): Promise<Customer | Error> {
+    if (!this.currentClient) {
+      const errorMessage = 'Client not initialized for password change.';
+      this.modal.errorMessage(errorMessage);
+      return new Error(errorMessage);
+    }
+
+    const body: MyCustomerChangePassword = {
+      version: currentVersion,
+      currentPassword: currentPasswordValue,
+      newPassword: newPasswordValue,
+    };
+
+    try {
+      const response = await this.currentClient.me().password().post({ body }).execute();
+      this.modal.infoMessage('Password changed successfully! Please log in with your new password.');
+      this.logoutCustomer();
+      return response.body;
+    } catch (error) {
+      console.error('Error changing password:', error);
+      let errorMessage = 'Failed to change password.';
+      const specificCtMessage = this.getSpecificErrorMessage(error);
+      if (specificCtMessage) {
+        errorMessage = specificCtMessage;
+      } else if (isStandardError(error)) {
+        errorMessage = error.message;
+      }
+      this.modal.errorMessage(errorMessage);
+      return new Error(errorMessage);
     }
   }
 
