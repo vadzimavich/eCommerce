@@ -40,7 +40,6 @@ export class ProductController {
 
   private handlerOpenModalSwiper(): void {
     this.view.swiper.addEventListener('click', (event: MouseEvent) => {
-      console.log('🚀 ~ ProductController ~ this.view.swiper.addEventListener ~ event:', event.target);
       if (event.target instanceof HTMLElement) {
         const imgSource = event.target.closest('img');
         if (imgSource) {
