@@ -12,7 +12,7 @@ export class CatalogPage {
 
   constructor(
     private readonly appModel: AppModel,
-    private readonly parameters: RouteParameters = { category: 'all' }
+    private readonly parameters: RouteParameters = {}
   ) {
     this.model = new CatalogModel();
     this.view = new CatalogView(this.model);

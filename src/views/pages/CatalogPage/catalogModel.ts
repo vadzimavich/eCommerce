@@ -26,19 +26,14 @@ export class CatalogModel {
   }
 
   public setParameters(update: ProductQueryParameters): void {
-    if (update.filters) {
-      this.currentParameters.filters = {
-        ...this.currentParameters.filters,
-        ...update.filters,
-      };
-      this.notifyFiltersListeners();
+    if (update.filters !== undefined) {
+      this.currentParameters.filters = { ...update.filters };
       this.checkIsFiltred();
+      this.notifyFiltersListeners();
     }
-
     if (update.sort !== undefined) {
       this.currentParameters.sort = update.sort;
     }
-
     if (update.searchText !== undefined) {
       this.currentParameters.searchText = update.searchText;
     }
@@ -69,6 +64,9 @@ export class CatalogModel {
   }
 
   public checkCategory(inputCategory: string): string | null {
+    if (inputCategory === 'all') {
+      return 'all';
+    }
     const category = this.categories.find((item) => item.name.toLowerCase() === inputCategory);
     return category ? category.id : null;
   }

@@ -29,15 +29,15 @@ export class CatalogController {
     this.model.subscribeFiltersListener(() => {
       this.updateFiltersValue();
     });
+    this.handlerSelectCategory();
   }
 
   private async init(): Promise<void> {
     await this.getCategories();
-
     const categoryId = this.model.checkCategory(this.parametrs.category);
     if (categoryId) {
-      this.model.setParameters({ filters: { categoryId } });
-    } else if (this.parametrs.category !== 'all') {
+      categoryId === 'all' ? this.model.setParameters({}) : this.model.setParameters({ filters: { categoryId } });
+    } else {
       route.navigate('/not-found');
     }
 
@@ -122,13 +122,6 @@ export class CatalogController {
     });
   }
 
-  // private handlerFocusSelectCategory(): void {
-  //   const select = this.view.getSelectCategory();
-  //   select.addEventListener('focus', () => {
-  //     this.getCategories();
-  //   });
-  // }
-
   private handlerFiltersContainer(): void {
     const container = this.view.getFiltersContainer();
 
@@ -144,10 +137,21 @@ export class CatalogController {
         }
 
         element.addEventListener(eventType, () => {
-          const filter = { [element.id]: element.type === 'checkbox' ? element.checked : element.value };
-          this.model.setParameters({ filters: filter });
-          const allFilters = this.model.getParameters();
-          this.initProducts(allFilters);
+          const parameters = this.model.getParameters();
+          const currentFilters = parameters.filters || {};
+
+          if (element instanceof HTMLInputElement && element.type === 'checkbox') {
+            if (element.checked) {
+              currentFilters[element.id] = true;
+            } else {
+              delete currentFilters[element.id];
+            }
+          } else {
+            currentFilters[element.id] = element.value;
+          }
+
+          this.model.setParameters({ filters: currentFilters });
+          this.initProducts(this.model.getParameters());
         });
       }
     });
@@ -159,7 +163,7 @@ export class CatalogController {
       event.preventDefault();
       this.model.clearParametrs();
       this.resetFormInputs();
-      this.initProducts(this.model.getParameters());
+      route.navigate('/catalog/all');
     });
   }
 
@@ -180,21 +184,14 @@ export class CatalogController {
     });
   }
 
-  // public setActiveCategory(categorySlug: string): void {
-  //   const select = this.getSelectCategory(); // метод, который ты, возможно, уже реализовал
-  //   const options = Array.from(select.options);
-
-  //   for (const option of options) {
-  //     if (option.value === categorySlug) {
-  //       option.selected = true;
-  //       break;
-  //     }
-  //   }
-  // }
-
-  // private updateSelectCategory(): void {
-  //   this.view.updateCategories();
-  // }
+  private handlerSelectCategory(): void {
+    const select = this.view.getSelectCategory();
+    select.addEventListener('change', () => {
+      const selectedOption = select.options[select.selectedIndex];
+      const optionId = selectedOption.id;
+      route.navigate(`/catalog/${optionId}`);
+    });
+  }
 
   private handlerProducts(): void {
     this.productsView.renderCards();

@@ -69,7 +69,10 @@ export const createCategorySelect = (
       id: id,
     },
   });
-  const defaultOption = elementCreator(document.createElement('option'), { content: defaultValue });
+  const defaultOption = elementCreator(document.createElement('option'), {
+    content: defaultValue,
+    attributes: { value: 'all' },
+  });
   defaultOption.disabled = true;
   defaultOption.selected = true;
   select.appendChild(defaultOption);
@@ -91,6 +94,7 @@ export const createOptionsSelectCategory = (select: HTMLSelectElement, options: 
       content: item.name,
       attributes: {
         value: item.id,
+        id: item.name.toLowerCase(),
       },
     });
     select.appendChild(category);
