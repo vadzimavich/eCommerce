@@ -33,7 +33,7 @@ class App {
     const routes: Routes = {
       '/': HomePage,
       '/home': HomePage,
-      '/catalog': CatalogPage,
+      '/catalog/:category': CatalogPage,
       '/about-us': AboutPage,
       '/sign-in': LoginPage,
       '/sign-up': RegistrationPage,

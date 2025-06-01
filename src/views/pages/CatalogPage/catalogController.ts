@@ -1,6 +1,7 @@
 import { route } from '../../../app';
 import { ProductsService } from '../../../models/services/ProductService';
 import { ProductQueryParameters } from '../../../models/types/api-types';
+import { RouteParameters } from '../../../models/types/router-types';
 import { parserSortRequest } from '../../../utils/parsers';
 import { CatalogModel } from './catalogModel';
 import { CatalogView } from './view/catalodView';
@@ -11,11 +12,11 @@ export class CatalogController {
   constructor(
     private readonly model: CatalogModel,
     private readonly view: CatalogView,
-    private readonly productsView: ProductsView
+    private readonly productsView: ProductsView,
+    private readonly parametrs: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
-    this.initProducts({});
-    this.handlerFocusSelectCategory();
+    this.init();
     this.handlerProductsContainer();
     this.handlerSortSelect();
     this.handlerSearchForm();
@@ -25,7 +26,22 @@ export class CatalogController {
       this.handlerProducts();
       this.updateCleanButton();
     });
-    this.model.subscribeToCategoryUpdate(() => this.updateSelectCategory());
+    this.model.subscribeFiltersListener(() => {
+      this.updateFiltersValue();
+    });
+  }
+
+  private async init(): Promise<void> {
+    await this.getCategories();
+
+    const categoryId = this.model.checkCategory(this.parametrs.category);
+    if (categoryId) {
+      this.model.setParameters({ filters: { categoryId } });
+    } else if (this.parametrs.category !== 'all') {
+      route.navigate('/not-found');
+    }
+
+    await this.initProducts(this.model.getParameters());
   }
 
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
@@ -56,6 +72,7 @@ export class CatalogController {
         return;
       }
       this.model.setCategories(resultCategories);
+      this.view.updateCategories();
     } catch (error) {
       console.error('Error loading categories:', error);
     }
@@ -105,12 +122,12 @@ export class CatalogController {
     });
   }
 
-  private handlerFocusSelectCategory(): void {
-    const select = this.view.getSelectCategory();
-    select.addEventListener('focus', () => {
-      this.getCategories();
-    });
-  }
+  // private handlerFocusSelectCategory(): void {
+  //   const select = this.view.getSelectCategory();
+  //   select.addEventListener('focus', () => {
+  //     this.getCategories();
+  //   });
+  // }
 
   private handlerFiltersContainer(): void {
     const container = this.view.getFiltersContainer();
@@ -163,9 +180,21 @@ export class CatalogController {
     });
   }
 
-  private updateSelectCategory(): void {
-    this.view.updateCategories();
-  }
+  // public setActiveCategory(categorySlug: string): void {
+  //   const select = this.getSelectCategory(); // метод, который ты, возможно, уже реализовал
+  //   const options = Array.from(select.options);
+
+  //   for (const option of options) {
+  //     if (option.value === categorySlug) {
+  //       option.selected = true;
+  //       break;
+  //     }
+  //   }
+  // }
+
+  // private updateSelectCategory(): void {
+  //   this.view.updateCategories();
+  // }
 
   private handlerProducts(): void {
     this.productsView.renderCards();
@@ -173,5 +202,11 @@ export class CatalogController {
 
   private updateCleanButton(): void {
     this.view.changeClearButton();
+  }
+
+  private updateFiltersValue(): void {
+    const select = this.view.getSelectCategory();
+    const currentId = this.model.getParameters().filters?.categoryId;
+    if (typeof currentId === 'string') select.value = currentId;
   }
 }

@@ -78,6 +78,11 @@ export class CatalogView {
     this.categorySelect.append(defaultOption, noDataOption);
   }
 
+  public setActiveCategory(): void {
+    console.log(this.categorySelect);
+    this.categorySelect.value = 'Furniture';
+  }
+
   public changeClearButton(): void {
     const isFilters = this.model.checkIsFiltred();
     if (!isFilters) {
