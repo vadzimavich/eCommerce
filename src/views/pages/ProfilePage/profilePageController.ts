@@ -1,6 +1,6 @@
 import { AppModel } from '../../../models/state/AppState';
 import { ProfilePageModel } from './profilePageModel';
-import { ProfilePageView } from './profilePageView';
+import { ProfilePageView } from './view/profilePageView';
 import type { Customer, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 import { CustomerService } from '../../../models/services/AuthService';
 import { route } from '../../../app';

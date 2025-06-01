@@ -1,7 +1,7 @@
 import { AppModel } from '../../../models/state/AppState';
 import { ProfilePageController } from './profilePageController';
 import { ProfilePageModel } from './profilePageModel';
-import { ProfilePageView } from './profilePageView';
+import { ProfilePageView } from './view/profilePageView';
 
 export class ProfilePage {
   private readonly view: ProfilePageView;
