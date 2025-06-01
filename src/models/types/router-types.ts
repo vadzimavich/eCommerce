@@ -1,7 +1,9 @@
 import { AppModel } from '../state/AppState';
 
-type Main = {
+export type Main = {
   render: () => HTMLElement;
 };
 
-export type Routes = Record<string, new (appModel: AppModel) => Main>;
+export type RouteParameters = Record<string, string>;
+
+export type Routes = Record<string, new (appModel: AppModel, routeParameters?: RouteParameters) => Main>;

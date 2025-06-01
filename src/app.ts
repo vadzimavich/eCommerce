@@ -40,7 +40,7 @@ class App {
       '/not-found': NotFoundPage,
       '/cart': CartPage,
       '/my-account': ProfilePage,
-      '/product': ProductPage,
+      '/product/:id': ProductPage,
     };
 
     this.route = new Router(routes, mainContainer, appModel);
