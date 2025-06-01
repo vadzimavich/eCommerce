@@ -3,7 +3,7 @@ import { elementCreator } from '../../../../utils/dom-helpers';
 import { ProfilePageModel } from '../profilePageModel';
 import { PersonalInformationView } from './PersonalInformationView';
 import { SecuritySectionView } from './SecuritySectionView';
-// import { AddressesSectionView } from './AddressesSectionView';
+import { AddressesSectionView } from './AddressesSectionView';
 
 export class ProfilePageView {
   private readonly container: HTMLElement;
@@ -12,7 +12,7 @@ export class ProfilePageView {
 
   private personalInfoView: PersonalInformationView;
   private securityView: SecuritySectionView;
-  // private addressesView: AddressesSectionView;
+  private addressesView: AddressesSectionView;
 
   constructor(
     private readonly model: ProfilePageModel,
@@ -32,7 +32,7 @@ export class ProfilePageView {
 
     this.personalInfoView = new PersonalInformationView(this.model, this.appModel);
     this.securityView = new SecuritySectionView(this.model, this.appModel);
-    // this.addressesView = new AddressesSectionView(this.model, this.appModel);
+    this.addressesView = new AddressesSectionView(this.model, this.appModel);
   }
 
   public render(): HTMLElement {
@@ -44,8 +44,8 @@ export class ProfilePageView {
     } else {
       this.contentWrapper.append(
         this.personalInfoView.render(),
-        this.securityView.render()
-        // this.addressesView.render()
+        this.securityView.render(),
+        this.addressesView.render()
       );
     }
     return this.container;
