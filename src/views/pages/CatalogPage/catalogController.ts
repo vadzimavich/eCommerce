@@ -1,3 +1,4 @@
+import { route } from '../../../app';
 import { ProductsService } from '../../../models/services/ProductService';
 import { ProductQueryParameters } from '../../../models/types/api-types';
 import { parserSortRequest } from '../../../utils/parsers';
@@ -71,7 +72,7 @@ export class CatalogController {
 
         if (card instanceof HTMLElement) {
           const cardId = card.getAttribute('data-id');
-          console.log(cardId);
+          route.navigate(`product/${cardId}`);
         }
       }
     });
