@@ -116,13 +116,37 @@
 
   overflow: hidden;
   align-items: center;
+  justify-content: center;
 
   width: 100%;
   max-width: 100%;
   height: 100%;
 
+  .product__wrapper {
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
   .product__wrapper__sliders {
     width: 100%;
-    height: 100%;
+  }
+
+  .swiper {
+    width: 50vw;
+    max-width: 70vh;
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: var(--color-breeze);
+  }
+
+  .swiper-button-prev {
+    left: 15%;
+  }
+
+  .swiper-button-next {
+    right: 15%;
   }
 }

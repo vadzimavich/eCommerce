@@ -4,14 +4,16 @@ import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 
 export class ProductModalSwiperView {
-  private swiper: HTMLDivElement;
-  private thumbsSwiper: HTMLDivElement;
-  private container: HTMLElement;
-  private buttonClose: HTMLButtonElement;
+  private readonly swiper: HTMLDivElement;
+  private readonly thumbsSwiper: HTMLDivElement;
+  private readonly container: HTMLElement;
+  private readonly buttonClose: HTMLButtonElement;
+  private readonly buttonPrev: HTMLButtonElement;
+  private readonly buttonNext: HTMLButtonElement;
 
   constructor(private readonly model: ProductModel) {
     this.container = elementCreator(document.createElement('section'), {
-      classNames: ['page-wrapper', 'product', 'modal'],
+      classNames: ['product', 'modal'],
       attributes: { id: 'modal-swiper' },
     });
     this.swiper = elementCreator(document.createElement('div'), {
@@ -23,6 +25,14 @@ export class ProductModalSwiperView {
     this.buttonClose = elementCreator(document.createElement('button'), {
       classNames: ['button'],
       attributes: { id: 'button-close' },
+    });
+    this.buttonPrev = elementCreator(document.createElement('button'), {
+      classNames: ['button', 'swiper-button-prev'],
+      attributes: { id: 'button-swiper-prev' },
+    });
+    this.buttonNext = elementCreator(document.createElement('button'), {
+      classNames: ['button', 'swiper-button-next'],
+      attributes: { id: 'button-swiper-next' },
     });
   }
 
@@ -39,6 +49,10 @@ export class ProductModalSwiperView {
   }
 
   private createSwiperElements(): HTMLDivElement {
+    const wrapper = elementCreator(document.createElement('div'), {
+      classNames: ['product__wrapper'],
+    });
+
     const sliders = elementCreator(document.createElement('div'), {
       classNames: ['product__wrapper__sliders'],
     });
@@ -51,26 +65,12 @@ export class ProductModalSwiperView {
       classNames: ['thumbs-swiper', 'swiper-wrapper'],
     });
 
-    this.model.dataProduct?.images?.forEach((item) => {
+    this.model.dataProduct?.images?.forEach((sourcePath) => {
       for (let i = 0; i < 2; i++) {
-        const wrapperImg = elementCreator(document.createElement('div'), {
-          classNames: ['product__wrapper__img', 'swiper-slide'],
-        });
-
-        const img = elementCreator(document.createElement('img'), {
-          classNames: ['product__img'],
-          attributes: {
-            src: item,
-            alt: this.model.dataProduct?.title || '',
-          },
-        });
-
-        wrapperImg.append(img);
-
         if (i === 0) {
-          wrapperSlider.append(wrapperImg);
+          this.addSlide(wrapperSlider, sourcePath);
         } else {
-          wrapperThumbsSlider.append(wrapperImg);
+          this.addSlide(wrapperThumbsSlider, sourcePath);
         }
       }
     });
@@ -78,8 +78,26 @@ export class ProductModalSwiperView {
     this.swiper.append(wrapperSlider);
     this.thumbsSwiper.append(wrapperThumbsSlider);
 
-    sliders.append(this.swiper, this.thumbsSwiper);
-    return sliders;
+    sliders.append(this.buttonPrev, this.swiper, this.buttonNext, this.thumbsSwiper);
+    wrapper.append(sliders);
+    return wrapper;
+  }
+
+  private addSlide(wrapper: HTMLElement, sourcePath: string): void {
+    const wrapperImg = elementCreator(document.createElement('div'), {
+      classNames: ['product__wrapper__img', 'swiper-slide'],
+    });
+
+    const img = elementCreator(document.createElement('img'), {
+      classNames: ['product__img'],
+      attributes: {
+        src: sourcePath,
+        alt: this.model.dataProduct?.title || '',
+      },
+    });
+
+    wrapperImg.append(img);
+    wrapper.append(wrapperImg);
   }
 
   private initializeSwiper(): void {
@@ -94,7 +112,10 @@ export class ProductModalSwiperView {
 
     new Swiper(this.swiper, {
       modules: [Navigation, Pagination, Thumbs],
-      navigation: true,
+      navigation: {
+        nextEl: this.buttonNext,
+        prevEl: this.buttonPrev,
+      },
       pagination: { clickable: true },
       thumbs: {
         swiper: thumbsSwiperInstance,
