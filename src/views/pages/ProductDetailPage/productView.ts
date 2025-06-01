@@ -1,14 +1,17 @@
 import { elementCreator } from '../../../utils/dom-helpers';
+import { ProductModalSwiperView } from './modalSwiperView';
 import { ProductModel } from './productModel';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 
 export class ProductView {
-  private swiper: HTMLDivElement;
-  private thumbsSwiper: HTMLDivElement;
-  private container: HTMLElement;
+  public readonly swiper: HTMLDivElement;
+  public readonly modalSwiper: ProductModalSwiperView;
+  private readonly thumbsSwiper: HTMLDivElement;
+  private readonly container: HTMLElement;
 
   constructor(private readonly model: ProductModel) {
+    this.modalSwiper = new ProductModalSwiperView(this.model);
     this.container = elementCreator(document.createElement('section'), {
       classNames: ['page-wrapper', 'product'],
     });

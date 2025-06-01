@@ -17,6 +17,8 @@ export class ProductController {
     this.service = ProductsService.getInstance();
     this.initProduct();
     this.model.subscribeProductListener(() => this.handlerLoadProduct());
+    this.handlerOpenModalSwiper();
+    this.handlerCloseModalSwiper();
   }
 
   private async initProduct(): Promise<void> {
@@ -34,5 +36,22 @@ export class ProductController {
 
   private handlerLoadProduct(): void {
     this.view.renderProduct();
+  }
+
+  private handlerOpenModalSwiper(): void {
+    this.view.swiper.addEventListener('click', (event: MouseEvent) => {
+      if (event.target instanceof HTMLElement) {
+        const imgSource = event.target.closest('img');
+        if (imgSource) {
+          this.view.modalSwiper.render(imgSource.src);
+        }
+      }
+    });
+  }
+
+  private handlerCloseModalSwiper(): void {
+    this.view.modalSwiper.buttonClose.addEventListener('click', () => {
+      this.view.modalSwiper.closeModal();
+    });
   }
 }

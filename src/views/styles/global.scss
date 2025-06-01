@@ -80,6 +80,10 @@ body {
   }
 }
 
+body.modal_active {
+  overflow: hidden;
+}
+
 body.overlay {
   overflow-y: hidden;
 }
