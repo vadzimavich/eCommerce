@@ -1,5 +1,5 @@
 import { AppModel } from '../../../models/state/AppState';
-import { ProfilePageController } from './profilePageController';
+import { ProfilePageController } from './controller/profilePageController';
 import { ProfilePageModel } from './profilePageModel';
 import { ProfilePageView } from './view/profilePageView';
 

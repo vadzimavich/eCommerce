@@ -51,73 +51,85 @@ export class ProfilePageView {
     return this.container;
   }
 
-  public getEditPersonalInfoButton(): HTMLButtonElement {
-    return this.personalInfoView.editButton;
+  public getPersonalInfoViewModule(): PersonalInformationView {
+    return this.personalInfoView;
   }
 
-  public getSavePersonalInfoButton(): HTMLButtonElement {
-    return this.personalInfoView.saveButton;
+  public getSecurityViewModule(): SecuritySectionView {
+    return this.securityView;
   }
 
-  public getCancelPersonalInfoButton(): HTMLButtonElement {
-    return this.personalInfoView.cancelButton;
+  public getAddressesSectionView(): AddressesSectionView {
+    return this.addressesView;
   }
 
-  public getPersonalInfoFormInputs(): HTMLInputElement[] {
-    return [
-      this.personalInfoView.getFirstNameInput(),
-      this.personalInfoView.getLastNameInput(),
-      this.personalInfoView.getEmailInput(),
-      this.personalInfoView.getDateOfBirthInput(),
-    ].filter((input): input is HTMLInputElement => input !== null);
-  }
+  // public getEditPersonalInfoButton(): HTMLButtonElement {
+  //   return this.personalInfoView.editButton;
+  // }
 
-  public getPersonalInfoFormValues(): {
-    firstName: string;
-    lastName: string;
-    email: string;
-    dateOfBirth: string;
-  } | null {
-    return this.personalInfoView.getFormValues();
-  }
+  // public getSavePersonalInfoButton(): HTMLButtonElement {
+  //   return this.personalInfoView.saveButton;
+  // }
 
-  public isPersonalInfoFormValid(): boolean {
-    return this.personalInfoView.isFormValid();
-  }
+  // public getCancelPersonalInfoButton(): HTMLButtonElement {
+  //   return this.personalInfoView.cancelButton;
+  // }
 
-  public getMainChangePasswordButton(): HTMLButtonElement {
-    return this.securityView.mainChangePasswordButton;
-  }
+  // public getPersonalInfoFormInputs(): HTMLInputElement[] {
+  //   return [
+  //     this.personalInfoView.getFirstNameInput(),
+  //     this.personalInfoView.getLastNameInput(),
+  //     this.personalInfoView.getEmailInput(),
+  //     this.personalInfoView.getDateOfBirthInput(),
+  //   ].filter((input): input is HTMLInputElement => input !== null);
+  // }
 
-  public getCurrentPasswordInput(): HTMLInputElement {
-    return this.securityView.currentPasswordInput;
-  }
+  // public getPersonalInfoFormValues(): {
+  //   firstName: string;
+  //   lastName: string;
+  //   email: string;
+  //   dateOfBirth: string;
+  // } | null {
+  //   return this.personalInfoView.getFormValues();
+  // }
 
-  public getNewPasswordInput(): HTMLInputElement {
-    return this.securityView.newPasswordInput;
-  }
+  // public isPersonalInfoFormValid(): boolean {
+  //   return this.personalInfoView.isFormValid();
+  // }
 
-  public getConfirmPasswordInput(): HTMLInputElement {
-    return this.securityView.confirmPasswordInput;
-  }
+  // public getMainChangePasswordButton(): HTMLButtonElement {
+  //   return this.securityView.mainChangePasswordButton;
+  // }
 
-  public getSaveNewPasswordButton(): HTMLButtonElement {
-    return this.securityView.saveNewPasswordButton;
-  }
+  // public getCurrentPasswordInput(): HTMLInputElement {
+  //   return this.securityView.currentPasswordInput;
+  // }
 
-  public getCancelChangePasswordButton(): HTMLButtonElement {
-    return this.securityView.cancelChangePasswordButton;
-  }
+  // public getNewPasswordInput(): HTMLInputElement {
+  //   return this.securityView.newPasswordInput;
+  // }
 
-  public getCurrentPasswordViewButton(): HTMLButtonElement {
-    return this.securityView.currentPasswordViewButton;
-  }
+  // public getConfirmPasswordInput(): HTMLInputElement {
+  //   return this.securityView.confirmPasswordInput;
+  // }
 
-  public getNewPasswordViewButton(): HTMLButtonElement {
-    return this.securityView.newPasswordViewButton;
-  }
+  // public getSaveNewPasswordButton(): HTMLButtonElement {
+  //   return this.securityView.saveNewPasswordButton;
+  // }
 
-  public getConfirmPasswordViewButton(): HTMLButtonElement {
-    return this.securityView.confirmPasswordViewButton;
-  }
+  // public getCancelChangePasswordButton(): HTMLButtonElement {
+  //   return this.securityView.cancelChangePasswordButton;
+  // }
+
+  // public getCurrentPasswordViewButton(): HTMLButtonElement {
+  //   return this.securityView.currentPasswordViewButton;
+  // }
+
+  // public getNewPasswordViewButton(): HTMLButtonElement {
+  //   return this.securityView.newPasswordViewButton;
+  // }
+
+  // public getConfirmPasswordViewButton(): HTMLButtonElement {
+  //   return this.securityView.confirmPasswordViewButton;
+  // }
 }
