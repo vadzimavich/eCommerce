@@ -15,11 +15,12 @@ jest.mock('../../views/pages/ProductDetailPage/productController');
 describe('ProductPage', () => {
   let mockAppModel: AppModel;
   let productPage: ProductPage;
+  const mockParameter = { id: '123' };
 
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     mockAppModel = {} as AppModel;
-    productPage = new ProductPage(mockAppModel);
+    productPage = new ProductPage(mockAppModel, mockParameter);
   });
 
   test('ProductPage: should initialize with ProductModel and ProductView', () => {
@@ -36,6 +37,11 @@ describe('ProductPage', () => {
     const result = productPage.render();
 
     expect(result).toBe(mockRender);
-    expect(ProductController).toHaveBeenCalledWith(mockAppModel, expect.any(ProductModel), expect.any(ProductView));
+    expect(ProductController).toHaveBeenCalledWith(
+      mockAppModel,
+      expect.any(ProductModel),
+      expect.any(ProductView),
+      mockParameter
+    );
   });
 });

@@ -1,6 +1,7 @@
 import { route } from '../../../app';
 import { ProductsService } from '../../../models/services/ProductService';
 import { AppModel } from '../../../models/state/AppState';
+import { RouteParameters } from '../../../models/types/router-types';
 import { parseProduct } from '../../../utils/parsers';
 import { ProductModel } from './productModel';
 import { ProductView } from './productView';
@@ -10,7 +11,8 @@ export class ProductController {
   constructor(
     private readonly appModel: AppModel,
     private readonly model: ProductModel,
-    private readonly view: ProductView
+    private readonly view: ProductView,
+    private readonly parameters: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
     this.initProduct();
@@ -19,8 +21,7 @@ export class ProductController {
 
   private async initProduct(): Promise<void> {
     try {
-      //const idProduct = window.location.hash.split('/').at(-1) || '';
-      const data = await this.service.getProductById('3a06a607-0674-44c3-8a90-a14b8e373c11');
+      const data = await this.service.getProductById(this.parameters.id);
 
       if (data && !(data instanceof Error)) {
         const parsedProducts = parseProduct([data]);
