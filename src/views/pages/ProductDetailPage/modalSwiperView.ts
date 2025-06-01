@@ -10,6 +10,7 @@ export class ProductModalSwiperView {
   private readonly container: HTMLElement;
   private readonly buttonPrev: HTMLButtonElement;
   private readonly buttonNext: HTMLButtonElement;
+  private currentSlideIndex: number = 0;
 
   constructor(private readonly model: ProductModel) {
     this.container = elementCreator(document.createElement('section'), {
@@ -36,8 +37,8 @@ export class ProductModalSwiperView {
     });
   }
 
-  public render(): void {
-    this.container.append(this.createSwiperElements());
+  public render(imgSource: string): void {
+    this.container.append(this.createSwiperElements(imgSource));
     document.body.append(this.container);
     this.initializeSwiper();
     document.body.classList.toggle('modal_active');
@@ -52,7 +53,7 @@ export class ProductModalSwiperView {
     document.body.classList.toggle('modal_active');
   }
 
-  private createSwiperElements(): HTMLDivElement {
+  private createSwiperElements(imgSource: string): HTMLDivElement {
     const wrapper = elementCreator(document.createElement('div'), {
       classNames: ['product__wrapper'],
     });
@@ -69,13 +70,16 @@ export class ProductModalSwiperView {
       classNames: ['thumbs-swiper', 'swiper-wrapper'],
     });
 
-    this.model.dataProduct?.images?.forEach((sourcePath) => {
+    this.model.dataProduct?.images?.forEach((sourcePath, index) => {
       for (let i = 0; i < 2; i++) {
         if (i === 0) {
           this.addSlide(wrapperSlider, sourcePath);
         } else {
           this.addSlide(wrapperThumbsSlider, sourcePath);
         }
+      }
+      if (sourcePath === imgSource) {
+        this.currentSlideIndex = index;
       }
     });
 
@@ -137,7 +141,7 @@ export class ProductModalSwiperView {
       },
     });
 
-    new Swiper(this.swiper, {
+    const swiperInstance = new Swiper(this.swiper, {
       modules: [Navigation, Pagination, Thumbs],
       navigation: {
         nextEl: this.buttonNext,
@@ -148,5 +152,7 @@ export class ProductModalSwiperView {
         swiper: thumbsSwiperInstance,
       },
     });
+
+    swiperInstance.slideTo(this.currentSlideIndex, 0);
   }
 }
