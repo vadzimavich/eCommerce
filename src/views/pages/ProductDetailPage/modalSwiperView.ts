@@ -4,10 +4,10 @@ import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 
 export class ProductModalSwiperView {
+  public readonly buttonClose: HTMLButtonElement;
   private readonly swiper: HTMLDivElement;
   private readonly thumbsSwiper: HTMLDivElement;
   private readonly container: HTMLElement;
-  private readonly buttonClose: HTMLButtonElement;
   private readonly buttonPrev: HTMLButtonElement;
   private readonly buttonNext: HTMLButtonElement;
 
@@ -38,13 +38,17 @@ export class ProductModalSwiperView {
 
   public render(): void {
     this.container.append(this.createSwiperElements());
-    this.initializeSwiper();
     document.body.append(this.container);
+    this.initializeSwiper();
     document.body.classList.toggle('modal_active');
   }
 
   public closeModal(): void {
     this.container.replaceChildren();
+    this.buttonClose.replaceChildren();
+    this.swiper.replaceChildren();
+    this.thumbsSwiper.replaceChildren();
+    this.container.remove();
     document.body.classList.toggle('modal_active');
   }
 
@@ -80,7 +84,17 @@ export class ProductModalSwiperView {
 
     sliders.append(this.buttonPrev, this.swiper, this.buttonNext, this.thumbsSwiper);
     wrapper.append(sliders);
+    this.container.append(this.createButtonClose());
     return wrapper;
+  }
+
+  private createButtonClose(): HTMLButtonElement {
+    for (let i = 0; i < 2; i++) {
+      const line = elementCreator(document.createElement('div'), { classNames: ['button__line'] });
+      this.buttonClose.append(line);
+    }
+
+    return this.buttonClose;
   }
 
   private addSlide(wrapper: HTMLElement, sourcePath: string): void {
@@ -104,10 +118,23 @@ export class ProductModalSwiperView {
     const thumbsSwiperInstance = new Swiper(this.thumbsSwiper, {
       modules: [Navigation, Pagination, Thumbs],
       spaceBetween: 10,
-      slidesPerView: 3,
       freeMode: true,
       watchSlidesProgress: true,
       navigation: true,
+      breakpoints: {
+        0: {
+          slidesPerView: 3,
+        },
+        420: {
+          slidesPerView: 4,
+        },
+        560: {
+          slidesPerView: 6,
+        },
+        768: {
+          slidesPerView: 8,
+        },
+      },
     });
 
     new Swiper(this.swiper, {

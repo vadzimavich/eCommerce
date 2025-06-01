@@ -16,6 +16,7 @@ export class ProductController {
     this.initProduct();
     this.model.subscribeProductListener(() => this.handlerLoadProduct());
     this.handlerOpenModalSwiper();
+    this.handlerCloseModalSwiper();
   }
 
   private async initProduct(): Promise<void> {
@@ -39,6 +40,12 @@ export class ProductController {
   private handlerOpenModalSwiper(): void {
     this.view.swiper.addEventListener('click', () => {
       this.view.modalSwiper.render();
+    });
+  }
+
+  private handlerCloseModalSwiper(): void {
+    this.view.modalSwiper.buttonClose.addEventListener('click', () => {
+      this.view.modalSwiper.closeModal();
     });
   }
 }

@@ -137,6 +137,10 @@
     max-width: 70vh;
   }
 
+  .product__wrapper__thumbs-swiper .swiper-wrapper {
+    justify-content: center;
+  }
+
   .swiper-button-prev,
   .swiper-button-next {
     color: var(--color-breeze);
@@ -148,5 +152,53 @@
 
   .swiper-button-next {
     right: 15%;
+  }
+
+  #button-close {
+    position: absolute;
+    top: 5rem;
+    right: 5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 5rem;
+    height: 5rem;
+    border: 0.1rem solid var(--color-breeze-light);
+    border-radius: 100%;
+
+    .button__line {
+      width: 4rem;
+      height: 1px;
+      background-color: var(--color-breeze);
+
+      &:first-child {
+        transform: rotate(45deg) translate(8px, -8px);
+
+        @media (width <= 520px) {
+          transform: rotate(45deg) translate(6px, -7px);
+        }
+      }
+
+      &:last-child {
+        transform: rotate(-45deg) translate(-8px, -8px);
+
+        @media (width <= 520px) {
+          transform: rotate(-45deg) translate(-6px, -7px);
+        }
+      }
+
+      @media (width <= 520px) {
+        width: 2rem;
+      }
+    }
+
+    @media (width <= 520px) {
+      top: 4rem;
+      right: 4rem;
+      width: 4rem;
+      height: 4rem;
+    }
   }
 }
