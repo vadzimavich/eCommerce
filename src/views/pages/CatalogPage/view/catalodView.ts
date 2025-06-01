@@ -9,6 +9,7 @@ export class CatalogView {
   private readonly filtersContainer: HTMLFormElement;
   private readonly categorySelect: HTMLSelectElement;
   private readonly clearFilterButton: HTMLButtonElement;
+  private readonly breadcrumbContainer: HTMLElement;
   constructor(private readonly model: CatalogModel) {
     this.container = elementCreator(document.createElement('section'), { classNames: ['page-wrapper', 'catalog'] });
     this.filtersContainer = elementCreator(document.createElement('form'), {
@@ -24,6 +25,10 @@ export class CatalogView {
       classNames: ['form__button', 'button'],
       content: FiltersContent.Button_Clear,
     });
+
+    this.breadcrumbContainer = elementCreator(document.createElement('div'), {
+      classNames: ['catalog__crumb', 'crumb'],
+    });
   }
 
   public createWrapper(): HTMLElement {
@@ -33,6 +38,8 @@ export class CatalogView {
   }
 
   public render(): HTMLElement {
+    this.updateBreadCrumbs();
+    this.container.append(this.breadcrumbContainer);
     return this.container;
   }
 
@@ -83,17 +90,26 @@ export class CatalogView {
     this.categorySelect.append(defaultOption, noDataOption);
   }
 
-  public setActiveCategory(): void {
-    console.log(this.categorySelect);
-    this.categorySelect.value = 'Furniture';
-  }
-
   public changeClearButton(): void {
     const isFilters = this.model.checkIsFiltred();
+    console.log(isFilters);
     if (!isFilters) {
       this.clearFilterButton.disabled = true;
     } else {
       this.clearFilterButton.disabled = false;
+    }
+  }
+
+  public updateBreadCrumbs(): void {
+    this.breadcrumbContainer.replaceChildren();
+
+    const startCrumb = this.buildCrumbStart();
+    this.breadcrumbContainer.append(startCrumb);
+
+    const category = this.model.getSelectedCategory();
+    if (category) {
+      const categoryCrumb = this.buildCrumbCategory(category);
+      this.breadcrumbContainer.append(categoryCrumb);
     }
   }
 
@@ -131,5 +147,48 @@ export class CatalogView {
     );
     filterCommonSection.appendChild(this.filtersContainer);
     return filterCommonSection;
+  }
+
+  private buildCrumbCategory(categoryName: string): HTMLElement {
+    const anchor = elementCreator(document.createElement('a'), {
+      classNames: ['crumb__anchor', 'crumb__active'],
+      attributes: {
+        href: `#/catalog/${categoryName.toLowerCase()}`,
+      },
+    });
+
+    const span = elementCreator(document.createElement('span'), {
+      content: categoryName,
+      classNames: ['crumb__text'],
+    });
+
+    anchor.append(span);
+    return anchor;
+  }
+
+  private buildCrumbStart(): HTMLElement {
+    const anchorWrapper = elementCreator(document.createElement('a'), {
+      classNames: ['crumb__anchor'],
+      attributes: {
+        href: '#/catalog/all',
+      },
+    });
+
+    const iconHome = elementCreator(document.createElement('img'), {
+      attributes: {
+        src: './assets/icons/catalog-icons/catalog-home.svg',
+        alt: 'icon-home',
+      },
+      classNames: ['crumb__icon'],
+    });
+
+    const span = elementCreator(document.createElement('span'), {
+      content: 'All',
+      classNames: ['crumb__text'],
+    });
+
+    anchorWrapper.append(iconHome, span);
+
+    return anchorWrapper;
   }
 }

@@ -1,5 +1,12 @@
 @use '../index' as *;
 
+.catalog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .catalog-wrapper {
   display: flex;
   gap: $gap-middle;
@@ -273,6 +280,35 @@
 
 .filters__section.filter-details:first-of-type > summary {
   display: none;
+}
+
+.crumb {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  text-align: start;
+
+  &__anchor {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  &__text {
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+  }
+
+  &__active {
+    border-bottom: 1px solid var(--color-breeze);
+    color: var(--color-breeze);
+  }
 }
 
 @media (width <= 960px) {

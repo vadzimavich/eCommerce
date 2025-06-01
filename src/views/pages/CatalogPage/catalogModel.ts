@@ -28,6 +28,7 @@ export class CatalogModel {
   public setParameters(update: ProductQueryParameters): void {
     if (update.filters !== undefined) {
       this.currentParameters.filters = { ...update.filters };
+      console.log(this.getParameters());
       this.checkIsFiltred();
       this.notifyFiltersListeners();
     }
@@ -44,17 +45,15 @@ export class CatalogModel {
   }
 
   public clearParametrs(): void {
-    this.currentParameters.filters = {};
-    this.checkIsFiltred();
+    delete this.currentParameters.filters;
+    this.notifyFiltersListeners();
   }
 
   public checkIsFiltred(): boolean {
     const filters = this.currentParameters.filters;
     if (!filters) return false;
-    return Object.values(filters).some((item) => {
-      if (+item <= 0) {
-        return false;
-      }
+    return Object.keys(filters).some((item) => {
+      if (item === 'categoryId') return false;
       return item;
     });
   }
@@ -73,6 +72,10 @@ export class CatalogModel {
 
   public setSelectegCategoty(categoryName: string): void {
     this.currentCategory = categoryName[0].toUpperCase() + categoryName.slice(1);
+  }
+
+  public getSelectedCategory(): string | null {
+    return this.currentCategory ?? null;
   }
 
   public subscribeProductsListener(callback: () => void): void {

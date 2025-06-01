@@ -35,15 +35,21 @@ export class CatalogController {
   private async init(): Promise<void> {
     await this.getCategories();
     const categoryId = this.model.checkCategory(this.parametrs.category);
+
     if (categoryId) {
-      categoryId === 'all' ? this.model.setParameters({}) : this.model.setParameters({ filters: { categoryId } });
+      if (categoryId === 'all') {
+        this.model.setParameters({});
+      } else {
+        this.model.setParameters({ filters: { categoryId } });
+        this.model.setSelectegCategoty(this.parametrs.category);
+        this.view.updateBreadCrumbs();
+      }
     } else {
       route.navigate('/not-found');
     }
 
     await this.initProducts(this.model.getParameters());
   }
-
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
     try {
       const resultProducts = await this.service.getAllProducts(parameters);
@@ -163,13 +169,13 @@ export class CatalogController {
       event.preventDefault();
       this.model.clearParametrs();
       this.resetFormInputs();
-      route.navigate('/catalog/all');
+      this.init();
     });
   }
 
   private resetFormInputs(): void {
     const container = this.view.getFiltersContainer();
-    Array.from(container.elements).forEach((element) => {
+    Array.from(container.elements).forEach((element, index) => {
       if (element instanceof HTMLInputElement) {
         if (element.type === 'checkbox') {
           element.checked = false;
@@ -178,7 +184,7 @@ export class CatalogController {
         }
       }
 
-      if (element instanceof HTMLSelectElement) {
+      if (element instanceof HTMLSelectElement && index !== 0) {
         element.selectedIndex = 0;
       }
     });
