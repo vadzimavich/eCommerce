@@ -1,10 +1,12 @@
 @use '../index' as *;
 
-.catalog {
+.catalog-wrapper {
   display: flex;
-  flex-direction: row;
+  gap: $gap-middle;
   align-items: start;
   justify-content: space-between;
+
+  width: 100%;
 
   text-align: start;
 }
@@ -274,7 +276,7 @@
 }
 
 @media (width <= 960px) {
-  .catalog {
+  .catalog-wrapper {
     flex-direction: column;
   }
 

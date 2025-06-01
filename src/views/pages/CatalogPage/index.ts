@@ -20,9 +20,11 @@ export class CatalogPage {
   }
 
   public render(): HTMLElement {
-    const catalogView = this.view.render();
+    const cataloWrapper = this.view.createWrapper();
     new CatalogController(this.model, this.view, this.productsView, this.parameters);
-    catalogView.append(this.productsView.render());
-    return catalogView;
+    cataloWrapper.append(this.productsView.render());
+    const page = this.view.render();
+    page.append(cataloWrapper);
+    return page;
   }
 }

@@ -26,8 +26,13 @@ export class CatalogView {
     });
   }
 
+  public createWrapper(): HTMLElement {
+    const wrapper = elementCreator(document.createElement('div'), { classNames: ['catalog-wrapper'] });
+    wrapper.append(this.buildFilters());
+    return wrapper;
+  }
+
   public render(): HTMLElement {
-    this.container.append(this.buildFilters());
     return this.container;
   }
 
