@@ -114,21 +114,22 @@
     position: relative;
     display: flex;
     justify-content: space-between;
+  }
 
-    &::before {
-      content: '';
+  &__content {
+    &__key {
+      color: var(--color-dark-blue);
+      white-space: nowrap;
+    }
 
-      position: absolute;
-      z-index: 0;
-      top: 17px;
-
+    &__border {
       width: 100%;
       border-bottom: 1px dotted #dcdde0;
     }
-  }
 
-  &__content__key {
-    color: var(--color-dark-blue);
+    &__value {
+      white-space: nowrap;
+    }
   }
 }
 

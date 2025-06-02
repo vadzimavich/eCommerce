@@ -96,6 +96,10 @@ export class ProductView {
       content: `${attribute.name[0].toUpperCase() + attribute.name.slice(1)}: `,
     });
 
+    const border = elementCreator(document.createElement('span'), {
+      classNames: ['product__content__border'],
+    });
+
     let valueContent: string;
 
     if (typeof attribute.value === 'object') {
@@ -109,7 +113,7 @@ export class ProductView {
       content: valueContent,
     });
 
-    wrapperContent.append(key, value);
+    wrapperContent.append(key, border, value);
     wrapper.append(wrapperContent);
   }
 
