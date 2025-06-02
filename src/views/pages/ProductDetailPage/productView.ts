@@ -1,3 +1,4 @@
+import { Attribute } from '@commercetools/platform-sdk';
 import { elementCreator } from '../../../utils/dom-helpers';
 import { ProductModalSwiperView } from './modalSwiperView';
 import { ProductModel } from './productModel';
@@ -70,42 +71,46 @@ export class ProductView {
     const wrapperAttributes = elementCreator(document.createElement('div'), {
       classNames: ['product__wrapper__attributes'],
     });
-    this.createAttribute(wrapperAttributes, 'eco-class');
-    this.createAttribute(wrapperAttributes, 'color');
+    this.createAttributes(wrapperAttributes);
 
     wrapper.append(wrapperAttributes, this.createPriceWrapper());
     return wrapper;
   }
 
-  private createAttribute(wrapper: HTMLDivElement, attributeName: string): void {
-    const content = this.model.dataProduct?.attributes?.filter((item) => item.name === attributeName);
+  private createAttributes(wrapper: HTMLDivElement): void {
+    const ignoreAttributes = ['title', 'description', 'discount-price', 'bestsaller'];
+    const attributes = this.model.dataProduct?.attributes?.filter((item) => !ignoreAttributes.includes(item.name));
 
-    if (content && content.length > 0) {
-      const wrapperContent = elementCreator(document.createElement('div'), {
-        classNames: ['product__content__wrapper'],
-      });
+    attributes?.forEach((item) => {
+      this.createAttribute(wrapper, item);
+    });
+  }
 
-      const key = elementCreator(document.createElement('span'), {
-        classNames: ['product__content__key'],
-        content: `${attributeName[0].toUpperCase() + attributeName.slice(1)}: `,
-      });
+  private createAttribute(wrapper: HTMLDivElement, attribute: Attribute): void {
+    const wrapperContent = elementCreator(document.createElement('div'), {
+      classNames: ['product__content__wrapper'],
+    });
 
-      let valueContent: string;
+    const key = elementCreator(document.createElement('span'), {
+      classNames: ['product__content__key'],
+      content: `${attribute.name[0].toUpperCase() + attribute.name.slice(1)}: `,
+    });
 
-      if (typeof content[0].value === 'object') {
-        valueContent = content[0].value.label['en-US'];
-      } else {
-        valueContent = content[0].value;
-      }
+    let valueContent: string;
 
-      const value = elementCreator(document.createElement('span'), {
-        classNames: ['product__content__value'],
-        content: valueContent,
-      });
-
-      wrapperContent.append(key, value);
-      wrapper.append(wrapperContent);
+    if (typeof attribute.value === 'object') {
+      valueContent = attribute.value.label['en-US'] ?? attribute.value.label;
+    } else {
+      valueContent = attribute.value;
     }
+
+    const value = elementCreator(document.createElement('span'), {
+      classNames: ['product__content__value'],
+      content: valueContent,
+    });
+
+    wrapperContent.append(key, value);
+    wrapper.append(wrapperContent);
   }
 
   private createDescription(wrapper: HTMLDivElement): void {
