@@ -2,9 +2,18 @@
 
 .catalog {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.catalog-wrapper {
+  display: flex;
+  gap: $gap-middle;
   align-items: start;
   justify-content: space-between;
+
+  width: 100%;
 
   text-align: start;
 }
@@ -166,6 +175,8 @@
 .product-card {
   cursor: pointer;
 
+  position: relative;
+
   display: flex;
   flex-direction: column;
   gap: $gap-middle;
@@ -182,6 +193,13 @@
     box-shadow 0.3s ease,
     transform 0.3s ease,
     border 0.3s ease;
+
+  &__bestsaller {
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    width: 4rem;
+  }
 
   &__img {
     width: 100%;
@@ -273,8 +291,37 @@
   display: none;
 }
 
+.crumb {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  text-align: start;
+
+  &__anchor {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  &__text {
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+  }
+
+  &__active {
+    border-bottom: 1px solid var(--color-breeze);
+    color: var(--color-breeze);
+  }
+}
+
 @media (width <= 960px) {
-  .catalog {
+  .catalog-wrapper {
     flex-direction: column;
   }
 

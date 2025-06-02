@@ -14,6 +14,11 @@ export class ProductCard {
       classNames: ['product-card__priceinform'],
     });
 
+    if (this.product.attributes?.find((item) => item.name === 'bestsaller' && item.value === true)) {
+      const badge = this.createBestsaller();
+      card.append(badge);
+    }
+
     const image = this.createImage();
     const title = this.createTitle();
     const description = this.createDescription();
@@ -88,5 +93,20 @@ export class ProductCard {
     buttonAdd.textContent = '+';
     buttonAdd.dataset.title = 'Add To Cart';
     return buttonAdd;
+  }
+
+  private createBestsaller(): HTMLElement {
+    const wrapper = elementCreator(document.createElement('div'), {
+      classNames: ['product-card__bestsaller'],
+    });
+    const icon = elementCreator(document.createElement('img'), {
+      classNames: ['product-card__bestsaller-img'],
+      attributes: {
+        src: './assets/icons/catalog-icons/catalog-bestsaller.png',
+        alt: 'icon-bestsaller',
+      },
+    });
+    wrapper.appendChild(icon);
+    return wrapper;
   }
 }

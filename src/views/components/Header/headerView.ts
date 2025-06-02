@@ -139,7 +139,7 @@ export class HeaderView {
   private buildNavContainer(): void {
     const items = [
       { label: 'Home', route: '/home' },
-      { label: 'Catalog', route: '/catalog' },
+      { label: 'Catalog', route: '/catalog/all' },
       { label: 'About Us', route: '/about-us' },
       { label: 'Sign In', route: '/sign-in' },
       { label: 'Sign Up', route: '/sign-up' },

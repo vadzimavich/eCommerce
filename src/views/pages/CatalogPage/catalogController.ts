@@ -1,6 +1,7 @@
 import { route } from '../../../app';
 import { ProductsService } from '../../../models/services/ProductService';
 import { ProductQueryParameters } from '../../../models/types/api-types';
+import { RouteParameters } from '../../../models/types/router-types';
 import { parserSortRequest } from '../../../utils/parsers';
 import { CatalogModel } from './catalogModel';
 import { CatalogView } from './view/catalodView';
@@ -11,11 +12,11 @@ export class CatalogController {
   constructor(
     private readonly model: CatalogModel,
     private readonly view: CatalogView,
-    private readonly productsView: ProductsView
+    private readonly productsView: ProductsView,
+    private readonly parametrs: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
-    this.initProducts({});
-    this.handlerFocusSelectCategory();
+    this.init();
     this.handlerProductsContainer();
     this.handlerSortSelect();
     this.handlerSearchForm();
@@ -25,9 +26,30 @@ export class CatalogController {
       this.handlerProducts();
       this.updateCleanButton();
     });
-    this.model.subscribeToCategoryUpdate(() => this.updateSelectCategory());
+    this.model.subscribeFiltersListener(() => {
+      this.updateFiltersValue();
+    });
+    this.handlerSelectCategory();
   }
 
+  private async init(): Promise<void> {
+    await this.getCategories();
+    const categoryId = this.model.checkCategory(this.parametrs.category);
+
+    if (categoryId) {
+      if (categoryId === 'all') {
+        this.model.setParameters({});
+      } else {
+        this.model.setParameters({ filters: { categoryId } });
+        this.model.setSelectegCategoty(this.parametrs.category);
+        this.view.updateBreadCrumbs();
+      }
+    } else {
+      route.navigate('/not-found');
+    }
+
+    await this.initProducts(this.model.getParameters());
+  }
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
     try {
       const resultProducts = await this.service.getAllProducts(parameters);
@@ -56,6 +78,7 @@ export class CatalogController {
         return;
       }
       this.model.setCategories(resultCategories);
+      this.view.updateCategories();
     } catch (error) {
       console.error('Error loading categories:', error);
     }
@@ -105,13 +128,6 @@ export class CatalogController {
     });
   }
 
-  private handlerFocusSelectCategory(): void {
-    const select = this.view.getSelectCategory();
-    select.addEventListener('focus', () => {
-      this.getCategories();
-    });
-  }
-
   private handlerFiltersContainer(): void {
     const container = this.view.getFiltersContainer();
 
@@ -127,10 +143,21 @@ export class CatalogController {
         }
 
         element.addEventListener(eventType, () => {
-          const filter = { [element.id]: element.type === 'checkbox' ? element.checked : element.value };
-          this.model.setParameters({ filters: filter });
-          const allFilters = this.model.getParameters();
-          this.initProducts(allFilters);
+          const parameters = this.model.getParameters();
+          const currentFilters = parameters.filters || {};
+
+          if (element instanceof HTMLInputElement && element.type === 'checkbox') {
+            if (element.checked) {
+              currentFilters[element.id] = true;
+            } else {
+              delete currentFilters[element.id];
+            }
+          } else {
+            currentFilters[element.id] = element.value;
+          }
+
+          this.model.setParameters({ filters: currentFilters });
+          this.initProducts(this.model.getParameters());
         });
       }
     });
@@ -142,13 +169,13 @@ export class CatalogController {
       event.preventDefault();
       this.model.clearParametrs();
       this.resetFormInputs();
-      this.initProducts(this.model.getParameters());
+      this.init();
     });
   }
 
   private resetFormInputs(): void {
     const container = this.view.getFiltersContainer();
-    Array.from(container.elements).forEach((element) => {
+    Array.from(container.elements).forEach((element, index) => {
       if (element instanceof HTMLInputElement) {
         if (element.type === 'checkbox') {
           element.checked = false;
@@ -157,14 +184,19 @@ export class CatalogController {
         }
       }
 
-      if (element instanceof HTMLSelectElement) {
+      if (element instanceof HTMLSelectElement && index !== 0) {
         element.selectedIndex = 0;
       }
     });
   }
 
-  private updateSelectCategory(): void {
-    this.view.updateCategories();
+  private handlerSelectCategory(): void {
+    const select = this.view.getSelectCategory();
+    select.addEventListener('change', () => {
+      const selectedOption = select.options[select.selectedIndex];
+      const optionId = selectedOption.id;
+      route.navigate(`/catalog/${optionId}`);
+    });
   }
 
   private handlerProducts(): void {
@@ -173,5 +205,11 @@ export class CatalogController {
 
   private updateCleanButton(): void {
     this.view.changeClearButton();
+  }
+
+  private updateFiltersValue(): void {
+    const select = this.view.getSelectCategory();
+    const currentId = this.model.getParameters().filters?.categoryId;
+    if (typeof currentId === 'string') select.value = currentId;
   }
 }
