@@ -158,3 +158,32 @@ main {
   font-weight: bold;
   color: var(--color-card-price-discount);
 }
+
+.loader {
+  position: absolute;
+  top: calc(50% - 5rem);
+  left: calc(50% - 5rem);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 10rem;
+  height: 10rem;
+}
+
+.loader__img {
+  width: 100%;
+  height: 100%;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

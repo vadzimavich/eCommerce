@@ -164,12 +164,15 @@
   }
 
   &__products {
+    position: relative;
+
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: $gap-big;
     justify-items: stretch;
 
     width: 100%;
+    min-height: 50rem;
 
     @media (width <= 1130px) {
       grid-template-columns: 1fr 1fr;

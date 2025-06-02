@@ -4,6 +4,7 @@ import { ProductModalSwiperView } from './modalSwiperView';
 import { ProductModel } from './productModel';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
+import { loaderView } from '../../components/Loader';
 
 export class ProductView {
   public readonly swiper: HTMLDivElement;
@@ -31,8 +32,7 @@ export class ProductView {
 
   public loadData(): void {
     if (!this.model.dataProduct) {
-      const message = elementCreator(document.createElement('div'), { content: 'Loading product details' });
-      this.container.append(message);
+      this.container.append(loaderView());
       return;
     }
     this.container.replaceChildren();
