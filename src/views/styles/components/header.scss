@@ -13,9 +13,9 @@
 
     height: 6rem;
     padding: 0 3rem;
-    border-radius: 999.9rem;
+    border-radius: $radius-big;
 
-    background: var(--color-white);
+    background: var(--color-bg-modal);
     box-shadow: 0 4px 16px var(--color-shadow);
   }
 

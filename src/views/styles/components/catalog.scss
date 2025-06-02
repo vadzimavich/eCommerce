@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .catalog-wrapper {
@@ -28,7 +28,7 @@
   justify-content: center;
 
   max-width: 22rem;
-  padding: 1.5rem;
+  padding: 2.5rem;
   padding-top: 3rem;
 
   color: var(--color-dark-blue);
@@ -58,6 +58,7 @@
 .filter-select {
   width: -webkit-fill-available;
   min-width: auto;
+  border: 1px solid var(--color-border-opacity);
 }
 
 .checkbox-container {
@@ -85,6 +86,7 @@
   input {
     width: -webkit-fill-available;
     min-width: auto;
+    border: 1px solid var(--color-border-opacity);
   }
 }
 
@@ -104,6 +106,7 @@
       cursor: pointer;
       width: auto;
       min-width: 25rem;
+      border: 1px solid var(--color-border-opacity);
     }
 
     &-search {
@@ -111,7 +114,7 @@
 
       display: flex;
 
-      border: 1px solid var(--color-border);
+      border: 1px solid var(--color-border-opacity);
       border-radius: $radius;
 
       background-color: var(--color-white);
@@ -161,10 +164,23 @@
   }
 
   &__products {
-    display: flex;
-    flex-wrap: wrap;
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: $gap-big;
-    justify-content: space-between;
+    justify-items: stretch;
+
+    width: 100%;
+    min-height: 50rem;
+
+    @media (width <= 1130px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (width <= 690px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__message {
@@ -182,9 +198,8 @@
   gap: $gap-middle;
   justify-content: center;
 
-  max-width: 23rem;
   padding: 1.5rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-opacity);
   border-radius: $radius;
 
   background-color: var(--color-card-background);
@@ -300,6 +315,10 @@
   &__anchor {
     display: flex;
     align-items: center;
+
+    &:not(:last-child)::after {
+      content: '\00A0\00A0\2192';
+    }
   }
 
   &__icon {
@@ -352,14 +371,6 @@
 }
 
 @media (width <= 690px) {
-  .catalog-right__products {
-    justify-content: center;
-  }
-
-  .product-card {
-    width: 25rem;
-  }
-
   .price-range-container {
     flex-direction: column;
   }

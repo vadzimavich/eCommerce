@@ -4,6 +4,7 @@ import { CatalogModel } from '../catalogModel';
 
 import { createInputCatalogSearch, createSelectCatalogSort } from '../../../../utils/catalog-inputs';
 import { sortOptions, sortValues } from './constant-conrent';
+import { loaderView } from '../../../components/Loader';
 
 export class ProductsView {
   private readonly container: HTMLElement;
@@ -35,7 +36,8 @@ export class ProductsView {
     this.renderCards();
     const headContainer = this.buildHeadContainer();
     this.container.append(headContainer, this.productsContainer);
-    this.renderMessage('Loading products...');
+    this.productsContainer.append(loaderView());
+
     return this.container;
   }
 
