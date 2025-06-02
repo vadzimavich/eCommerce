@@ -2,7 +2,6 @@
 
 .login-page {
   justify-content: flex-start;
-  height: calc(100vh - 12rem);
 
   .form {
     max-width: 40rem;
@@ -10,9 +9,5 @@
     &__button {
       width: 100%;
     }
-  }
-
-  @media (width <= 768px) {
-    height: calc(100vh - 8rem);
   }
 }

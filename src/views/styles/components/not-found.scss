@@ -3,11 +3,6 @@
 .not-found {
   &__page {
     justify-content: center;
-    height: calc(100vh - 12rem);
-
-    @media (width <= 768px) {
-      height: calc(100vh - 8rem);
-    }
   }
 
   &__content {

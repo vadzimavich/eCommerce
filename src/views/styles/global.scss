@@ -73,7 +73,7 @@ body {
   font-weight: 400;
   line-height: 23px;
 
-  background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
+  background: linear-gradient(rgb(245 247 250), rgb(215 206 178)) no-repeat;
 
   @media (width <= 520px) {
     font-size: 14px;
@@ -101,13 +101,20 @@ main {
   align-items: center;
   justify-content: flex-start;
 
+  height: 100%;
+  min-height: 100%;
+
   @include container;
+
+  @media (height >= 100vh) {
+    min-height: 100vh;
+  }
 }
 
 .section-item {
   width: 100%;
   padding: $padding-section-vertical;
-  border-radius: $radius;
+  border-radius: $radius-big;
 
   background-color: var(--color-bg-modal);
   box-shadow: $box-shadow;

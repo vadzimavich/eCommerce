@@ -205,6 +205,20 @@ export class ProductView {
       freeMode: true,
       watchSlidesProgress: true,
       navigation: true,
+      breakpoints: {
+        0: {
+          slidesPerView: 3,
+        },
+        420: {
+          slidesPerView: 4,
+        },
+        560: {
+          slidesPerView: 6,
+        },
+        768: {
+          slidesPerView: 8,
+        },
+      },
     });
 
     new Swiper(this.swiper, {

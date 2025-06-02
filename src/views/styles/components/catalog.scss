@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .catalog-wrapper {
@@ -300,6 +300,10 @@
   &__anchor {
     display: flex;
     align-items: center;
+
+    &:not(:last-child)::after {
+      content: '\00A0\00A0\2192';
+    }
   }
 
   &__icon {

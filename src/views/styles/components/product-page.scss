@@ -34,7 +34,12 @@
 
     &__sliders {
       overflow: hidden;
+
       width: 50%;
+      max-height: min-content;
+      border-radius: $radius;
+
+      background-color: var(--color-white);
 
       .swiper {
         border-radius: $radius;
@@ -66,6 +71,10 @@
     }
 
     &__thumbs-swiper {
+      .swiper-wrapper {
+        justify-content: center;
+      }
+
       .swiper-slide {
         opacity: 0.4;
       }
@@ -102,23 +111,24 @@
   }
 
   &__content__wrapper {
-    text-align: left;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+
+    &::before {
+      content: '';
+
+      position: absolute;
+      z-index: 0;
+      top: 17px;
+
+      width: 100%;
+      border-bottom: 1px dotted #dcdde0;
+    }
   }
 
   &__content__key {
     color: var(--color-dark-blue);
-  }
-
-  @media (width <= 1110px) {
-    height: 100vh;
-  }
-
-  @media (width <= 768px) {
-    height: calc(100vh + 25rem);
-  }
-
-  @media (width <= 520px) {
-    height: 100vh;
   }
 }
 
