@@ -1,12 +1,15 @@
 import { HandlerInputFieldResult } from '../models/types/common-types';
 import { elementCreator } from './dom-helpers';
 
-const addErrorTooltip = (input: HTMLInputElement, message: string): void => {
-  const wrapper = input.closest('.form__input__wrapper');
+const findClosestWrapper = (element: HTMLInputElement | HTMLSelectElement): HTMLElement | null => {
+  return element.closest('.form__input__wrapper');
+};
+
+const addErrorTooltip = (input: HTMLInputElement | HTMLSelectElement, message: string): void => {
+  const wrapper = findClosestWrapper(input);
 
   if (wrapper instanceof HTMLElement) {
-    const lastChildIndex = wrapper.children.length;
-    const lastChild = wrapper.children[lastChildIndex - 1];
+    const lastChild = wrapper.children[wrapper.children.length - 1];
 
     if (lastChild instanceof HTMLElement && lastChild.classList.contains('error-tooltip')) {
       changeMessageTooltip(lastChild, message);
@@ -14,19 +17,21 @@ const addErrorTooltip = (input: HTMLInputElement, message: string): void => {
       const tooltip = createTooltip(message);
       wrapper.append(tooltip);
     }
+  } else {
+    console.warn('ErrorTooltip: Could not find .form__input__wrapper for', input);
   }
 };
 
-const removeErrorTooltip = (input: HTMLInputElement): void => {
-  const wrapper = input.closest('.form__input__wrapper');
+const removeErrorTooltip = (input: HTMLInputElement | HTMLSelectElement): void => {
+  const wrapper = findClosestWrapper(input);
 
   if (wrapper instanceof HTMLElement) {
-    const lastChildIndex = wrapper.children.length;
-    const lastChild = wrapper.children[lastChildIndex - 1];
-
+    const lastChild = wrapper.children[wrapper.children.length - 1];
     if (lastChild instanceof HTMLElement && lastChild.classList.contains('error-tooltip')) {
       lastChild.remove();
     }
+  } else {
+    console.warn('ErrorTooltip: Could not find .form__input__wrapper for removal on', input);
   }
 };
 
@@ -51,11 +56,17 @@ const createTooltip = (message: string): HTMLElement => {
 
 const changeMessageTooltip = (tooltip: HTMLElement, message: string): void => {
   const content = tooltip.children[1];
-
-  content.textContent = message;
+  if (content instanceof HTMLParagraphElement) {
+    content.textContent = message;
+  } else {
+    console.warn('ErrorTooltip: Could not find message paragraph in tooltip to change message.');
+  }
 };
 
-export const updateTooltip = (element: HTMLInputElement, resultHandler: HandlerInputFieldResult): void => {
+export const updateTooltip = (
+  element: HTMLInputElement | HTMLSelectElement,
+  resultHandler: HandlerInputFieldResult
+): void => {
   if (!resultHandler.result && resultHandler.errorMessage) {
     addErrorTooltip(element, resultHandler.errorMessage);
   } else {

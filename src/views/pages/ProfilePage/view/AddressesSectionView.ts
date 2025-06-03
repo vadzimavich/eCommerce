@@ -1,21 +1,30 @@
+// src/views/pages/ProfilePage/view/AddressesSectionView.ts
+
 import { AppModel } from '../../../../models/state/AppState';
 import { ProfilePageModel } from '../profilePageModel';
 import { elementCreator } from '../../../../utils/dom-helpers';
 import * as formInputs from '../../../../utils/form-inputs';
 import { Address } from '@commercetools/platform-sdk';
 import { countries as countryOptions } from '../../../components/InputField/constants-content';
+import { updateTooltip } from '../../../../utils/error-tooltip'; // Импортируем для сброса
 
 export class AddressesSectionView {
   private sectionElement: HTMLElement;
   private addressListContainer!: HTMLElement;
   private addAddressButton!: HTMLButtonElement;
+
+  // Элементы формы
   private addressFormContainer!: HTMLElement;
   private streetInput!: HTMLInputElement;
   private cityInput!: HTMLInputElement;
   private postalCodeInput!: HTMLInputElement;
   private countrySelect!: HTMLSelectElement;
+  private defaultShippingCheckbox!: HTMLInputElement;
+  private defaultBillingCheckbox!: HTMLInputElement;
   private saveAddressButton!: HTMLButtonElement;
   private cancelAddressButton!: HTMLButtonElement;
+  private formValidationMessageElement!: HTMLElement; // Для сообщения о необходимости выбрать дефолтные адреса
+
   private currentEditingAddressId: string | null = null;
 
   constructor(
@@ -31,7 +40,8 @@ export class AddressesSectionView {
 
   public render(): HTMLElement {
     this.displayAddresses();
-    this.addressFormContainer.classList.add('hidden');
+    this.addressFormContainer.style.display = 'none';
+    this.addAddressButton.style.display = 'block';
     this.currentEditingAddressId = null;
     return this.sectionElement;
   }
@@ -40,6 +50,7 @@ export class AddressesSectionView {
     this.addressListContainer.innerHTML = '';
     const currentUser = this.appModel.getCurrentUser();
     const addresses = currentUser.addresses || [];
+
     if (addresses.length === 0) {
       this.addressListContainer.append(
         elementCreator(document.createElement('p'), {
@@ -64,43 +75,76 @@ export class AddressesSectionView {
 
   public showAddressForm(isEditMode: boolean, address?: Address): void {
     this.currentEditingAddressId = isEditMode && address ? address.id || null : null;
-    this.addressFormContainer.classList.remove('hidden');
+    this.addressFormContainer.style.display = 'flex';
+    this.addAddressButton.style.display = 'none';
     this.saveAddressButton.textContent = isEditMode ? 'Save Changes' : 'Save New Address';
+
+    const currentUser = this.appModel.getCurrentUser();
     if (isEditMode && address) {
       this.streetInput.value = address.streetName || '';
       this.cityInput.value = address.city || '';
       this.postalCodeInput.value = address.postalCode || '';
-      this.countrySelect.value = address.country || '';
+      this.countrySelect.value = address.country || (countryOptions.length > 0 ? 'US' : '');
+      this.defaultShippingCheckbox.checked = address.id === currentUser.defaultShippingAddressId;
+      this.defaultBillingCheckbox.checked = address.id === currentUser.defaultBillingAddressId;
     } else {
       this.streetInput.value = '';
       this.cityInput.value = '';
       this.postalCodeInput.value = '';
-      this.countrySelect.value = countryOptions[0];
+      this.countrySelect.value = countryOptions.length > 0 ? 'US' : '';
+      this.defaultShippingCheckbox.checked = false;
+      this.defaultBillingCheckbox.checked = false;
     }
+
     [this.streetInput, this.cityInput, this.postalCodeInput, this.countrySelect].forEach((input) => {
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      if (input.tagName === 'SELECT') input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.setAttribute('data-correct', 'false');
+      updateTooltip(input, { result: true });
     });
+    if (this.countrySelect.value) this.countrySelect.setAttribute('data-correct', 'true');
     this.updateSaveAddressButtonState();
+    this.hideFormValidationMessage();
   }
 
   public hideAddressForm(): void {
-    this.addressFormContainer.classList.add('hidden');
+    this.addressFormContainer.style.display = 'none';
+    this.addAddressButton.style.display = 'block';
     this.currentEditingAddressId = null;
+    this.hideFormValidationMessage();
+    // Сброс полей и валидации
+    [this.streetInput, this.cityInput, this.postalCodeInput].forEach((input) => {
+      input.value = '';
+      input.setAttribute('data-correct', 'false');
+      updateTooltip(input, { result: true });
+    });
+    if (this.countrySelect.options.length > 0) {
+      this.countrySelect.value = this.countrySelect.options[0].value;
+      this.countrySelect.setAttribute('data-correct', 'true'); // Считаем выбранную страну валидной
+      updateTooltip(this.countrySelect, { result: true });
+    }
+    this.defaultShippingCheckbox.checked = false;
+    this.defaultBillingCheckbox.checked = false;
+    this.updateSaveAddressButtonState();
   }
 
-  public getAddressFormValues(): Omit<Address, 'id' | 'key' | 'firstName' | 'lastName'> | null {
-    if (this.addressFormContainer.classList.contains('hidden')) return null;
+  public getAddressFormValues():
+    | (Omit<Address, 'id' | 'key' | 'firstName' | 'lastName'> & {
+        isDefaultShipping: boolean;
+        isDefaultBilling: boolean;
+      })
+    | null {
+    if (this.addressFormContainer.style.display === 'none') return null;
     return {
       streetName: this.streetInput.value,
       city: this.cityInput.value,
       postalCode: this.postalCodeInput.value,
       country: this.countrySelect.value,
+      isDefaultShipping: this.defaultShippingCheckbox.checked,
+      isDefaultBilling: this.defaultBillingCheckbox.checked,
     };
   }
 
   public isAddressFormValid(): boolean {
-    if (this.addressFormContainer.classList.contains('hidden')) return false;
+    if (this.addressFormContainer.style.display === 'none') return false;
     const inputsToValidate = [this.streetInput, this.cityInput, this.postalCodeInput, this.countrySelect];
     return inputsToValidate.every((input) => input.dataset.correct === 'true');
   }
@@ -109,30 +153,41 @@ export class AddressesSectionView {
     this.saveAddressButton.disabled = !this.isAddressFormValid();
   }
 
+  public showFormValidationMessage(message: string): void {
+    this.formValidationMessageElement.textContent = message;
+    this.formValidationMessageElement.style.display = 'flex'; // Используем flex для показа
+  }
+
+  public hideFormValidationMessage(): void {
+    this.formValidationMessageElement.style.display = 'none';
+    this.formValidationMessageElement.textContent = '';
+  }
+
   public getAddAddressButtonElement(): HTMLButtonElement {
     return this.addAddressButton;
   }
-
   public getAddressListContainerElement(): HTMLElement {
     return this.addressListContainer;
   }
-
   public getSaveAddressButtonElement(): HTMLButtonElement {
     return this.saveAddressButton;
   }
-
   public getCancelAddressButtonElement(): HTMLButtonElement {
     return this.cancelAddressButton;
   }
-
   public getCurrentEditingAddressId(): string | null {
     return this.currentEditingAddressId;
   }
-
   public getAddressFormInputs(): (HTMLInputElement | HTMLSelectElement)[] {
-    return [this.streetInput, this.cityInput, this.postalCodeInput, this.countrySelect];
+    return [
+      this.streetInput,
+      this.cityInput,
+      this.postalCodeInput,
+      this.countrySelect,
+      this.defaultShippingCheckbox,
+      this.defaultBillingCheckbox,
+    ];
   }
-
   public getSectionElement(): HTMLElement {
     return this.sectionElement;
   }
@@ -150,7 +205,6 @@ export class AddressesSectionView {
       content: '+ Add New Address',
     });
     this.addressFormContainer = this.createAddressForm();
-    this.addressFormContainer.classList.add('hidden');
     this.sectionElement.append(title, this.addressListContainer, this.addAddressButton, this.addressFormContainer);
   }
 
@@ -165,10 +219,33 @@ export class AddressesSectionView {
     });
 
     const detailsContainer = this.createAddressDetailsContainer(address);
-    const defaultControls = this.createAddressDefaultControls(address, defaultShippingId, defaultBillingId);
-    const actionButtons = this.createAddressActionButtons(address.id || '');
+    card.append(detailsContainer);
 
-    card.append(detailsContainer, defaultControls, actionButtons);
+    const defaultStatusContainer = elementCreator(document.createElement('div'), {
+      classNames: ['profile-page__address-default-status'],
+    });
+    if (address.id === defaultShippingId) {
+      defaultStatusContainer.append(
+        elementCreator(document.createElement('span'), {
+          classNames: ['default-address-text', 'default-shipping-text'],
+          content: 'Default Shipping Address',
+        })
+      );
+    }
+    if (address.id === defaultBillingId) {
+      defaultStatusContainer.append(
+        elementCreator(document.createElement('span'), {
+          classNames: ['default-address-text', 'default-billing-text'],
+          content: 'Default Billing Address',
+        })
+      );
+    }
+    if (defaultStatusContainer.hasChildNodes()) {
+      card.append(defaultStatusContainer);
+    }
+
+    const actionButtons = this.createAddressActionButtons(address.id || '');
+    card.append(actionButtons);
     return card;
   }
 
@@ -178,29 +255,30 @@ export class AddressesSectionView {
     return container;
   }
 
-  private createAddressDefaultControls(
-    address: Address,
-    defaultShippingId: string | undefined,
-    defaultBillingId: string | undefined
-  ): HTMLElement {
-    const controlsContainer = elementCreator(document.createElement('div'), {
-      classNames: ['profile-page__address-default-controls'],
+  private appendAddressDetails(container: HTMLElement, address: Address): void {
+    container.innerHTML = '';
+    const countryName =
+      countryOptions.find(
+        (name) =>
+          (name === 'USA' && address.country === 'US') ||
+          (name === 'Canada' && address.country === 'CA') ||
+          name === address.country
+      ) || address.country;
+
+    const detailsMap = {
+      Street: `${address.streetName || ''} ${address.streetNumber || ''}`.trim(),
+      City: address.city || '',
+      'Postal Code': address.postalCode || '',
+      Country: countryName,
+    };
+    Object.entries(detailsMap).forEach(([label, value]) => {
+      if (value) {
+        const p = elementCreator(document.createElement('p'), { classNames: ['profile-page__address-item'] });
+        const strong = elementCreator(document.createElement('strong'), { content: `${label}: ` });
+        p.append(strong, document.createTextNode(value));
+        container.append(p);
+      }
     });
-    controlsContainer.append(
-      this.createDefaultAddressRadio(
-        'shipping',
-        address.id || 'temp-ship',
-        address.id === defaultShippingId,
-        'Set as default shipping'
-      ),
-      this.createDefaultAddressRadio(
-        'billing',
-        address.id || 'temp-bill',
-        address.id === defaultBillingId,
-        'Set as default billing'
-      )
-    );
-    return controlsContainer;
   }
 
   private createAddressActionButtons(addressId: string): HTMLElement {
@@ -221,67 +299,48 @@ export class AddressesSectionView {
     return actionsContainer;
   }
 
-  private appendAddressDetails(container: HTMLElement, address: Address): void {
-    container.innerHTML = '';
-    const detailsMap = {
-      Name: `${address.firstName || ''} ${address.lastName || ''}`.trim(),
-      Street: `${address.streetName || ''} ${address.streetNumber || ''}`.trim(),
-      City: address.city || '',
-      'Postal Code': address.postalCode || '',
-      Country: address.country || '',
-    };
-    Object.entries(detailsMap).forEach(([label, value]) => {
-      if (value) {
-        const p = elementCreator(document.createElement('p'), { classNames: ['profile-page__address-item'] });
-        const strong = elementCreator(document.createElement('strong'), { content: `${label}: ` });
-        p.append(strong, document.createTextNode(value));
-        container.append(p);
-      }
-    });
-  }
-
-  private createDefaultAddressRadio(
-    type: 'shipping' | 'billing',
-    addressId: string,
-    isChecked: boolean,
-    labelText: string
-  ): HTMLElement {
-    const wrapper = elementCreator(document.createElement('div'), { classNames: ['profile-page__radio-wrapper'] });
-    const radioId = `default-${type}-${addressId}`;
-    const radio = elementCreator(document.createElement('input'), {
-      attributes: {
-        type: 'radio',
-        name: `default-${type}-address`,
-        id: radioId,
-        value: addressId,
-        'data-address-id': addressId,
-        'data-address-type': type,
-      },
-    });
-    if (isChecked) {
-      radio.checked = true;
-    }
-    const label = elementCreator(document.createElement('label'), { attributes: { for: radioId }, content: labelText });
-    wrapper.append(radio, label);
-    return wrapper;
-  }
-
+  // eslint-disable-next-line max-lines-per-function
   private createAddressForm(): HTMLElement {
     const form = elementCreator(document.createElement('div'), {
       classNames: ['profile-page__address-form', 'form'],
     });
-    form.style.border = '1px solid #ccc';
-    form.style.padding = '15px';
-    form.style.marginTop = '15px'; // temp styles
+    form.style.display = 'none';
 
     this.streetInput = formInputs.createInputStreet('profile-address-street');
     form.append(this.createFormInputWrapper('Street:', this.streetInput));
+
     this.cityInput = formInputs.createInputCity('profile-address-city');
     form.append(this.createFormInputWrapper('City:', this.cityInput));
-    this.postalCodeInput = formInputs.createInputPostalCode('profile-address-postalCode');
-    form.append(this.createFormInputWrapper('Postal Code:', this.postalCodeInput));
+
     this.countrySelect = formInputs.createSelectCountry('profile-address-country', countryOptions);
     form.append(this.createFormInputWrapper('Country:', this.countrySelect));
+
+    this.postalCodeInput = formInputs.createInputPostalCode('profile-address-postalCode');
+    form.append(this.createFormInputWrapper('Postal Code:', this.postalCodeInput));
+
+    const checkboxesContainer = elementCreator(document.createElement('div'), {
+      classNames: ['profile-page__form-checkboxes'],
+    });
+    // Передаем ID для чекбоксов, чтобы они были уникальны
+    checkboxesContainer.append(
+      this.createDefaultAddressCheckboxWrapper(
+        'shipping',
+        'Set as default shipping address',
+        'default-shipping-checkbox-input'
+      ),
+      this.createDefaultAddressCheckboxWrapper(
+        'billing',
+        'Set as default billing address',
+        'default-billing-checkbox-input'
+      )
+    );
+    form.append(checkboxesContainer);
+
+    this.formValidationMessageElement = elementCreator(document.createElement('div'), {
+      classNames: ['error-tooltip', 'profile-page__form-validation-message'],
+    });
+    this.formValidationMessageElement.style.display = 'none';
+    form.append(this.formValidationMessageElement);
 
     const actionsBar = elementCreator(document.createElement('div'), { classNames: ['profile-page__actions-bar'] });
     this.saveAddressButton = elementCreator(document.createElement('button'), {
@@ -297,6 +356,31 @@ export class AddressesSectionView {
     actionsBar.append(this.saveAddressButton, this.cancelAddressButton);
     form.append(actionsBar);
     return form;
+  }
+
+  private createDefaultAddressCheckboxWrapper(
+    type: 'shipping' | 'billing',
+    labelText: string,
+    checkboxId: string
+  ): HTMLElement {
+    const wrapper = elementCreator(document.createElement('div'), {
+      classNames: ['profile-page__checkbox-wrapper', 'form__checkboxes'],
+    });
+    const checkbox = elementCreator(document.createElement('input'), {
+      attributes: { type: 'checkbox', id: checkboxId, 'data-default-type': type },
+    });
+    const label = elementCreator(document.createElement('label'), {
+      attributes: { for: checkboxId },
+      content: labelText,
+    });
+    wrapper.append(checkbox, label);
+
+    if (type === 'shipping') {
+      this.defaultShippingCheckbox = checkbox;
+    } else {
+      this.defaultBillingCheckbox = checkbox;
+    }
+    return wrapper;
   }
 
   private createFormInputWrapper(labelContent: string, inputElement: HTMLElement): HTMLElement {
