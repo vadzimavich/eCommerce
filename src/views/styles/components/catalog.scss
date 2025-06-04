@@ -172,7 +172,7 @@
     justify-items: stretch;
 
     width: 100%;
-    min-height: 50rem;
+    min-height: 58rem;
 
     @media (width <= 1130px) {
       grid-template-columns: 1fr 1fr;
@@ -198,6 +198,7 @@
   gap: $gap-middle;
   justify-content: center;
 
+  max-height: min-content;
   padding: 1.5rem;
   border: 1px solid var(--color-border-opacity);
   border-radius: $radius;
