@@ -1,13 +1,11 @@
-// src/views/pages/ProfilePage/controller/AddressesController.ts
-
 import { AppModel } from '../../../../models/state/AppState';
 import { ProfilePageModel } from '../profilePageModel';
 import { AddressesSectionView } from '../view/AddressesSectionView';
 import { CustomerService } from '../../../../models/services/AuthService';
+import { REFRESH_TOKEN } from '../../../../controllers/AuthController';
 import type { MyCustomerUpdateAction, Address, Customer } from '@commercetools/platform-sdk';
 import * as handlerFields from '../../../../utils/handler-fields';
 import { updateTooltip } from '../../../../utils/error-tooltip';
-import { HandlerInputFieldResult } from '../../../../models/types/common-types';
 
 export class AddressesController {
   private customerService: CustomerService;
@@ -22,33 +20,31 @@ export class AddressesController {
   }
 
   public initializeListeners(): void {
-    this.view.getAddAddressButtonElement().addEventListener('click', () => this.handleAddAddressClick());
-    this.view.getCancelAddressButtonElement().addEventListener('click', () => this.handleCancelAddressForm());
-    this.view.getSaveAddressButtonElement().addEventListener('click', () => this.handleSaveAddressClick());
+    const addAddressButton = this.view.getAddAddressButtonElement();
+    addAddressButton.removeEventListener('click', this.handleAddAddressClick);
+    addAddressButton.addEventListener('click', this.handleAddAddressClick);
+
+    const cancelAddressButton = this.view.getCancelAddressButtonElement();
+    cancelAddressButton.removeEventListener('click', this.handleCancelAddressForm);
+    cancelAddressButton.addEventListener('click', this.handleCancelAddressForm);
+
+    const saveAddressButton = this.view.getSaveAddressButtonElement();
+    saveAddressButton.removeEventListener('click', this.handleSaveAddressClick);
+    saveAddressButton.addEventListener('click', this.handleSaveAddressClick);
 
     this.view.getAddressFormInputs().forEach((input) => {
       const eventType = input.tagName === 'SELECT' || input.type === 'checkbox' ? 'change' : 'input';
       input.removeEventListener(eventType, this.handleAddressFormInputChange);
       input.addEventListener(eventType, this.handleAddressFormInputChange);
-
       if (input.type !== 'checkbox') {
         input.removeEventListener('blur', this.handleAddressFormInputBlur);
         input.addEventListener('blur', this.handleAddressFormInputBlur);
       }
     });
 
-    this.view.getAddressListContainerElement().addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLButtonElement) {
-        const action = target.dataset.action;
-        const addressId = target.dataset.addressId;
-        if (action === 'edit' && addressId) {
-          this.handleEditAddressClick(addressId);
-        } else if (action === 'delete' && addressId) {
-          this.handleDeleteAddressClick(addressId);
-        }
-      }
-    });
+    const addressListContainer = this.view.getAddressListContainerElement();
+    addressListContainer.removeEventListener('click', this.handleAddressListActions);
+    addressListContainer.addEventListener('click', this.handleAddressListActions);
   }
 
   private handleAddressFormInputBlur = (event: Event): void => {
@@ -72,7 +68,7 @@ export class AddressesController {
   };
 
   private validateAddressFormField(inputElement: HTMLInputElement | HTMLSelectElement): void {
-    let result: HandlerInputFieldResult = { result: true };
+    let result: { result: boolean; errorMessage?: string } = { result: true };
     const { value, id } = inputElement;
 
     switch (id) {
@@ -83,7 +79,7 @@ export class AddressesController {
         result = handlerFields.handlerNameField(value);
         break;
       case 'profile-address-country':
-        result = { result: !!value };
+        result = { result: !!value, errorMessage: !value ? 'Country is required.' : undefined };
         break;
       case 'profile-address-postalCode':
         {
@@ -102,18 +98,33 @@ export class AddressesController {
     inputElement.setAttribute('data-correct', result.result.toString());
     if (this.touchedFields.has(id) || !result.result) {
       updateTooltip(inputElement, result);
+    } else {
+      updateTooltip(inputElement, { result: true });
     }
   }
 
-  private handleAddAddressClick(): void {
+  private handleAddAddressClick = (): void => {
     this.touchedFields.clear();
     this.view.showAddressForm(false);
-  }
+  };
 
-  private handleCancelAddressForm(): void {
+  private handleCancelAddressForm = (): void => {
     this.view.hideAddressForm();
     this.touchedFields.clear();
-  }
+  };
+
+  private handleAddressListActions = (event: Event): void => {
+    const target = event.target;
+    if (target instanceof HTMLButtonElement) {
+      const action = target.dataset.action;
+      const addressId = target.dataset.addressId;
+      if (action === 'edit' && addressId) {
+        this.handleEditAddressClick(addressId);
+      } else if (action === 'delete' && addressId) {
+        this.handleDeleteAddressClick(addressId);
+      }
+    }
+  };
 
   private handleEditAddressClick(addressId: string): void {
     this.touchedFields.clear();
@@ -127,12 +138,11 @@ export class AddressesController {
   }
 
   private async handleDeleteAddressClick(addressId: string): Promise<void> {
-    const currentUser = this.appModel.getCurrentUser();
+    let currentUser = this.appModel.getCurrentUser();
     if (!currentUser.id || typeof currentUser.version !== 'number') {
       this.customerService.modal.errorMessage('Cannot delete address: user data is incomplete.');
       return;
     }
-
     const confirmed = window.confirm('Are you sure you want to delete this address?');
     if (!confirmed) return;
 
@@ -143,8 +153,26 @@ export class AddressesController {
       this.appModel.setCurrentUser(result);
       this.view.displayAddresses();
       this.customerService.modal.infoMessage('Address deleted successfully!');
-    } else {
-      // ошибка уже обработана в CustomerService
+      currentUser = this.appModel.getCurrentUser();
+      const addressesExist = currentUser.addresses && currentUser.addresses.length > 0;
+      if (addressesExist) {
+        const pseudoAddressData = {
+          isDefaultShipping: !!currentUser.defaultShippingAddressId,
+          isDefaultBilling: !!currentUser.defaultBillingAddressId,
+          streetName: '',
+          city: '',
+          postalCode: '',
+          country: '',
+        };
+        if (!this.checkDefaultAddressRequirements(pseudoAddressData, currentUser, false, null)) {
+        } else {
+          this.view.hideFormValidationMessage();
+        }
+      } else {
+        this.view.hideFormValidationMessage();
+      }
+    } else if (result instanceof Error) {
+      this.customerService.modal.errorMessage(result.message);
     }
   }
 
@@ -162,35 +190,39 @@ export class AddressesController {
   private checkDefaultAddressRequirements(
     addressData: NonNullable<ReturnType<AddressesSectionView['getAddressFormValues']>>,
     currentUser: Partial<Customer>,
-    isEditing: boolean
+    isEditing: boolean,
+    editingId: string | null
   ): boolean {
-    const totalAddresses = currentUser.addresses?.length || 0;
-    let hasDefaultShipping = addressData.isDefaultShipping;
-    let hasDefaultBilling = addressData.isDefaultBilling;
+    const addresses = currentUser.addresses || [];
+    let hasDefaultShipping = false;
+    let hasDefaultBilling = false;
 
-    if (!(!isEditing && totalAddresses === 0) && !(isEditing && totalAddresses === 1)) {
-      currentUser.addresses?.forEach((addr) => {
-        if (isEditing && this.view.getCurrentEditingAddressId() === addr.id) return;
+    if (addressData.isDefaultShipping) hasDefaultShipping = true;
+    if (addressData.isDefaultBilling) hasDefaultBilling = true;
 
-        if (addr.id === currentUser.defaultShippingAddressId) hasDefaultShipping = true;
-        if (addr.id === currentUser.defaultBillingAddressId) hasDefaultBilling = true;
-      });
+    for (const addr of addresses) {
+      if (addr.id === editingId) continue;
+      if (addr.id === currentUser.defaultShippingAddressId) hasDefaultShipping = true;
+      if (addr.id === currentUser.defaultBillingAddressId) hasDefaultBilling = true;
     }
 
-    if (!isEditing && totalAddresses === 0) {
-    } else if (isEditing) {
-      if (addressData.isDefaultShipping) hasDefaultShipping = true;
-      if (addressData.isDefaultBilling) hasDefaultBilling = true;
-    }
-
-    if (!hasDefaultShipping || !hasDefaultBilling) {
-      const missing: string[] = [];
-      if (!hasDefaultShipping) missing.push('shipping');
-      if (!hasDefaultBilling) missing.push('billing');
-      this.view.showFormValidationMessage(
-        `Please ensure at least one default ${missing.join(' and ')} address is set among all your addresses.`
-      );
-      return false;
+    if (!isEditing && addresses.length === 0) {
+      if (!addressData.isDefaultShipping || !addressData.isDefaultBilling) {
+        this.view.showFormValidationMessage('The first address must be set as default for both shipping and billing.');
+        return false;
+      }
+    } else if (addresses.length + (isEditing ? 0 : 1) > 0) {
+      if (!hasDefaultShipping || !hasDefaultBilling) {
+        const missing: string[] = [];
+        if (!hasDefaultShipping) missing.push('shipping');
+        if (!hasDefaultBilling) missing.push('billing');
+        if (missing.length > 0) {
+          this.view.showFormValidationMessage(
+            `Please ensure at least one default ${missing.join(' and ')} address is set.`
+          );
+          return false;
+        }
+      }
     }
     this.view.hideFormValidationMessage();
     return true;
@@ -207,7 +239,6 @@ export class AddressesController {
       city: addressData.city,
       postalCode: addressData.postalCode,
     };
-
     if (editingId) {
       actions.push({ action: 'changeAddress', addressId: editingId, address: addressPayload });
     } else {
@@ -216,89 +247,130 @@ export class AddressesController {
     return actions;
   }
 
+  private findNewAddressId(customerBefore: Partial<Customer>, customerAfter: Customer): string | null {
+    const oldAddressIds = new Set(
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      customerBefore.addresses?.map((a) => a.id).filter((id) => id !== undefined) as string[]
+    );
+    const newAddress = customerAfter.addresses.find((a) => a.id && !oldAddressIds.has(a.id));
+    return newAddress?.id || null;
+  }
+
   private async prepareDefaultAddressActions(
     addressData: NonNullable<ReturnType<AddressesSectionView['getAddressFormValues']>>,
-    customerAfterSave: Customer,
-    originalEditingId: string | null
+    customerStateAfterMainAction: Customer,
+    originalEditingId: string | null,
+    customerStateBeforeAnyActions: Partial<Customer>
   ): Promise<MyCustomerUpdateAction[]> {
     const defaultActions: MyCustomerUpdateAction[] = [];
-    const savedAddressId =
-      originalEditingId ||
-      customerAfterSave.addresses.find(
-        (addr) =>
-          addr.streetName === addressData.streetName &&
-          addr.city === addressData.city &&
-          addr.postalCode === addressData.postalCode &&
-          addr.country === addressData.country
-      )?.id;
+    let processedAddressId = originalEditingId;
 
-    if (!savedAddressId) {
-      console.error('Could not determine saved address ID for setting defaults.');
+    if (!processedAddressId) {
+      processedAddressId = this.findNewAddressId(customerStateBeforeAnyActions, customerStateAfterMainAction);
+    }
+
+    if (!processedAddressId) {
+      console.error('CRITICAL: Could not determine processed address ID for setting defaults.');
       return [];
     }
 
-    const currentDefaultShippingId = customerAfterSave.defaultShippingAddressId;
-    const currentDefaultBillingId = customerAfterSave.defaultBillingAddressId;
+    const defaultShippingIdFromState = customerStateAfterMainAction.defaultShippingAddressId;
+    const defaultBillingIdFromState = customerStateAfterMainAction.defaultBillingAddressId;
 
-    if (addressData.isDefaultShipping && currentDefaultShippingId !== savedAddressId) {
-      defaultActions.push({ action: 'setDefaultShippingAddress', addressId: savedAddressId });
-    } else if (!addressData.isDefaultShipping && currentDefaultShippingId === savedAddressId) {
+    if (addressData.isDefaultShipping) {
+      if (defaultShippingIdFromState !== processedAddressId) {
+        defaultActions.push({ action: 'setDefaultShippingAddress', addressId: processedAddressId });
+      }
+    } else if (defaultShippingIdFromState === processedAddressId) {
       defaultActions.push({ action: 'setDefaultShippingAddress', addressId: undefined });
     }
 
-    if (addressData.isDefaultBilling && currentDefaultBillingId !== savedAddressId) {
-      defaultActions.push({ action: 'setDefaultBillingAddress', addressId: savedAddressId });
-    } else if (!addressData.isDefaultBilling && currentDefaultBillingId === savedAddressId) {
+    if (addressData.isDefaultBilling) {
+      if (defaultBillingIdFromState !== processedAddressId) {
+        defaultActions.push({ action: 'setDefaultBillingAddress', addressId: processedAddressId });
+      }
+    } else if (defaultBillingIdFromState === processedAddressId) {
       defaultActions.push({ action: 'setDefaultBillingAddress', addressId: undefined });
     }
+    console.log('Preparing default address actions:', JSON.stringify(defaultActions, null, 2));
     return defaultActions;
   }
 
   // eslint-disable-next-line max-lines-per-function
-  private async handleSaveAddressClick(): Promise<void> {
+  private handleSaveAddressClick = async (): Promise<void> => {
     this.forceValidateAllFormFields();
     if (!this.view.isAddressFormValid()) {
       this.customerService.modal.errorMessage('Please correct the errors in the address form.');
       return;
     }
+
     const addressData = this.view.getAddressFormValues();
-    const currentUser = this.appModel.getCurrentUser();
-    if (!addressData || !currentUser.id || typeof currentUser.version !== 'number') {
+    const customerBeforeAnyActions = this.appModel.getCurrentUser();
+    const initialVersion = customerBeforeAnyActions.version;
+
+    if (!addressData || !customerBeforeAnyActions.id || typeof initialVersion !== 'number') {
       this.customerService.modal.errorMessage('Form data or user data is incomplete.');
       return;
     }
+
     const editingId = this.view.getCurrentEditingAddressId();
-    if (!this.checkDefaultAddressRequirements(addressData, currentUser, !!editingId)) {
+    if (!this.checkDefaultAddressRequirements(addressData, customerBeforeAnyActions, !!editingId, editingId)) {
       return;
     }
+
     this.view.getSaveAddressButtonElement().disabled = true;
+
     const mainActions = this.prepareAddressActions(addressData, editingId);
-    let result = await this.customerService.updateCustomerPersonalInfo(currentUser.version, mainActions);
-    if (result && !(result instanceof Error)) {
-      let customerAfterMainActions = result;
-      const defaultSettingActions = await this.prepareDefaultAddressActions(
-        addressData,
-        customerAfterMainActions,
-        editingId
-      );
-      if (defaultSettingActions.length > 0) {
-        const defaultResult = await this.customerService.updateCustomerPersonalInfo(
-          customerAfterMainActions.version,
-          defaultSettingActions
-        );
-        if (defaultResult && !(defaultResult instanceof Error)) {
-          customerAfterMainActions = defaultResult;
-        } else {
-          this.customerService.modal.errorMessage('Address saved, but failed to update default status.');
+    let customerAfterMainSave = await this.customerService.updateCustomerPersonalInfo(initialVersion, mainActions);
+
+    if (customerAfterMainSave instanceof Error) {
+      this.customerService.modal.errorMessage(customerAfterMainSave.message);
+      this.view.getSaveAddressButtonElement().disabled = false;
+      if (customerAfterMainSave.message.includes('Concurrent modification')) {
+        const refreshToken = sessionStorage.getItem(REFRESH_TOKEN);
+        if (refreshToken) {
+          const freshUserResponse = await this.customerService.loginWithRefreshToken(refreshToken);
+          if (!(freshUserResponse instanceof Error)) {
+            this.appModel.setCurrentUser(freshUserResponse);
+          }
         }
       }
-      this.appModel.setCurrentUser(customerAfterMainActions);
-      this.view.displayAddresses();
-      this.view.hideAddressForm();
-      this.customerService.modal.infoMessage(`Address ${editingId ? 'updated' : 'added'} successfully!`);
-      this.touchedFields.clear();
-    } else {
-      this.view.getSaveAddressButtonElement().disabled = false;
+      return;
     }
-  }
+
+    const defaultSettingActions = await this.prepareDefaultAddressActions(
+      addressData,
+      customerAfterMainSave,
+      editingId,
+      customerBeforeAnyActions
+    );
+
+    let finalCustomerState = customerAfterMainSave;
+    if (defaultSettingActions.length > 0) {
+      const defaultResult = await this.customerService.updateCustomerPersonalInfo(
+        customerAfterMainSave.version,
+        defaultSettingActions
+      );
+      if (defaultResult instanceof Error) {
+        this.customerService.modal.errorMessage(
+          `Address ${editingId ? 'updated' : 'added'}, but failed to set default status: ${defaultResult.message}`
+        );
+      } else {
+        finalCustomerState = defaultResult;
+      }
+    }
+
+    this.appModel.setCurrentUser(finalCustomerState);
+    this.view.displayAddresses();
+    this.view.hideAddressForm();
+
+    if (
+      !(customerAfterMainSave instanceof Error) &&
+      (defaultSettingActions.length === 0 ||
+        !(finalCustomerState instanceof Error && finalCustomerState !== customerAfterMainSave))
+    ) {
+      this.customerService.modal.infoMessage(`Address ${editingId ? 'updated' : 'added/modified'} successfully!`);
+    }
+    this.touchedFields.clear();
+  };
 }

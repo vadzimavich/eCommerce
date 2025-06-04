@@ -195,9 +195,21 @@ export class CustomerService {
   ): Promise<Customer | Error> {
     if (!this.currentClient) {
       const errorMessage = 'Client not initialized for update.';
-      this.modal.errorMessage(errorMessage);
       return new Error(errorMessage);
     }
+
+    console.log(
+      'CustomerService: Updating customer with actions:',
+      JSON.stringify(
+        {
+          version: currentVersion,
+          actions: actions,
+        },
+        null,
+        2
+      )
+    );
+
     try {
       const response = await this.currentClient
         .me()
@@ -208,8 +220,6 @@ export class CustomerService {
           },
         })
         .execute();
-
-      this.modal.infoMessage('Personal information updated successfully!');
       return response.body;
     } catch (error) {
       return this.handleErrorUpdateCustomer(error);
@@ -257,16 +267,13 @@ export class CustomerService {
 
     const specificCtMessage = this.getSpecificErrorMessage(error);
     if (specificCtMessage) {
-      this.modal.errorMessage(specificCtMessage);
       return new Error(specificCtMessage);
     }
 
     if (isStandardError(error)) {
-      this.modal.errorMessage(error.message);
       return error;
     }
 
-    this.modal.errorMessage(defaultMessage);
     return new Error(defaultMessage);
   }
 }
