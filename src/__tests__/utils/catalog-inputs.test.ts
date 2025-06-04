@@ -16,7 +16,7 @@ import {
 } from '../../utils/catalog-inputs';
 
 // eslint-disable-next-line max-lines-per-function
-describe('Error tooltip', () => {
+describe('Catalog inputs', () => {
   const data = {
     id: 'id',
     optoins: ['option1'],
@@ -34,6 +34,11 @@ describe('Error tooltip', () => {
 
     expect(result).toBeInstanceOf(HTMLSelectElement);
     expect(result.id).toBe(data.id);
+    data.classes.forEach((item) => {
+      expect(result.classList).toContain(item);
+    });
+    expect(result.querySelector('option')).toBeInstanceOf(HTMLOptionElement);
+    expect(result.querySelector('option')?.value).toBe(data.values[0]);
   });
 
   test('createInputCatalogSearch(): should return HTMLInputElement', () => {
@@ -47,12 +52,18 @@ describe('Error tooltip', () => {
     const result = createFilterSection(data.title, data.content, data.classes);
 
     expect(result).toBeInstanceOf(HTMLElement);
+    expect(result.querySelector('summary')).toBeInstanceOf(HTMLElement);
+    expect(result.querySelector('summary')?.textContent).toBe(data.title);
+    data.classes.forEach((item) => {
+      expect(result.classList).toContain(item);
+    });
   });
 
   test('createCategorySelect(): should return HTMLSelectElement', () => {
     const result = createCategorySelect(data.id, data.categories, data.defaultValue, data.noData);
 
     expect(result).toBeInstanceOf(HTMLSelectElement);
+    expect(result.id).toBe(data.id);
     expect(result.querySelector('option')?.textContent).toBe(data.defaultValue);
   });
 
@@ -102,14 +113,19 @@ describe('Error tooltip', () => {
   });
 
   test('createInputPriceRange(): should create HTMLInputElement', () => {
-    const result = createInputPriceRange('id', 'placeholder');
+    const result = createInputPriceRange(data.id, 'placeholder');
 
     expect(result).toBeInstanceOf(HTMLInputElement);
+    expect(result.id).toBe(data.id);
+    expect(result.placeholder).toBe('placeholder');
   });
 
   test('createPriceRnageContainer(): should create HTMLElement', () => {
     const result = createPriceRnageContainer([{ id: 'id', placeholder: 'placeholder' }]);
 
     expect(result).toBeInstanceOf(HTMLElement);
+    expect(result.querySelector('input')).toBeInstanceOf(HTMLInputElement);
+    expect(result.querySelector('input')?.id).toBe('id');
+    expect(result.querySelector('input')?.placeholder).toBe('placeholder');
   });
 });
