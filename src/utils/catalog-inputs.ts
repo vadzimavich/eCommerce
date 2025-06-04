@@ -34,7 +34,7 @@ export const createInputCatalogSearch = (id: string): HTMLInputElement => {
     classNames: ['form__input'],
     attributes: {
       name: 'catalog-search',
-      type: 'text',
+      type: 'search',
       id: id,
       placeholder: 'Search for...',
     },

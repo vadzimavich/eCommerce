@@ -2,7 +2,6 @@ import type { Category, ProductProjection, QueryParam } from '@commercetools/pla
 import { CustomerService } from './AuthService';
 import { ProductQueryParameters } from '../types/api-types';
 import { parserFilters } from '../../utils/parsers';
-// import { parserFilters } from '../../utils/parsers';
 
 export class ProductsService {
   private static instance: ProductsService;
@@ -42,8 +41,8 @@ export class ProductsService {
         .get({ queryArgs: queryArguments })
         .execute();
       return response.body.results;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error('getAllProducts error:', error);
       return new Error('Failed to fetch products');
     }
   }
@@ -52,8 +51,8 @@ export class ProductsService {
     try {
       const response = await this.service.getCurrentClient().categories().get().execute();
       return response.body.results;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error('getAllCategories error:', error);
       return new Error('Failed to fetch categories');
     }
   }
