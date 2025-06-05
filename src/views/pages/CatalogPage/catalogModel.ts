@@ -28,7 +28,6 @@ export class CatalogModel {
   public setParameters(update: ProductQueryParameters): void {
     if (update.filters !== undefined) {
       this.currentParameters.filters = { ...update.filters };
-      console.log(this.getParameters());
       this.checkIsFiltred();
       this.notifyFiltersListeners();
     }

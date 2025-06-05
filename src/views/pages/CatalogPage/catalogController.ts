@@ -113,18 +113,20 @@ export class CatalogController {
 
   private handlerSearchForm(): void {
     const form = this.productsView.getFormSearch();
-
+    const input = this.productsView.getSearchInput();
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      const input = this.productsView.getSearchInput();
-      const query = input.value.trim();
 
-      if (query === '') {
-        this.initProducts({});
-      } else {
-        this.initProducts({ searchText: query });
+      const query = input.value.trim();
+      this.model.setParameters({ searchText: query });
+      this.initProducts(this.model.getParameters());
+    });
+
+    input.addEventListener('input', () => {
+      if (input.value.trim() === '') {
+        this.model.setParameters({ searchText: '' });
+        this.initProducts(this.model.getParameters());
       }
-      input.value = '';
     });
   }
 
