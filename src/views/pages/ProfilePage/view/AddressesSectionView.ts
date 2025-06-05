@@ -1,19 +1,16 @@
-// src/views/pages/ProfilePage/view/AddressesSectionView.ts
-
 import { AppModel } from '../../../../models/state/AppState';
 import { ProfilePageModel } from '../profilePageModel';
 import { elementCreator } from '../../../../utils/dom-helpers';
 import * as formInputs from '../../../../utils/form-inputs';
 import { Address } from '@commercetools/platform-sdk';
 import { countries as countryOptions } from '../../../components/InputField/constants-content';
-import { updateTooltip } from '../../../../utils/error-tooltip'; // Импортируем для сброса
+import { updateTooltip } from '../../../../utils/error-tooltip';
 
 export class AddressesSectionView {
   private sectionElement: HTMLElement;
   private addressListContainer!: HTMLElement;
   private addAddressButton!: HTMLButtonElement;
 
-  // Элементы формы
   private addressFormContainer!: HTMLElement;
   private streetInput!: HTMLInputElement;
   private cityInput!: HTMLInputElement;
@@ -23,7 +20,7 @@ export class AddressesSectionView {
   private defaultBillingCheckbox!: HTMLInputElement;
   private saveAddressButton!: HTMLButtonElement;
   private cancelAddressButton!: HTMLButtonElement;
-  private formValidationMessageElement!: HTMLElement; // Для сообщения о необходимости выбрать дефолтные адреса
+  private formValidationMessageElement!: HTMLElement;
 
   private currentEditingAddressId: string | null = null;
 
@@ -40,10 +37,15 @@ export class AddressesSectionView {
 
   public render(): HTMLElement {
     this.displayAddresses();
-    this.addressFormContainer.style.display = 'none';
-    this.addAddressButton.style.display = 'block';
-    this.currentEditingAddressId = null;
+    if (!this.currentEditingAddressId && this.addressFormContainer.parentElement) {
+      this.addressFormContainer.style.display = 'none';
+    }
+    this.updateAddAddressButtonVisibility();
     return this.sectionElement;
+  }
+
+  public setCurrentEditingAddressId(addressId: string | null): void {
+    this.currentEditingAddressId = addressId;
   }
 
   public displayAddresses(): void {
@@ -51,7 +53,7 @@ export class AddressesSectionView {
     const currentUser = this.appModel.getCurrentUser();
     const addresses = currentUser.addresses || [];
 
-    if (addresses.length === 0) {
+    if (addresses.length === 0 && !this.currentEditingAddressId) {
       this.addressListContainer.append(
         elementCreator(document.createElement('p'), {
           classNames: ['profile-page__info-item'],
@@ -61,25 +63,31 @@ export class AddressesSectionView {
     } else {
       addresses.forEach((addr) => {
         if (addr.id) {
-          this.addressListContainer.append(
-            this.createAddressCardElement(
-              addr,
-              currentUser.defaultShippingAddressId,
-              currentUser.defaultBillingAddressId
-            )
-          );
+          if (addr.id === this.currentEditingAddressId) {
+            this.addressListContainer.append(this.addressFormContainer);
+            this.addressFormContainer.style.display = 'flex';
+          } else {
+            this.addressListContainer.append(
+              this.createAddressCardElement(
+                addr,
+                currentUser.defaultShippingAddressId,
+                currentUser.defaultBillingAddressId
+              )
+            );
+          }
         }
       });
     }
+    this.updateAddAddressButtonVisibility();
   }
 
+  // eslint-disable-next-line max-lines-per-function
   public showAddressForm(isEditMode: boolean, address?: Address): void {
-    this.currentEditingAddressId = isEditMode && address ? address.id || null : null;
-    this.addressFormContainer.style.display = 'flex';
-    this.addAddressButton.style.display = 'none';
+    const newEditingId = isEditMode && address ? address.id || null : null;
+    this.setCurrentEditingAddressId(newEditingId);
     this.saveAddressButton.textContent = isEditMode ? 'Save Changes' : 'Save New Address';
-
     const currentUser = this.appModel.getCurrentUser();
+
     if (isEditMode && address) {
       this.streetInput.value = address.streetName || '';
       this.cityInput.value = address.city || '';
@@ -94,36 +102,38 @@ export class AddressesSectionView {
       this.countrySelect.value = countryOptions.length > 0 ? 'US' : '';
       this.defaultShippingCheckbox.checked = false;
       this.defaultBillingCheckbox.checked = false;
+
+      if (!isEditMode) {
+        this.addressFormContainer.style.display = 'flex';
+        this.addressListContainer.append(this.addressFormContainer);
+      }
+    }
+
+    if (isEditMode) {
+      this.displayAddresses();
     }
 
     [this.streetInput, this.cityInput, this.postalCodeInput, this.countrySelect].forEach((input) => {
-      input.setAttribute('data-correct', 'false');
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      if (isEditMode && (input as HTMLInputElement | HTMLSelectElement).value) {
+        input.setAttribute('data-correct', 'true');
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      } else if (!isEditMode && input.id === 'profile-address-country' && (input as HTMLSelectElement).value) {
+        input.setAttribute('data-correct', 'true');
+      } else {
+        input.setAttribute('data-correct', 'false');
+      }
       updateTooltip(input, { result: true });
     });
-    if (this.countrySelect.value) this.countrySelect.setAttribute('data-correct', 'true');
     this.updateSaveAddressButtonState();
     this.hideFormValidationMessage();
+    this.updateAddAddressButtonVisibility();
   }
 
   public hideAddressForm(): void {
-    this.addressFormContainer.style.display = 'none';
-    this.addAddressButton.style.display = 'block';
-    this.currentEditingAddressId = null;
+    this.setCurrentEditingAddressId(null);
+    this.displayAddresses();
     this.hideFormValidationMessage();
-    // Сброс полей и валидации
-    [this.streetInput, this.cityInput, this.postalCodeInput].forEach((input) => {
-      input.value = '';
-      input.setAttribute('data-correct', 'false');
-      updateTooltip(input, { result: true });
-    });
-    if (this.countrySelect.options.length > 0) {
-      this.countrySelect.value = this.countrySelect.options[0].value;
-      this.countrySelect.setAttribute('data-correct', 'true'); // Считаем выбранную страну валидной
-      updateTooltip(this.countrySelect, { result: true });
-    }
-    this.defaultShippingCheckbox.checked = false;
-    this.defaultBillingCheckbox.checked = false;
-    this.updateSaveAddressButtonState();
   }
 
   public getAddressFormValues():
@@ -155,7 +165,7 @@ export class AddressesSectionView {
 
   public showFormValidationMessage(message: string): void {
     this.formValidationMessageElement.textContent = message;
-    this.formValidationMessageElement.style.display = 'flex'; // Используем flex для показа
+    this.formValidationMessageElement.style.display = 'flex';
   }
 
   public hideFormValidationMessage(): void {
@@ -205,7 +215,7 @@ export class AddressesSectionView {
       content: '+ Add New Address',
     });
     this.addressFormContainer = this.createAddressForm();
-    this.sectionElement.append(title, this.addressListContainer, this.addAddressButton, this.addressFormContainer);
+    this.sectionElement.append(title, this.addressListContainer, this.addAddressButton);
   }
 
   private createAddressCardElement(
@@ -247,6 +257,15 @@ export class AddressesSectionView {
     const actionButtons = this.createAddressActionButtons(address.id || '');
     card.append(actionButtons);
     return card;
+  }
+
+  private updateAddAddressButtonVisibility(): void {
+    const isFormActiveForNew = this.addressFormContainer.style.display !== 'none' && !this.currentEditingAddressId;
+    if (this.currentEditingAddressId || isFormActiveForNew) {
+      this.addAddressButton.style.display = 'none';
+    } else {
+      this.addAddressButton.style.display = 'block';
+    }
   }
 
   private createAddressDetailsContainer(address: Address): HTMLElement {
@@ -321,7 +340,6 @@ export class AddressesSectionView {
     const checkboxesContainer = elementCreator(document.createElement('div'), {
       classNames: ['profile-page__form-checkboxes'],
     });
-    // Передаем ID для чекбоксов, чтобы они были уникальны
     checkboxesContainer.append(
       this.createDefaultAddressCheckboxWrapper(
         'shipping',
