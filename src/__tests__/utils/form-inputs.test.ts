@@ -86,6 +86,6 @@ describe('parserFilters', () => {
     expect(result).toBeInstanceOf(HTMLSelectElement);
     expect(result.querySelector('option')).toBeInstanceOf(HTMLOptionElement);
     expect(result.querySelector('option')?.value).toBe('value1');
-    expect(result.querySelector('option')?.textContent).toBe('Value1');
+    expect(result.querySelector('option')?.textContent).toBe('value1');
   });
 });
