@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { ProductModel } from '../../views/pages/ProductDetailPage/productModel';
-import { ProductData } from '../../models/types/api-types';
+import { ProductModel } from '../../../views/pages/ProductDetailPage/productModel';
+import { ProductData } from '../../../models/types/api-types';
 
 // eslint-disable-next-line max-lines-per-function
 describe('ProductModel', () => {

@@ -104,24 +104,30 @@ export const handlerDateField = (value: string): HandlerInputFieldResult => {
   return { result: true };
 };
 
-export const handlerPostalCodeField = (country: string, postalCode: string): HandlerInputFieldResult => {
-  if (country === 'USA') {
-    const regex = /^\d{5}(-\d{4})?$/;
+export const handlerPostalCodeField = (countryCode: string, postalCode: string): HandlerInputFieldResult => {
+  if (!countryCode) {
+    return { result: false, errorMessage: PostalCodeErrorTooltips.Select_country };
+  }
 
-    if (!regex.test(postalCode)) {
+  const trimmedPostalCode = postalCode.trim();
+
+  if (trimmedPostalCode === '') {
+    return { result: false, errorMessage: 'Please enter a postal code.' };
+  }
+
+  if (countryCode === 'US') {
+    const regex = /^\d{5}(-\d{4})?$/;
+    if (!regex.test(trimmedPostalCode)) {
       return { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_USA };
     }
-
     return { result: true };
-  } else if (country === 'Canada') {
-    const regex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-
-    if (!regex.test(postalCode)) {
+  } else if (countryCode === 'CA') {
+    const regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/i;
+    if (!regex.test(trimmedPostalCode)) {
       return { result: false, errorMessage: PostalCodeErrorTooltips.Postal_code_Canada };
     }
-
     return { result: true };
   }
 
-  return { result: false, errorMessage: PostalCodeErrorTooltips.Select_country };
+  return { result: true };
 };
