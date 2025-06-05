@@ -92,7 +92,6 @@ export class CatalogView {
 
   public changeClearButton(): void {
     const isFilters = this.model.checkIsFiltred();
-    console.log(isFilters);
     if (!isFilters) {
       this.clearFilterButton.disabled = true;
     } else {
