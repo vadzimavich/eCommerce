@@ -8,6 +8,12 @@
     margin-bottom: $gap-middle;
   }
 
+  .form__title {
+    font-size: 3rem;
+    color: var(--color-breeze);
+    text-transform: uppercase;
+  }
+
   .form__input--readonly {
     cursor: default;
 
@@ -15,7 +21,8 @@
     padding-left: 0;
     border-color: transparent;
 
-    color: var(--color-dark);
+    font-size: 1.8rem;
+    color: var(--color-card-desc);
 
     background-color: transparent;
 
@@ -35,6 +42,12 @@
     &::-webkit-clear-button {
       display: none;
       appearance: none;
+    }
+  }
+
+  .form__input__wrapper {
+    label {
+      font-size: 2rem;
     }
   }
 
@@ -69,6 +82,7 @@
   }
 
   &__content-wrapper {
+    padding: 5rem;
     text-align: left;
   }
 
@@ -85,21 +99,27 @@
     border-bottom: 1px solid var(--color-border);
 
     &:last-child {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
       margin-bottom: 0;
       border-bottom: none;
     }
   }
 
   &__section-title {
-    margin-bottom: $gap-middle;
-    font-size: 1.8rem;
+    margin-bottom: 3rem;
+
+    font-size: 2.5rem;
     font-weight: 600;
     color: var(--color-dark-blue);
+    text-align: center;
   }
 
   &__address-item {
     margin-bottom: $gap-small;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     line-height: 1.6;
   }
 
@@ -109,15 +129,32 @@
     color: var(--color-dark);
   }
 
+  &__address-list {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-big;
+  }
+
+  &__form-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-small;
+  }
+
+  &__checkbox-wrapper {
+    flex-direction: row;
+  }
+
   &__address-card {
     display: flex;
     flex-direction: column;
+    gap: 15px;
 
-    padding: $gap-middle;
+    padding: 3rem;
     border: 1px solid var(--color-border-input);
-    border-radius: $radius;
+    border-radius: $radius-big;
 
-    background-color: var(--color-white);
+    background-color: var(--color-bg-modal);
 
     .default-shipping-text,
     .default-billing-text {
@@ -129,13 +166,21 @@
   }
 
   &__button {
+    max-width: max-content;
     margin-right: $gap-small;
     padding: 0.8em 1.5em;
     border-radius: $radius;
-    background-color: var(--color-shadow);
+
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-white);
+
+    background-color: var(--color-breeze);
+
+    transition: background-color 0.3s ease-in-out;
 
     &:hover {
-      background-color: var(--color-border);
+      background-color: var(--color-breeze-light);
     }
 
     &:last-child {
@@ -161,6 +206,10 @@
         background-color: var(--color-shadow);
       }
     }
+  }
+
+  &__address-form {
+    border: 1px solid var(--color-border-input);
   }
 
   &__new-password-fields {
