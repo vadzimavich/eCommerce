@@ -4,6 +4,7 @@ import { ProfilePageModel } from '../profilePageModel';
 import { PersonalInformationView } from './PersonalInformationView';
 import { SecuritySectionView } from './SecuritySectionView';
 import { AddressesSectionView } from './AddressesSectionView';
+import { loaderView } from '../../../components/Loader';
 
 export class ProfilePageView {
   private readonly container: HTMLElement;
@@ -36,12 +37,12 @@ export class ProfilePageView {
   }
 
   public render(): HTMLElement {
-    console.log('ProfilePageView: render() called');
     this.contentWrapper.innerHTML = '';
 
     if (!this.appModel.getLoginState() || Object.keys(this.appModel.getCurrentUser()).length === 0) {
-      this.contentWrapper.textContent = 'Loading user data or not logged in...';
+      this.contentWrapper.append(loaderView());
     } else {
+      this.contentWrapper.replaceChildren();
       this.contentWrapper.append(
         this.personalInfoView.render(),
         this.securityView.render(),

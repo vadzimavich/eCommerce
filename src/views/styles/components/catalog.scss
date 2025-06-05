@@ -198,7 +198,7 @@
   gap: $gap-middle;
   justify-content: space-between;
 
-  max-height: 34rem;
+  min-height: 34rem;
   max-height: min-content;
   padding: 1.5rem;
   border: 1px solid var(--color-border-opacity);
