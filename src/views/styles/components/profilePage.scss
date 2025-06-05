@@ -82,6 +82,8 @@
   }
 
   &__content-wrapper {
+    position: relative;
+    min-height: 30rem;
     padding: 5rem;
     text-align: left;
   }
