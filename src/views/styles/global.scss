@@ -149,6 +149,10 @@ main {
   opacity: 0.5;
 }
 
+.hidden {
+  display: none;
+}
+
 .price-old {
   color: var(--color-card-price);
   text-decoration: line-through;
