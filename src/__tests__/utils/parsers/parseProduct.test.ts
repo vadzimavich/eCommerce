@@ -126,7 +126,6 @@ const rawProduct: ProductProjection = {
   lastModifiedAt: '2025-05-28T21:51:35.011Z',
 };
 
-// eslint-disable-next-line max-lines-per-function
 describe('parseProduct', () => {
   it('should parse a product correctly', () => {
     const expected: ProductData = {
