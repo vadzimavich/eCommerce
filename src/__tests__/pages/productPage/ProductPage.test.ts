@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { AppModel } from '../../models/state/AppState';
-import { ProductPage } from '../../views/pages/ProductDetailPage';
-import { ProductController } from '../../views/pages/ProductDetailPage/productController';
-import { ProductModel } from '../../views/pages/ProductDetailPage/productModel';
-import { ProductView } from '../../views/pages/ProductDetailPage/productView';
+import { AppModel } from '../../../models/state/AppState';
+import { ProductPage } from '../../../views/pages/ProductDetailPage';
+import { ProductController } from '../../../views/pages/ProductDetailPage/productController';
+import { ProductModel } from '../../../views/pages/ProductDetailPage/productModel';
+import { ProductView } from '../../../views/pages/ProductDetailPage/productView';
 
-jest.mock('../../views/pages/ProductDetailPage/productModel');
-jest.mock('../../views/pages/ProductDetailPage/productView');
-jest.mock('../../views/pages/ProductDetailPage/productController');
+jest.mock('../../../views/pages/ProductDetailPage/productModel');
+jest.mock('../../../views/pages/ProductDetailPage/productView');
+jest.mock('../../../views/pages/ProductDetailPage/productController');
 
 describe('ProductPage', () => {
   let mockAppModel: AppModel;

@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { ProductModel } from '../../views/pages/ProductDetailPage/productModel';
-import { ProductView } from '../../views/pages/ProductDetailPage/productView';
+import { ProductModel } from '../../../views/pages/ProductDetailPage/productModel';
+import { ProductView } from '../../../views/pages/ProductDetailPage/productView';
 
-jest.mock('../../views/pages/ProductDetailPage/productModel');
+jest.mock('../../../views/pages/ProductDetailPage/productModel');
 
 // eslint-disable-next-line max-lines-per-function
 describe('ProductView', () => {
@@ -26,14 +26,13 @@ describe('ProductView', () => {
     expect(result).toBe(mockView.getContainer());
   });
 
-  test('loadData(): should display loading message when no product data is available', () => {
+  test('loadData(): should display loader when no product data is available', () => {
     mockModel.dataProduct = null;
 
     mockView.loadData();
 
-    const loadingMessage = mockView.getContainer().children[0];
-    expect(loadingMessage).toBeTruthy();
-    expect(loadingMessage.textContent).toBe('Loading product details');
+    const loader = mockView.getContainer().querySelector('.loader');
+    expect(loader).toBeTruthy();
   });
 
   test('loadData(): should call renderProduct() when product data is available', () => {
