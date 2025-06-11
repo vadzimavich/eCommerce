@@ -137,15 +137,15 @@ export class RegistrationModel {
       password: this.dataForm.password,
       firstName: this.dataForm['first-name'],
       lastName: this.dataForm['last-name'],
-      dateOfBirth: this.dataForm.birthday,
+      dateOfBirth: this.dataForm.bday,
       shippingAddress: {
-        country: this.getCodeCountry(this.dataForm['shipping-country']),
+        country: this.dataForm['shipping-country'],
         city: this.dataForm['shipping-city'],
         streetName: this.dataForm['shipping-street'],
         postalCode: this.dataForm['shipping-postal-code'],
       },
       billingAddress: {
-        country: this.getCodeCountry(this.dataForm['billing-country']),
+        country: this.dataForm['billing-country'],
         city: this.dataForm['billing-city'],
         streetName: this.dataForm['billing-street'],
         postalCode: this.dataForm['billing-postal-code'],
@@ -156,15 +156,5 @@ export class RegistrationModel {
     };
 
     return data;
-  }
-
-  private getCodeCountry(country: string): string {
-    if (country === 'USA') {
-      return 'US';
-    } else if (country === 'Canada') {
-      return 'CA';
-    } else {
-      return '';
-    }
   }
 }

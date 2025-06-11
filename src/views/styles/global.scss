@@ -69,15 +69,19 @@ body {
   margin: 0 auto;
 
   font-family: Inter, sans-serif;
-  font-size: 16px;
+  font-size: 1.6rem;
   font-weight: 400;
   line-height: 23px;
 
-  background: linear-gradient(rgb(245 247 250), rgb(215 206 178));
+  background: linear-gradient(rgb(245 247 250), rgb(215 206 178)) no-repeat;
 
   @media (width <= 520px) {
     font-size: 14px;
   }
+}
+
+body.modal_active {
+  overflow: hidden;
 }
 
 body.overlay {
@@ -97,7 +101,23 @@ main {
   align-items: center;
   justify-content: flex-start;
 
+  height: 100%;
+  min-height: 100%;
+
   @include container;
+
+  @media (height >= 100vh) {
+    min-height: 100vh;
+  }
+}
+
+.section-item {
+  width: 100%;
+  padding: $padding-section-vertical;
+  border-radius: $radius-big;
+
+  background-color: var(--color-bg-modal);
+  box-shadow: $box-shadow;
 }
 
 .error-tooltip {
@@ -127,4 +147,47 @@ main {
 .disabled {
   pointer-events: none;
   opacity: 0.5;
+}
+
+.hidden {
+  display: none;
+}
+
+.price-old {
+  color: var(--color-card-price);
+  text-decoration: line-through;
+}
+
+.price-new {
+  font-weight: bold;
+  color: var(--color-card-price-discount);
+}
+
+.loader {
+  position: absolute;
+  top: calc(50% - 5rem);
+  left: calc(50% - 5rem);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 10rem;
+  height: 10rem;
+}
+
+.loader__img {
+  width: 100%;
+  height: 100%;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

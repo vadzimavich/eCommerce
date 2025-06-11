@@ -5,3 +5,11 @@
 @use './components/modal.scss';
 @use './components/header.scss';
 @use './components/not-found.scss';
+@use './components/catalog.scss';
+@use './components/profilePage.scss';
+@use './components/product-page.scss';
+
+@use 'swiper/scss';
+@use 'swiper/scss/navigation';
+@use 'swiper/scss/pagination';
+@use 'swiper/scss/thumbs';

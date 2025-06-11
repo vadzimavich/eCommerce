@@ -67,8 +67,8 @@ export class HeaderView {
 
   public updateCurrentUserState(): void {
     const singInSignUpItems = this.getSignInSignUpItems();
-    const user = this.appModel.getCurrentUser();
-    if (!user) {
+    const loginState = this.appModel.getLoginState();
+    if (!loginState) {
       singInSignUpItems.forEach((item) => item.classList.remove('hidden'));
       this.logoutIconAnchor.classList.add('hidden');
       this.currentUserAnchor.classList.add('hidden');
@@ -139,7 +139,7 @@ export class HeaderView {
   private buildNavContainer(): void {
     const items = [
       { label: 'Home', route: '/home' },
-      { label: 'Catalog', route: '/catalog' },
+      { label: 'Catalog', route: '/catalog/all' },
       { label: 'About Us', route: '/about-us' },
       { label: 'Sign In', route: '/sign-in' },
       { label: 'Sign Up', route: '/sign-up' },

@@ -1,5 +1,5 @@
-import { handlerPasswordField } from '../utils/handler-fields';
-import { PasswordErrorTooltips } from '../views/components/InputField/constants-content';
+import { handlerPasswordField } from '../../../utils/handler-fields';
+import { PasswordErrorTooltips } from '../../../views/components/InputField/constants-content';
 
 const passwordTestCases = [
   {

@@ -13,6 +13,8 @@ import { Header } from './views/components/Header';
 import { NotFoundPage } from './views/pages/NotFoundPage';
 import { HeaderModel } from './views/components/Header/headerModel';
 import { ProfilePage } from './views/pages/ProfilePage';
+import { AuthController } from './controllers/AuthController';
+import { ProductPage } from './views/pages/ProductDetailPage';
 
 class App {
   public readonly route: Router;
@@ -31,16 +33,18 @@ class App {
     const routes: Routes = {
       '/': HomePage,
       '/home': HomePage,
-      '/catalog': CatalogPage,
+      '/catalog/:category': CatalogPage,
       '/about-us': AboutPage,
       '/sign-in': LoginPage,
       '/sign-up': RegistrationPage,
       '/not-found': NotFoundPage,
       '/cart': CartPage,
       '/my-account': ProfilePage,
+      '/product/:id': ProductPage,
     };
 
     this.route = new Router(routes, mainContainer, appModel);
+    new AuthController(appModel).checkAuthorization();
   }
 }
 
