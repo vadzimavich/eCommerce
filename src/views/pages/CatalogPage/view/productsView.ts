@@ -13,6 +13,9 @@ export class ProductsView {
   private readonly searchInput: HTMLInputElement;
   private readonly searchButton: HTMLButtonElement;
   private readonly formSearch: HTMLFormElement;
+  private readonly buttonPrevious: HTMLButtonElement;
+  private readonly buttonNext: HTMLButtonElement;
+  private readonly pageCounter: HTMLElement;
 
   constructor(private readonly model: CatalogModel) {
     this.container = elementCreator(document.createElement('div'), {
@@ -30,15 +33,38 @@ export class ProductsView {
     this.formSearch = elementCreator(document.createElement('form'), {
       classNames: ['catalog-right__head-search'],
     });
+
+    this.buttonPrevious = elementCreator(document.createElement('button'), {
+      classNames: ['form__button', 'btn', 'pagination__btn'],
+      content: 'Prev',
+      attributes: { id: 'prev-page' },
+    });
+
+    this.buttonNext = elementCreator(document.createElement('button'), {
+      classNames: ['form__button', 'btn', 'pagination__btn'],
+      content: 'Next',
+    });
+
+    this.pageCounter = elementCreator(document.createElement('span'), {
+      classNames: ['pagination__count', 'count'],
+      content: '1',
+      attributes: { id: 'next-page' },
+    });
   }
 
   public render(): HTMLElement {
+    this.updatePagination();
     this.renderCards();
     const headContainer = this.buildHeadContainer();
-    this.container.append(headContainer, this.productsContainer);
-    this.productsContainer.append(loaderView());
+    const paginationContainer = this.buildPagination();
+    this.container.append(headContainer, this.productsContainer, paginationContainer);
 
     return this.container;
+  }
+
+  public renderLoader(): void {
+    this.productsContainer.replaceChildren();
+    this.productsContainer.append(loaderView());
   }
 
   public getProductsContainer(): HTMLElement {
@@ -57,6 +83,32 @@ export class ProductsView {
     return this.searchInput;
   }
 
+  public getButtonNext(): HTMLButtonElement {
+    return this.buttonNext;
+  }
+
+  public getButtonPrev(): HTMLButtonElement {
+    return this.buttonPrevious;
+  }
+
+  public updatePagination(): void {
+    const parametrs = this.model.getParameters();
+
+    if (parametrs.page) {
+      this.pageCounter.textContent = parametrs.page.toString();
+    }
+
+    parametrs.page === 1 ? (this.buttonPrevious.disabled = true) : (this.buttonPrevious.disabled = false);
+
+    this.buttonPrevious.disabled = parametrs.page === 1;
+
+    if (parametrs.page && parametrs.limit && parametrs.total !== undefined) {
+      parametrs.page * parametrs.limit >= parametrs.total
+        ? (this.buttonNext.disabled = true)
+        : (this.buttonNext.disabled = false);
+    }
+  }
+
   public renderMessage(message: string): void {
     this.productsContainer.replaceChildren();
     const messageContainer = this.buildErrorsMessage(message);
@@ -65,7 +117,6 @@ export class ProductsView {
 
   public renderCards(): void {
     const dataProducts = this.model.getProducts();
-
     this.productsContainer.replaceChildren();
     dataProducts.forEach((product) => {
       const card = new ProductCard(product).create();
@@ -90,5 +141,14 @@ export class ProductsView {
       content: message,
     });
     return container;
+  }
+
+  private buildPagination(): HTMLElement {
+    const paginationContainer = elementCreator(document.createElement('div'), {
+      classNames: ['pagination', 'catalog-right__pagination'],
+    });
+
+    paginationContainer.append(this.buttonPrevious, this.pageCounter, this.buttonNext);
+    return paginationContainer;
   }
 }

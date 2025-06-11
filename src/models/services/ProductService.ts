@@ -14,11 +14,20 @@ export class ProductsService {
     return ProductsService.instance;
   }
 
-  public async getAllProducts(parameters: ProductQueryParameters): Promise<ProductProjection[] | Error> {
+  public async getAllProducts(
+    parameters: ProductQueryParameters
+  ): Promise<{ results: ProductProjection[]; total: number | undefined } | Error> {
     try {
+      const limit = parameters.limit;
+      const page = parameters.page;
+      let offset = 0;
+      if (limit && page) {
+        offset = (page - 1) * limit;
+      }
       const queryArguments: Record<string, QueryParam> = {
         sort: parameters.sort ?? 'name.en-US asc',
         limit: parameters.limit,
+        offset,
       };
 
       if (parameters.searchText) {
@@ -40,7 +49,10 @@ export class ProductsService {
         .search()
         .get({ queryArgs: queryArguments })
         .execute();
-      return response.body.results;
+      return {
+        results: response.body.results,
+        total: response.body.total,
+      };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return new Error('Failed to fetch products');

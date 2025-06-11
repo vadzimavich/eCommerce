@@ -6,9 +6,11 @@ import { parseProduct, parserCategories } from '../../../utils/parsers';
 export class CatalogModel {
   private products: ProductData[] = [];
   private categories: CategoryData[] = [];
-  private currentParameters: ProductQueryParameters = {};
+  private currentParameters: ProductQueryParameters = {
+    page: 1,
+    limit: 6,
+  };
   private currentCategory: string = '';
-
   private productsListener: Subscriber[] = [];
   private filtersListener: Subscriber[] = [];
 
@@ -37,6 +39,12 @@ export class CatalogModel {
     if (update.searchText !== undefined) {
       this.currentParameters.searchText = update.searchText;
     }
+
+    if (update.page !== undefined) {
+      this.currentParameters.page = update.page;
+    }
+
+    this.currentParameters.total = update.total;
   }
 
   public getParameters(): ProductQueryParameters {

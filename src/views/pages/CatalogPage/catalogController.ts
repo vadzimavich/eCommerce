@@ -22,6 +22,7 @@ export class CatalogController {
     this.handlerSearchForm();
     this.handlerFiltersContainer();
     this.handlerClearButton();
+    this.handlerPagination();
     this.model.subscribeProductsListener(() => {
       this.handlerProducts();
       this.updateCleanButton();
@@ -50,21 +51,24 @@ export class CatalogController {
 
     await this.initProducts(this.model.getParameters());
   }
+
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
     try {
+      this.productsView.renderLoader();
       const resultProducts = await this.service.getAllProducts(parameters);
-
       if (resultProducts instanceof Error) {
         this.productsView.renderMessage(resultProducts.message);
         return;
       }
 
-      if (resultProducts.length === 0) {
+      if (resultProducts.results.length === 0) {
         this.productsView.renderMessage('No products found.');
         return;
       }
 
-      this.model.setProducts(resultProducts);
+      this.model.setProducts(resultProducts.results);
+      this.model.setParameters({ total: resultProducts.total });
+      this.productsView.updatePagination();
     } catch (error) {
       console.error('Error loading products:', error);
     }
@@ -198,6 +202,27 @@ export class CatalogController {
       const selectedOption = select.options[select.selectedIndex];
       const optionId = selectedOption.id;
       route.navigate(`/catalog/${optionId}`);
+    });
+  }
+
+  private handlerPagination(): void {
+    const nextButton = this.productsView.getButtonNext();
+    const previousButton = this.productsView.getButtonPrev();
+
+    nextButton.addEventListener('click', () => {
+      const currentParameters = this.model.getParameters();
+      const nextPage = (currentParameters.page ?? 1) + 1;
+      this.model.setParameters({ page: nextPage });
+      this.productsView.updatePagination();
+      this.initProducts(this.model.getParameters());
+    });
+
+    previousButton.addEventListener('click', () => {
+      const currentParameters = this.model.getParameters();
+      const previousPage = (currentParameters.page ?? 1) - 1;
+      this.model.setParameters({ page: previousPage });
+      this.productsView.updatePagination();
+      this.initProducts(this.model.getParameters());
     });
   }
 
