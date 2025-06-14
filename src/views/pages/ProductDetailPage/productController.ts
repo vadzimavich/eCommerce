@@ -1,4 +1,3 @@
-import { Cart } from '@commercetools/platform-sdk';
 import { route } from '../../../app';
 import { CartService } from '../../../models/services/CartService';
 import { ProductsService } from '../../../models/services/ProductService';
@@ -42,34 +41,21 @@ export class ProductController {
   }
 
   private async getCart(): Promise<void> {
-    try {
-      let data: Cart;
+    const cart = await this.serviceCart.getCurrentCart();
 
-      if (this.model.cart) {
-        data = await this.serviceCart.getCartByID(this.model.cart.id);
-      } else {
-        const carts = await this.serviceCart.getCart();
-        data = carts.results[0];
-      }
-
-      this.model.checkProductInCart(data);
-      this.view.buttonsForCart.update();
-    } catch {
-      console.error('error getCart');
-    }
+    this.model.cart = cart;
+    this.model.checkProductInCart(cart);
+    this.view.buttonsForCart.update();
   }
 
   private async addProduct(productId: string): Promise<void> {
     try {
-      let data: Cart;
-      if (!this.model.cart) {
-        data = await this.serviceCart.addProductToCart(productId);
-      } else {
-        data = await this.serviceCart.addProductCartByID(this.model.cart, productId);
-      }
+      if (this.model.cart) {
+        const data = await this.serviceCart.addProductToCart(this.model.cart, productId);
 
-      this.model.checkProductInCart(data);
-      this.view.buttonsForCart.update();
+        this.model.checkProductInCart(data);
+        this.view.buttonsForCart.update();
+      }
     } catch {
       console.error('error addProduct');
     }
@@ -79,7 +65,7 @@ export class ProductController {
     try {
       if (this.model.cart && this.model.lineItemCart) {
         const quantity = this.model.lineItemCart?.quantity - 1;
-        const data = await this.serviceCart.updateCartByID(this.model.cart, this.model.lineItemCart, quantity);
+        const data = await this.serviceCart.updateLineItemByID(this.model.cart, this.model.lineItemCart, quantity);
 
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();

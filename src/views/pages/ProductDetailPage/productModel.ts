@@ -8,6 +8,7 @@ export class ProductModel {
   public cart: Cart | null = null;
   public lineItemCart: LineItem | undefined = undefined;
   private readonly productsListener: Subscriber[] = [];
+  private readonly cartListener: Subscriber[] = [];
   constructor() {
     this.dataProduct = null;
     this.isAdded = false;
