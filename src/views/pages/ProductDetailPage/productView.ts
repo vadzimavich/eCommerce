@@ -6,6 +6,7 @@ import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { loaderView } from '../../components/Loader';
 import { ButtonsForCart } from './components/buttons-for-cart';
+import { Modal } from '../../../components/modal';
 
 export class ProductView {
   public readonly buttonsForCart: ButtonsForCart;
@@ -13,8 +14,10 @@ export class ProductView {
   public readonly modalSwiper: ProductModalSwiperView;
   private readonly thumbsSwiper: HTMLDivElement;
   private readonly container: HTMLElement;
+  private readonly popup: Modal;
 
   constructor(private readonly model: ProductModel) {
+    this.popup = Modal.getInstance();
     this.buttonsForCart = new ButtonsForCart(this.model);
     this.modalSwiper = new ProductModalSwiperView(this.model);
     this.container = elementCreator(document.createElement('section'), {
@@ -49,6 +52,14 @@ export class ProductView {
 
   public getContainer(): HTMLElement {
     return this.container;
+  }
+
+  public showSuccessModal(message: string): void {
+    this.popup.infoMessage(message);
+  }
+
+  public showErrorModal(message: string): void {
+    this.popup.errorMessage(message);
   }
 
   private createWrapper(): void {

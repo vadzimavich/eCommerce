@@ -3,7 +3,6 @@ import {
   ByProjectKeyMeCartsRequestBuilder,
   Cart,
   LineItem,
-  MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 import { CustomerService } from './AuthService';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
@@ -44,29 +43,43 @@ export class CartService {
     return cart;
   }
 
-  public async updateLineItemByID(cart: Cart, lineItem: LineItem, quantity: number): Promise<Cart> {
+  public async updateLineItem(cart: Cart, lineItem: LineItem, quantity: number): Promise<Cart> {
     try {
-      const updateActions: MyCartUpdateAction[] = [];
-
-      if (quantity > 0) {
-        updateActions.push({
-          action: 'changeLineItemQuantity',
-          lineItemId: lineItem.id,
-          quantity: quantity,
-        });
-      } else {
-        updateActions.push({
-          action: 'removeLineItem',
-          lineItemId: lineItem.id,
-        });
-      }
-
       const response = await this.cartBuilder()
         .withId({ ID: cart.id })
         .post({
           body: {
             version: cart.version,
-            actions: updateActions,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: lineItem.id,
+                quantity: quantity,
+              },
+            ],
+          },
+        })
+        .execute();
+
+      return response.body;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async removeLineItem(cart: Cart, lineItem: LineItem): Promise<Cart> {
+    try {
+      const response = await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions: [
+              {
+                action: 'removeLineItem',
+                lineItemId: lineItem.id,
+              },
+            ],
           },
         })
         .execute();

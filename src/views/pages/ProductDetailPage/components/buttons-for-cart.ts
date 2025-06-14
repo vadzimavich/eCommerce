@@ -6,6 +6,7 @@ type ButtonsForCartInProductPage = {
   buttonAddToCart: HTMLButtonElement;
   buttonDecrement: HTMLButtonElement;
   buttonIncrement: HTMLButtonElement;
+  delete: HTMLButtonElement;
   countElementElement: HTMLElement;
 };
 
@@ -15,27 +16,30 @@ export class ButtonsForCart {
   private readonly buttonDecrement: HTMLButtonElement;
   private readonly countElement: HTMLElement;
   private readonly buttonIncrement: HTMLButtonElement;
+  private readonly buttonDelete: HTMLButtonElement;
 
   constructor(private readonly model: ProductModel) {
     this.buttonAddToCart = elementCreator(document.createElement('button'), {
-      classNames: ['product__button_cart', 'button'],
+      classNames: ['button_add-to-cart', 'button'],
       content: 'Add to cart',
     });
     this.buttonWrapper = elementCreator(document.createElement('div'), {
-      classNames: ['product__button__wrapper'],
+      classNames: ['add-to-cart__wrapper'],
     });
 
     this.buttonDecrement = elementCreator(document.createElement('button'), {
-      classNames: ['product__button__left'],
+      classNames: ['button_decrement', 'button'],
       content: '-',
     });
     this.countElement = elementCreator(document.createElement('div'), {
-      classNames: ['product__button__count'],
       content: '1',
     });
     this.buttonIncrement = elementCreator(document.createElement('button'), {
-      classNames: ['product__button__right'],
+      classNames: ['button_increment', 'button'],
       content: '+',
+    });
+    this.buttonDelete = elementCreator(document.createElement('button'), {
+      classNames: ['button_delete', 'button'],
     });
   }
 
@@ -53,11 +57,11 @@ export class ButtonsForCart {
       this.buttonWrapper.replaceChildren();
 
       const buttonsWrapper = elementCreator(document.createElement('div'), {
-        classNames: ['product__button__buttons'],
+        classNames: ['buttons'],
       });
 
       buttonsWrapper.append(this.buttonDecrement, this.countElement, this.buttonIncrement);
-      this.buttonWrapper.append(buttonsWrapper);
+      this.buttonWrapper.append(buttonsWrapper, this.buttonDelete);
       this.updateCount();
 
       if (this.model.lineItemCart?.quantity === this.model.lineItemCart?.variant.availability?.availableQuantity) {
@@ -75,6 +79,7 @@ export class ButtonsForCart {
       buttonDecrement: this.buttonDecrement,
       buttonIncrement: this.buttonIncrement,
       countElementElement: this.countElement,
+      delete: this.buttonDelete,
     };
   }
 

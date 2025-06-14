@@ -1,3 +1,4 @@
+import { Cart } from '@commercetools/platform-sdk';
 import { route } from '../../../app';
 import { CartService } from '../../../models/services/CartService';
 import { ProductsService } from '../../../models/services/ProductService';
@@ -25,6 +26,7 @@ export class ProductController {
     this.handlerCloseModalSwiper();
     this.handlerAddToCart();
     this.handlerDecrementToCart();
+    this.handlerDeleteProductToCart();
   }
 
   private async initProduct(): Promise<void> {
@@ -56,22 +58,48 @@ export class ProductController {
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
       }
-    } catch {
-      console.error('error addProduct');
+    } catch (error) {
+      if (error instanceof Error) {
+        this.view.showErrorModal(error.message);
+      }
     }
   }
 
   private async decrementProduct(): Promise<void> {
     try {
       if (this.model.cart && this.model.lineItemCart) {
+        let data: Cart;
         const quantity = this.model.lineItemCart?.quantity - 1;
-        const data = await this.serviceCart.updateLineItemByID(this.model.cart, this.model.lineItemCart, quantity);
+
+        if (quantity > 0) {
+          data = await this.serviceCart.updateLineItem(this.model.cart, this.model.lineItemCart, quantity);
+        } else {
+          data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
+        }
 
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
       }
-    } catch {
-      console.error('error decrementProduct');
+    } catch (error) {
+      if (error instanceof Error) {
+        this.view.showErrorModal(error.message);
+      }
+    }
+  }
+
+  private async deleteProductToCart(): Promise<void> {
+    try {
+      if (this.model.cart && this.model.lineItemCart) {
+        const data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
+
+        this.model.checkProductInCart(data);
+        this.view.buttonsForCart.update();
+        this.view.showSuccessModal('The product has been removed from the cart');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        this.view.showErrorModal(error.message);
+      }
     }
   }
 
@@ -95,6 +123,13 @@ export class ProductController {
     this.view.buttonsForCart.getComponents().buttonDecrement.addEventListener('click', () => {
       if (this.model.lineItemCart) {
         this.decrementProduct();
+      }
+    });
+  }
+  private handlerDeleteProductToCart(): void {
+    this.view.buttonsForCart.getComponents().delete.addEventListener('click', () => {
+      if (this.model.lineItemCart) {
+        this.deleteProductToCart();
       }
     });
   }

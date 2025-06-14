@@ -58,12 +58,19 @@ export class ProductsService {
   }
 
   public async getProductById(productId: string): Promise<ProductProjection> {
-    const response = await this.service
-      .getCurrentClient()
-      .productProjections()
-      .withId({ ID: productId })
-      .get()
-      .execute();
-    return response.body;
+    try {
+      const response = await this.service
+        .getCurrentClient()
+        .productProjections()
+        .withId({ ID: productId })
+        .get()
+        .execute();
+
+      return response.body;
+    } catch (error) {
+      console.log('getProductById', error);
+
+      throw error;
+    }
   }
 }

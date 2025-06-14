@@ -134,23 +134,52 @@
     }
   }
 
-  &__button {
-    &_cart {
-      min-width: 14rem;
-      min-height: 4rem;
-      border-radius: $radius-big;
+  .add-to-cart__wrapper {
+    display: flex;
+    gap: 1rem;
 
-      font-size: 1.5rem;
-      color: var(--color-white);
+    .button {
+      transition: background-color 0.3s ease-in-out;
 
-      background-color: var(--color-breeze);
+      &:hover {
+        background-color: var(--color-breeze-dark);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+      }
+
+      &_add-to-cart {
+        min-width: 14rem;
+        min-height: 4rem;
+        border-radius: $radius-big;
+
+        font-size: 1.5rem;
+        color: var(--color-white);
+
+        background-color: var(--color-breeze);
+      }
+
+      &_delete {
+        width: 4rem;
+        height: 4rem;
+
+        background-color: var(--color-breeze);
+
+        mask: url('/assets/icons/delete.svg') no-repeat center;
+
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      &_increment,
+      &_decrement {
+        border-radius: $radius-big;
+        color: var(--color-white);
+        background-color: var(--color-breeze);
+      }
     }
 
-    &__wrapper {
-      display: flex;
-    }
-
-    &__buttons {
+    .buttons {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -166,16 +195,6 @@
         min-width: 4rem;
         height: 100%;
         text-align: center;
-      }
-
-      button {
-        border-radius: $radius-big;
-        color: var(--color-white);
-        background-color: var(--color-breeze);
-
-        &:disabled {
-          opacity: 0.5;
-        }
       }
     }
   }
