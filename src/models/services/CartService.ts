@@ -1,4 +1,4 @@
-import { Cart, CartPagedQueryResponse } from '@commercetools/platform-sdk';
+import { Cart, CartPagedQueryResponse, LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
 import { CustomerService } from './AuthService';
 
 export class CartService {
@@ -55,7 +55,7 @@ export class CartService {
     }
   }
 
-  public async addProductToCartByID(cart: Cart, productId: string): Promise<Cart> {
+  public async addProductCartByID(cart: Cart, productId: string, quantity: number = 1): Promise<Cart> {
     try {
       const request = await this.service
         .getCurrentClient()
@@ -69,8 +69,46 @@ export class CartService {
               {
                 action: 'addLineItem',
                 productId,
+                quantity,
               },
             ],
+          },
+        })
+        .execute();
+
+      return request.body;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw Error('Failed to post cart');
+    }
+  }
+
+  public async updateCartByID(cart: Cart, lineItem: LineItem, quantity: number): Promise<Cart> {
+    try {
+      const updateActions: MyCartUpdateAction[] = [];
+
+      if (quantity > 0) {
+        updateActions.push({
+          action: 'changeLineItemQuantity',
+          lineItemId: lineItem.id,
+          quantity: quantity,
+        });
+      } else {
+        updateActions.push({
+          action: 'removeLineItem',
+          lineItemId: lineItem.id,
+        });
+      }
+
+      const request = await this.service
+        .getCurrentClient()
+        .me()
+        .carts()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions: updateActions,
           },
         })
         .execute();

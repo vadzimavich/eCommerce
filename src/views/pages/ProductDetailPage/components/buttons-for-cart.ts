@@ -59,6 +59,12 @@ export class ButtonsForCart {
       buttonsWrapper.append(this.buttonDecrement, this.countElement, this.buttonIncrement);
       this.buttonWrapper.append(buttonsWrapper);
       this.updateCount();
+
+      if (this.model.lineItemCart?.quantity === this.model.lineItemCart?.variant.availability?.availableQuantity) {
+        this.buttonIncrement.disabled = true;
+      } else {
+        this.buttonIncrement.disabled = false;
+      }
     }
   }
 

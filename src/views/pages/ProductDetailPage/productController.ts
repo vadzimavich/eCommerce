@@ -1,3 +1,4 @@
+import { Cart } from '@commercetools/platform-sdk';
 import { route } from '../../../app';
 import { CartService } from '../../../models/services/CartService';
 import { ProductsService } from '../../../models/services/ProductService';
@@ -24,6 +25,7 @@ export class ProductController {
     this.handlerOpenModalSwiper();
     this.handlerCloseModalSwiper();
     this.handlerAddToCart();
+    this.handlerDecrementToCart();
   }
 
   private async initProduct(): Promise<void> {
@@ -41,18 +43,16 @@ export class ProductController {
 
   private async getCart(): Promise<void> {
     try {
+      let data: Cart;
+
       if (this.model.cart) {
-        const data = await this.serviceCart.getCartByID(this.model.cart.id);
-        this.model.cart = data;
-
-        console.log('🚀 ~ ProductController ~ getCart ~ data:', data);
+        data = await this.serviceCart.getCartByID(this.model.cart.id);
       } else {
-        const data = await this.serviceCart.getCart();
-        this.model.cart = data.results[0];
-
-        console.log('🚀 ~ ProductController ~ getCart ~ data:', data);
+        const carts = await this.serviceCart.getCart();
+        data = carts.results[0];
       }
-      this.model.checkProductInCart();
+
+      this.model.checkProductInCart(data);
       this.view.buttonsForCart.update();
     } catch {
       console.error('error getCart');
@@ -61,24 +61,31 @@ export class ProductController {
 
   private async addProduct(productId: string): Promise<void> {
     try {
-      console.log('🚀 ~ ProductController ~ this.view.getButtonAddToCart ~ this.model.cart:', this.model.cart);
+      let data: Cart;
       if (!this.model.cart) {
-        const data = await this.serviceCart.addProductToCart(productId);
-        console.log('🚀 ~ ProductController ~ this.view.addProductToCart ~ data:', data);
-
-        this.model.cart = data;
-        console.log('🚀 ~ ProductController ~ this.model.cartID:', this.model.cart);
+        data = await this.serviceCart.addProductToCart(productId);
       } else {
-        const data = await this.serviceCart.addProductToCartByID(this.model.cart, productId);
-        console.log('🚀 ~ ProductController ~ this.view.addProductToCartByID ~ data:', data);
-
-        this.model.cart = data;
+        data = await this.serviceCart.addProductCartByID(this.model.cart, productId);
       }
 
-      this.model.checkProductInCart();
+      this.model.checkProductInCart(data);
       this.view.buttonsForCart.update();
     } catch {
       console.error('error addProduct');
+    }
+  }
+
+  private async decrementProduct(): Promise<void> {
+    try {
+      if (this.model.cart && this.model.lineItemCart) {
+        const quantity = this.model.lineItemCart?.quantity - 1;
+        const data = await this.serviceCart.updateCartByID(this.model.cart, this.model.lineItemCart, quantity);
+
+        this.model.checkProductInCart(data);
+        this.view.buttonsForCart.update();
+      }
+    } catch {
+      console.error('error decrementProduct');
     }
   }
 
@@ -88,6 +95,20 @@ export class ProductController {
 
       if (productId) {
         this.addProduct(productId);
+      }
+    });
+
+    this.view.buttonsForCart.getComponents().buttonIncrement.addEventListener('click', () => {
+      if (this.model.lineItemCart) {
+        this.addProduct(this.model.lineItemCart.productId);
+      }
+    });
+  }
+
+  private handlerDecrementToCart(): void {
+    this.view.buttonsForCart.getComponents().buttonDecrement.addEventListener('click', () => {
+      if (this.model.lineItemCart) {
+        this.decrementProduct();
       }
     });
   }

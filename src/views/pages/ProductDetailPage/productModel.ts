@@ -14,17 +14,14 @@ export class ProductModel {
     this.notifyProductListeners();
   }
 
-  public setCartAndLineItem(data: Cart): void {
-    this.cart = data;
-    this.lineItemCart = this.cart.lineItems.find((item) => item.id === this.dataProduct?.id);
-  }
-
-  public checkProductInCart(): void {
+  public checkProductInCart(cart: Cart): void {
+    this.cart = cart;
     const cartsWithProduct = this.cart?.lineItems.filter((item) => item.productId === this.dataProduct?.id);
-    if (cartsWithProduct) {
+    if (cartsWithProduct.length > 0) {
       this.lineItemCart = cartsWithProduct[0];
       this.isAdded = true;
     } else {
+      this.lineItemCart = undefined;
       this.isAdded = false;
     }
   }

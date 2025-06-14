@@ -172,6 +172,10 @@
         border-radius: $radius-big;
         color: var(--color-white);
         background-color: var(--color-breeze);
+
+        &:disabled {
+          opacity: 0.5;
+        }
       }
     }
   }
