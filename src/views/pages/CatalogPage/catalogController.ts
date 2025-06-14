@@ -1,4 +1,5 @@
 import { route } from '../../../app';
+import { CartService } from '../../../models/services/CartService';
 import { ProductsService } from '../../../models/services/ProductService';
 import { ProductQueryParameters } from '../../../models/types/api-types';
 import { RouteParameters } from '../../../models/types/router-types';
@@ -9,6 +10,7 @@ import { ProductsView } from './view/productsView';
 
 export class CatalogController {
   private readonly service: ProductsService;
+  private readonly cartService: CartService;
   constructor(
     private readonly model: CatalogModel,
     private readonly view: CatalogView,
@@ -16,6 +18,7 @@ export class CatalogController {
     private readonly parametrs: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
+    this.cartService = CartService.getInstance();
     this.init();
     this.handlerProductsContainer();
     this.handlerSortSelect();
@@ -94,13 +97,20 @@ export class CatalogController {
     container.addEventListener('click', (event: MouseEvent) => {
       const target = event.target;
 
-      if (target instanceof HTMLElement) {
-        const card = target.closest('.product-card');
+      if (!(target instanceof HTMLElement)) return;
 
-        if (card instanceof HTMLElement) {
-          const cardId = card.getAttribute('data-id');
-          route.navigate(`product/${cardId}`);
-        }
+      const card = target.closest('.product-card');
+      if (!(card instanceof HTMLElement)) return;
+
+      const cardId = card.getAttribute('data-id');
+      if (!cardId) return;
+
+      const isAddToCartButton = target.closest('.product-card__priceinform-btn');
+
+      if (isAddToCartButton) {
+        this.cartService.addProductToCart(cardId);
+      } else {
+        route.navigate(`product/${cardId}`);
       }
     });
   }
