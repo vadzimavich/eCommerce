@@ -84,8 +84,10 @@ export class CartService {
     const response = await this.cartBuilder()
       .post({ body: { currency: 'USD' } })
       .execute();
+    if (!this.isAuthoriziredCustomer()) {
+      this.saveAnonCart(response.body);
+    }
 
-    this.saveAnonCart(response.body);
     return response.body;
   }
 
