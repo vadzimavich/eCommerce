@@ -10,7 +10,6 @@ import {
 import { getEnvironmentValue } from '../../utils/helpers';
 import {
   Customer,
-  CustomerSignInResult,
   MyCustomerUpdateAction,
   MyCustomerChangePassword,
   ByProjectKeyRequestBuilder,
@@ -67,7 +66,8 @@ export class CustomerService {
     return this.currentClient;
   }
 
-  public async registerCustomer(body: CustomerDraftBody): Promise<CustomerSignInResult | Error> {
+  public async registerCustomer(body: CustomerDraftBody): Promise<Customer | Error> {
+    console.log('test registerCustomer');
     try {
       await this.currentClient.me().signup().post({ body }).execute();
       return this.loginCustomer({ email: body.email, password: body.password });
@@ -77,7 +77,8 @@ export class CustomerService {
     }
   }
 
-  public async loginCustomer(customer: CustomerLoginData): Promise<CustomerSignInResult | Error> {
+  public async loginCustomer(customer: CustomerLoginData): Promise<Customer | Error> {
+    console.log('test', customer.email);
     try {
       const passwordAuthOptions: PasswordAuthMiddlewareOptions = {
         host: this.authUrl,
@@ -99,9 +100,10 @@ export class CustomerService {
         new ClientBuilder().withPasswordFlow(passwordAuthOptions).withHttpMiddleware(this.httpMiddlewareOptions).build()
       ).withProjectKey({ projectKey: this.projectKey });
 
-      const loginResponse = await authorizedClient.me().login().post({ body: customer }).execute();
+      const meResponse = await authorizedClient.me().login().post({ body: customer }).execute();
       this.currentClient = authorizedClient;
-      return loginResponse.body;
+
+      return meResponse.body.customer;
     } catch (error) {
       console.error('Fail of login', error);
       const ctMessage = this.getSpecificErrorMessage(error);

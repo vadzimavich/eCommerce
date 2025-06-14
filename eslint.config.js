@@ -46,7 +46,7 @@ export default [
       'prettier/prettier': 'error',
       'import/extensions': 'off',
       'prettier/prettier': 'error',
-      // 'max-lines-per-function': ['error', 50],
+      'max-lines-per-function': ['error', 45],
       'import/prefer-default-export': 'off',
       'no-debugger': 'off',
       'no-console': 'off',

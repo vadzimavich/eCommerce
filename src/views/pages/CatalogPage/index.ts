@@ -21,7 +21,7 @@ export class CatalogPage {
 
   public render(): HTMLElement {
     const cataloWrapper = this.view.createWrapper();
-    new CatalogController(this.model, this.view, this.productsView, this.parameters);
+    new CatalogController(this.appModel, this.model, this.view, this.productsView, this.parameters);
     cataloWrapper.append(this.productsView.render());
     const page = this.view.render();
     page.append(cataloWrapper);

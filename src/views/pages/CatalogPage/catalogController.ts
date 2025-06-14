@@ -1,6 +1,8 @@
 import { route } from '../../../app';
+import { AuthController } from '../../../controllers/AuthController';
 import { CartService } from '../../../models/services/CartService';
 import { ProductsService } from '../../../models/services/ProductService';
+import { AppModel } from '../../../models/state/AppState';
 import { ProductQueryParameters } from '../../../models/types/api-types';
 import { RouteParameters } from '../../../models/types/router-types';
 import { parserSortRequest } from '../../../utils/parsers';
@@ -12,6 +14,7 @@ export class CatalogController {
   private readonly service: ProductsService;
   private readonly cartService: CartService;
   constructor(
+    private readonly appModel: AppModel,
     private readonly model: CatalogModel,
     private readonly view: CatalogView,
     private readonly productsView: ProductsView,
@@ -37,6 +40,7 @@ export class CatalogController {
   }
 
   private async init(): Promise<void> {
+    new AuthController(this.appModel).checkAuthorization();
     await this.getCategories();
     const categoryId = this.model.checkCategory(this.parametrs.category);
 
