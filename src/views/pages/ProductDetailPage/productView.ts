@@ -5,14 +5,17 @@ import { ProductModel } from './productModel';
 import Swiper from 'swiper';
 import { Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { loaderView } from '../../components/Loader';
+import { ButtonsForCart } from './components/buttons-for-cart';
 
 export class ProductView {
+  public readonly buttonsForCart: ButtonsForCart;
   public readonly swiper: HTMLDivElement;
   public readonly modalSwiper: ProductModalSwiperView;
   private readonly thumbsSwiper: HTMLDivElement;
   private readonly container: HTMLElement;
 
   constructor(private readonly model: ProductModel) {
+    this.buttonsForCart = new ButtonsForCart(this.model);
     this.modalSwiper = new ProductModalSwiperView(this.model);
     this.container = elementCreator(document.createElement('section'), {
       classNames: ['page-wrapper', 'product'],
@@ -73,7 +76,7 @@ export class ProductView {
     });
     this.createAttributes(wrapperAttributes);
 
-    wrapper.append(wrapperAttributes, this.createPriceWrapper());
+    wrapper.append(wrapperAttributes, this.createPriceWrapper(), this.buttonsForCart.create());
     return wrapper;
   }
 
