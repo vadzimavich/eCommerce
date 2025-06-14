@@ -1,7 +1,8 @@
 import { Customer } from '@commercetools/platform-sdk';
 import { Subscriber } from '../types';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
-import { CART_ID_KEY } from '../services/CartService';
+import { ANON_CART_ID } from '../services/CartService';
+import { CUSTOMER_CART } from '../services/AuthService';
 
 export class AppModel {
   private currentUser: Partial<Customer> = {};
@@ -38,13 +39,14 @@ export class AppModel {
     this.currentUser = {};
     this.isLogined = false;
     sessionStorage.removeItem(REFRESH_TOKEN);
+    sessionStorage.removeItem(CUSTOMER_CART);
     this.notifyLoginStateListener();
   }
 
   public login(customer: Customer): void {
     this.currentUser = customer;
     this.isLogined = true;
-    sessionStorage.removeItem(CART_ID_KEY);
+    sessionStorage.removeItem(ANON_CART_ID);
     this.notifyLoginStateListener();
   }
 

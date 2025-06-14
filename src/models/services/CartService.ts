@@ -1,8 +1,8 @@
 import { ByProjectKeyCartsRequestBuilder, ByProjectKeyMeCartsRequestBuilder, Cart } from '@commercetools/platform-sdk';
-import { CustomerService } from './AuthService';
+import { CUSTOMER_CART, CustomerService } from './AuthService';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
 
-export const CART_ID_KEY = 'cart_anon';
+export const ANON_CART_ID = 'cart_anon';
 
 export class CartService {
   private static instance: CartService;
@@ -51,8 +51,7 @@ export class CartService {
   }
 
   private async getExistingCart(): Promise<Cart | null> {
-    const client = this.service.getCurrentClient();
-    const cartId = sessionStorage.getItem(CART_ID_KEY);
+    const cartId = sessionStorage.getItem(ANON_CART_ID);
 
     if (cartId) {
       try {
@@ -68,8 +67,11 @@ export class CartService {
 
     if (this.isAuthoriziredCustomer()) {
       try {
-        const cart = await client.me().activeCart().get().execute();
-        return cart.body;
+        const customerCart = sessionStorage.getItem(CUSTOMER_CART);
+        if (customerCart) {
+          const cartResp = await this.cartBuilder().withId({ ID: customerCart }).get().execute();
+          return cartResp.body;
+        }
       } catch (error) {
         console.error('Error fetching existing cart for customer', error);
       }
@@ -97,6 +99,6 @@ export class CartService {
   }
 
   private saveAnonCart(cart: Cart): void {
-    sessionStorage.setItem(CART_ID_KEY, cart.id);
+    sessionStorage.setItem(ANON_CART_ID, cart.id);
   }
 }

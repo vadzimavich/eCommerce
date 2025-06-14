@@ -20,6 +20,7 @@ import { REFRESH_TOKEN } from '../../controllers/AuthController';
 import { Modal } from '../../components/modal';
 import { isCtErrorWithBodyMessage, isStandardError } from '../types/api-types';
 
+export const CUSTOMER_CART = 'customer_cart';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tokenCache: any = {
   get: () => {
@@ -102,10 +103,11 @@ export class CustomerService {
 
       const meResponse = await authorizedClient.me().login().post({ body: customer }).execute();
       this.currentClient = authorizedClient;
-
+      if (meResponse.body.cart) {
+        sessionStorage.setItem(CUSTOMER_CART, meResponse.body.cart.id);
+      }
       return meResponse.body.customer;
     } catch (error) {
-      console.error('Fail of login', error);
       const ctMessage = this.getSpecificErrorMessage(error);
       if (ctMessage) throw new Error(ctMessage);
       if (isStandardError(error)) throw error;
