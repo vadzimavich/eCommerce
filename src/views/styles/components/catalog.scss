@@ -326,6 +326,22 @@
       &:hover::after {
         opacity: 1;
       }
+
+      @keyframes btn-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .btn-icon {
+        display: block;
+        height: 100%;
+        line-height: 3rem;
+
+        &.btn-animate {
+          animation: btn-spin 0.5s ease-in-out infinite;
+        }
+      }
     }
   }
 

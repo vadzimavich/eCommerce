@@ -117,11 +117,12 @@ export class CatalogController {
 
       const isAddToCartButton = target.closest('.product-card__priceinform-btn');
 
-      if (isAddToCartButton) {
+      if (isAddToCartButton && isAddToCartButton instanceof HTMLButtonElement) {
         try {
+          this.productsView.startAddAnimation(isAddToCartButton);
           await this.cartService.addProductToCart(cardId);
           await this.getProductsInCurrentCart();
-          this.productsView.updateButtonAdToCart();
+          this.productsView.stopAddAnimationAndDisable(isAddToCartButton);
         } catch {}
       } else {
         route.navigate(`product/${cardId}`);

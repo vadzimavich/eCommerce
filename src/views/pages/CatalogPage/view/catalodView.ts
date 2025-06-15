@@ -56,7 +56,6 @@ export class CatalogView {
   }
 
   public updateCategories(): void {
-    debugger;
     const categories = this.model.getCategories();
 
     this.categorySelect.replaceChildren();

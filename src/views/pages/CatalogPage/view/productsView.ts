@@ -111,20 +111,36 @@ export class ProductsView {
 
   public updateButtonAdToCart(): void {
     const idCardInCart = this.model.getProductsInCart();
-    console.log(idCardInCart);
     const cards = Array.from(this.productsContainer.children);
     cards.forEach((card) => {
       const productId = card.getAttribute('data-id');
       if (!productId) return;
-
+      const button = card.lastElementChild?.lastElementChild;
       if (idCardInCart.includes(productId)) {
-        const button = card.lastElementChild?.lastElementChild;
-        console.log(button);
         if (button instanceof HTMLButtonElement) {
           button.disabled = true;
+          button.textContent = '✓';
         }
       }
     });
+  }
+
+  public startAddAnimation(button: HTMLButtonElement): void {
+    const content = button.lastElementChild;
+    if (content) {
+      content.classList.add('btn-animate');
+    }
+  }
+
+  public stopAddAnimationAndDisable(button: HTMLButtonElement): void {
+    const content = button.lastElementChild;
+    if (content) {
+      content.classList.remove('btn-animate');
+    }
+    // button.classList.remove('btn-animate');
+    button.disabled = true;
+
+    button.textContent = '✓';
   }
 
   public renderMessage(message: string): void {

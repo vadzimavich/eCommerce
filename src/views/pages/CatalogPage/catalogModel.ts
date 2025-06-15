@@ -67,7 +67,6 @@ export class CatalogModel {
   }
 
   public getCategories(): CategoryData[] {
-    debugger;
     return this.categories;
   }
 
