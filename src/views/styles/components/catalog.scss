@@ -198,11 +198,12 @@
   gap: $gap-middle;
   justify-content: space-between;
 
-  min-height: 34rem;
+  min-width: 19rem;
+  min-height: 40rem;
   max-height: min-content;
-  padding: 1.5rem;
+  padding: 3.5rem;
   border: 1px solid var(--color-border-opacity);
-  border-radius: $radius;
+  border-radius: $radius-big;
 
   background-color: var(--color-card-background);
 
@@ -213,9 +214,11 @@
 
   &__bestsaller {
     position: absolute;
-    top: 1rem;
-    left: 0;
-    width: 4rem;
+    top: -2rem;
+    left: -2rem;
+    transform: rotate(-30deg);
+
+    width: 9rem;
   }
 
   &__img {
@@ -296,6 +299,10 @@
     transform: scale(1.01);
     border: 1px solid var(--color-breeze);
     box-shadow: $box-shadow;
+  }
+
+  @media (width <= 520px) {
+    padding: 3rem 2rem;
   }
 }
 
