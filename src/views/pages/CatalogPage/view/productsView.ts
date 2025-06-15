@@ -109,6 +109,24 @@ export class ProductsView {
     }
   }
 
+  public updateButtonAdToCart(): void {
+    const idCardInCart = this.model.getProductsInCart();
+    console.log(idCardInCart);
+    const cards = Array.from(this.productsContainer.children);
+    cards.forEach((card) => {
+      const productId = card.getAttribute('data-id');
+      if (!productId) return;
+
+      if (idCardInCart.includes(productId)) {
+        const button = card.lastElementChild?.lastElementChild;
+        console.log(button);
+        if (button instanceof HTMLButtonElement) {
+          button.disabled = true;
+        }
+      }
+    });
+  }
+
   public renderMessage(message: string): void {
     this.productsContainer.replaceChildren();
     const messageContainer = this.buildErrorsMessage(message);
@@ -122,6 +140,7 @@ export class ProductsView {
       const card = new ProductCard(product).create();
       this.productsContainer.appendChild(card);
     });
+    this.updateButtonAdToCart();
   }
 
   private buildHeadContainer(): HTMLElement {

@@ -40,6 +40,11 @@ export class CartService {
     return cart;
   }
 
+  public async getProductIdsInCart(): Promise<string[]> {
+    const cart = await this.getCurrentCart();
+    return cart.lineItems.map((li) => li.productId);
+  }
+
   private isAuthoriziredCustomer(): boolean {
     return !!sessionStorage.getItem(REFRESH_TOKEN);
   }

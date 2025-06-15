@@ -318,6 +318,11 @@
         transition: opacity 0.3s ease;
       }
 
+      &[disabled] {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+
       &:hover::after {
         opacity: 1;
       }

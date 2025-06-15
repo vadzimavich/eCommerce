@@ -55,8 +55,9 @@ export class CatalogController {
     } else {
       route.navigate('/not-found');
     }
-
     await this.initProducts(this.model.getParameters());
+    await this.getProductsInCurrentCart();
+    this.productsView.updateButtonAdToCart();
   }
 
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
@@ -95,10 +96,15 @@ export class CatalogController {
     }
   }
 
+  private async getProductsInCurrentCart(): Promise<void> {
+    const productsIdInCart = await this.cartService.getProductIdsInCart();
+    this.model.setCartItems(productsIdInCart);
+  }
+
   private handlerProductsContainer(): void {
     const container = this.productsView.getProductsContainer();
 
-    container.addEventListener('click', (event: MouseEvent) => {
+    container.addEventListener('click', async (event: MouseEvent) => {
       const target = event.target;
 
       if (!(target instanceof HTMLElement)) return;
@@ -112,7 +118,11 @@ export class CatalogController {
       const isAddToCartButton = target.closest('.product-card__priceinform-btn');
 
       if (isAddToCartButton) {
-        this.cartService.addProductToCart(cardId);
+        try {
+          await this.cartService.addProductToCart(cardId);
+          await this.getProductsInCurrentCart();
+          this.productsView.updateButtonAdToCart();
+        } catch {}
       } else {
         route.navigate(`product/${cardId}`);
       }
