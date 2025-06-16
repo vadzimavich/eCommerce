@@ -12,7 +12,7 @@ export class HomeController {
   ) {
     this.discountService = DiscoountService.getInstance();
     this.getPromoCod();
-
+    this.handleCoppyButton();
     this.model.subscribeIsPromoCodeListener(() => {
       this.updateDiscontView();
     });
@@ -23,7 +23,18 @@ export class HomeController {
     this.model.setPromoCode(promoCode[0].code);
   }
 
+  private handleCoppyButton(): void {
+    const button = this.view.getCoppyButton();
+    button.addEventListener('click', () => {
+      const code = this.model.getPromoCode();
+      navigator.clipboard.writeText(code).then(() => {
+        this.view.updateCoppyButton('Copied!');
+        setTimeout(() => this.view.updateCoppyButton('Copy'), 1500);
+      });
+    });
+  }
+
   private updateDiscontView(): void {
-    this.view.buildPromoContainer();
+    this.view.buildPromoSection();
   }
 }

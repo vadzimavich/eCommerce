@@ -11,10 +11,10 @@ export class HomeView {
     private readonly model: HomeModel
   ) {
     this.pageContainer = elementCreator(document.createElement('div'), {
-      classNames: ['page-wrapper'],
+      classNames: ['page-wrapper', 'home'],
     });
     this.copyButton = elementCreator(document.createElement('button'), {
-      classNames: ['button', 'btn', 'promo-copy'],
+      classNames: ['button', 'form__button', 'discount__btn'],
       content: 'Copy',
     });
   }
@@ -23,29 +23,44 @@ export class HomeView {
     return this.pageContainer;
   }
 
-  public buildPromoContainer(): void {
+  public getCoppyButton(): HTMLButtonElement {
+    return this.copyButton;
+  }
+
+  public updateCoppyButton(content: string): void {
+    if (!content) {
+      return;
+    }
+    this.copyButton.textContent = content;
+  }
+
+  public buildPromoSection(): void {
     const code = this.model.getPromoCode();
     if (!code) {
       return;
     }
 
-    const promoBlock = elementCreator(document.createElement('div'), {
-      classNames: ['promo-block'],
+    const sectionPromo = elementCreator(document.createElement('section'), {
+      classNames: ['section', 'section__discount', 'discount'],
     });
 
-    const promoBottom = elementCreator(document.createElement('div'));
+    const promoBottom = elementCreator(document.createElement('div'), {
+      classNames: ['discount__wrapper'],
+    });
 
     const text = elementCreator(document.createElement('p'), {
-      classNames: ['promo-text'],
+      classNames: ['discoun__text'],
       content: 'Use our promo code on your first purchase',
     });
 
-    const promoCodeText = elementCreator(document.createElement('p'), {});
+    const promoCodeText = elementCreator(document.createElement('p'), {
+      classNames: ['discount__code'],
+    });
     promoCodeText.textContent = code;
 
     promoBottom.append(promoCodeText, this.copyButton);
 
-    promoBlock.append(text, promoBottom);
-    this.pageContainer.append(promoBlock);
+    sectionPromo.append(text, promoBottom);
+    this.pageContainer.append(sectionPromo);
   }
 }

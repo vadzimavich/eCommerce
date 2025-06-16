@@ -1,4 +1,5 @@
 import { route } from '../../../app';
+import { AuthController } from '../../../controllers/AuthController';
 import { CustomerService } from '../../../models/services/AuthService';
 import { AppModel } from '../../../models/state/AppState';
 import { HeaderModel } from './headerModel';
@@ -12,6 +13,7 @@ export class HeaderController {
     private readonly view: HeaderView
   ) {
     this.service = CustomerService.getInstance();
+    new AuthController(this.appModel).checkAuthorization();
     this.addEventListeners();
     this.handleLoginState();
     this.handleCurrentPage();
