@@ -1,3 +1,5 @@
+import { TypedMoney } from '@commercetools/platform-sdk';
+
 export const getCurrentDateInStringFormat = (): string => {
   const now = new Date();
 
@@ -34,4 +36,21 @@ export const formatDateOfBirth = (dateString: string | undefined): string => {
     console.error('Error formatting date:', error);
     return 'Invalid date format';
   }
+};
+
+export const formatPrice = (price: TypedMoney): string => {
+  const { currencyCode, fractionDigits } = price;
+  let amount = 0;
+
+  if (price.type === 'centPrecision') {
+    amount = price.centAmount / 10 ** fractionDigits;
+  } else {
+    amount = price.preciseAmount / 10 ** fractionDigits;
+  }
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode,
+    minimumFractionDigits: fractionDigits,
+  }).format(amount);
 };

@@ -1,7 +1,7 @@
 import { CartService } from '../../../models/services/CartService';
 import { AppModel } from '../../../models/state/AppState';
 import { CartModel } from './cartModel';
-import { CartView } from './cartView';
+import { CartView } from './view/cartView';
 
 export class CartController {
   private cartService: CartService;

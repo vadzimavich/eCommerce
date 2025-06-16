@@ -1,7 +1,7 @@
 import { AppModel } from '../../../models/state/AppState';
 import { CartController } from './cartController';
 import { CartModel } from './cartModel';
-import { CartView } from './cartView';
+import { CartView } from './view/cartView';
 
 export class CartPage {
   private readonly view: CartView;
