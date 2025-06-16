@@ -2,6 +2,7 @@ import { ByProjectKeyCartsRequestBuilder, ByProjectKeyMeCartsRequestBuilder, Car
 import { CUSTOMER_CART, CustomerService } from './AuthService';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
 import { AppModel } from '../state/AppState';
+import { isCtErrorWithBodyMessage } from '../types/api-types';
 
 export const ANON_CART_ID = 'cart_anon';
 
@@ -35,7 +36,8 @@ export class CartService {
           },
         })
         .execute();
-
+      // FIX: The service should not update the model directly.
+      // this.appModel.setCartItems(response.body);
       return response.body;
     } catch (error) {
       console.error('Error add product to cart', error);
@@ -53,6 +55,52 @@ export class CartService {
     return this.createCart();
   }
 
+  public async changeLineItemQuantity(lineItemId: string, quantity: number): Promise<Cart> {
+    try {
+      const cart = await this.getOrCreateCart();
+      if (quantity < 1) {
+        return this.removeLineItem(lineItemId);
+      }
+
+      const response = await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions: [{ action: 'changeLineItemQuantity', lineItemId, quantity }],
+          },
+        })
+        .execute();
+      // FIX: The service should not update the model directly.
+      // this.appModel.setCartItems(response.body);
+      return response.body;
+    } catch (error) {
+      console.error('Error changing line item quantity', error);
+      throw error;
+    }
+  }
+
+  public async removeLineItem(lineItemId: string): Promise<Cart> {
+    try {
+      const cart = await this.getOrCreateCart();
+      const response = await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions: [{ action: 'removeLineItem', lineItemId }],
+          },
+        })
+        .execute();
+      // FIX: The service should not update the model directly.
+      // this.appModel.setCartItems(response.body);
+      return response.body;
+    } catch (error) {
+      console.error('Error removing product from cart', error);
+      throw error;
+    }
+  }
+
   private isAuthoriziredCustomer(): boolean {
     return !!sessionStorage.getItem(REFRESH_TOKEN);
   }
@@ -64,38 +112,23 @@ export class CartService {
   }
 
   private async getExistingCart(): Promise<Cart | null> {
-    if (this.isAuthoriziredCustomer()) {
-      try {
-        const customerCart = sessionStorage.getItem(CUSTOMER_CART);
-        if (customerCart) {
-          const cartResp = await this.cartBuilder().withId({ ID: customerCart }).get().execute();
+    const cartId = this.isAuthoriziredCustomer()
+      ? sessionStorage.getItem(CUSTOMER_CART)
+      : sessionStorage.getItem(ANON_CART_ID);
 
-          return cartResp.body;
-        } else {
-          const cartsList = await this.cartBuilder().get().execute();
-          const activeCart = cartsList.body.results.find((item) => item.cartState === 'Active');
+    if (!cartId) return null;
 
-          if (activeCart) {
-            sessionStorage.setItem(CUSTOMER_CART, activeCart.id);
-            return activeCart;
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching existing cart for customer', error);
+    try {
+      const cartResp = await this.cartBuilder().withId({ ID: cartId }).get().execute();
+      if (cartResp.body.cartState === 'Active') {
+        return cartResp.body;
       }
-    }
-
-    const cartId = sessionStorage.getItem(ANON_CART_ID);
-
-    if (cartId) {
-      try {
-        const cartResp = await this.cartBuilder().withId({ ID: cartId }).get().execute();
-
-        if (cartResp.body.cartState === 'Active') {
-          return cartResp.body;
-        }
-      } catch (error) {
-        console.error('Error fetching existing cart', error);
+    } catch (error) {
+      // FIX: Handle stale cart ID in sessionStorage
+      console.warn('Error fetching existing cart, possibly stale ID.', error);
+      if (isCtErrorWithBodyMessage(error) && error.statusCode === 404) {
+        const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
+        sessionStorage.removeItem(storageKey);
       }
     }
 
@@ -106,9 +139,8 @@ export class CartService {
     const response = await this.cartBuilder()
       .post({ body: { currency: 'USD' } })
       .execute();
-    if (!this.isAuthoriziredCustomer()) {
-      sessionStorage.setItem(ANON_CART_ID, response.body.id);
-    }
+    const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
+    sessionStorage.setItem(storageKey, response.body.id);
     this.appModel.setCartItems(response.body);
     return response.body;
   }

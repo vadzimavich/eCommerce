@@ -31,6 +31,10 @@ export class CartView {
     return this.container;
   }
 
+  public getContentWrapper(): HTMLElement {
+    return this.contentWrapper;
+  }
+
   private renderContent(): void {
     this.contentWrapper.innerHTML = '';
     const cart = this.model.getCart();

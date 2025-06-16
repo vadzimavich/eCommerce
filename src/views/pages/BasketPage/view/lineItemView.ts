@@ -75,6 +75,7 @@ export class LineItemView {
     const removeButton = elementCreator(document.createElement('button'), {
       classNames: ['cart-item__remove-button', 'button--text'],
       content: 'Remove',
+      attributes: { 'data-action': 'remove' },
     });
 
     actionsWrapper.append(quantityControl, totalItemPrice, removeButton);
@@ -83,15 +84,23 @@ export class LineItemView {
 
   private createQuantityControl(): HTMLElement {
     const quantityWrapper = elementCreator(document.createElement('div'), { classNames: ['quantity-control'] });
-    const decreaseButton = elementCreator(document.createElement('button'), { content: '-' });
+    const decreaseButton = elementCreator(document.createElement('button'), {
+      content: '-',
+      attributes: { 'data-action': 'decrease' },
+    });
     const quantityInput = elementCreator(document.createElement('input'), {
+      classNames: ['quantity-control__input'],
       attributes: {
         type: 'number',
         value: this.lineItem.quantity.toString(),
         min: '1',
+        'data-action': 'set-quantity',
       },
     });
-    const increaseButton = elementCreator(document.createElement('button'), { content: '+' });
+    const increaseButton = elementCreator(document.createElement('button'), {
+      content: '+',
+      attributes: { 'data-action': 'increase' },
+    });
 
     quantityWrapper.append(decreaseButton, quantityInput, increaseButton);
     return quantityWrapper;
