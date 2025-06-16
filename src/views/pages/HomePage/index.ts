@@ -1,9 +1,19 @@
+import { AppModel } from '../../../models/state/AppState';
+import { HomeController } from './homeController';
+import { HomeModel } from './homeModel';
+import { HomeView } from './homeView';
 export class HomePage {
-  public render(): HTMLElement {
-    const container = document.createElement('div');
-    container.classList.add('plug');
-    container.innerHTML = 'homePage';
+  private readonly view: HomeView;
+  private readonly model: HomeModel;
 
-    return container;
+  constructor(private readonly appModel: AppModel) {
+    this.model = new HomeModel();
+    this.view = new HomeView(this.appModel, this.model);
+  }
+
+  public render(): HTMLElement {
+    const render = this.view.render();
+    new HomeController(this.appModel, this.model, this.view);
+    return render;
   }
 }

@@ -94,6 +94,11 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  width: 100%;
+  max-width: 144rem;
+  margin: 0 auto;
+  padding: 3rem 6rem;
 }
 
 .page-wrapper {
@@ -128,10 +133,8 @@ main {
 }
 
 .section-item {
-  width: 100%;
   padding: $padding-section-vertical;
   border-radius: $radius-big;
-
   background-color: var(--color-bg-modal);
   box-shadow: $box-shadow;
 
