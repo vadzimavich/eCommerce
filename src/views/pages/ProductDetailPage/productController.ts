@@ -20,11 +20,11 @@ export class ProductController {
     this.service = ProductsService.getInstance();
     this.serviceCart = CartService.getInstance(appModel);
     this.initProduct();
-    this.getCart();
+    this.model.subscribeProductListener(() => this.getCart());
     this.model.subscribeProductListener(() => this.handlerLoadProduct());
+    this.handlerAddToCart();
     this.handlerOpenModalSwiper();
     this.handlerCloseModalSwiper();
-    this.handlerAddToCart();
     this.handlerDecrementToCart();
     this.handlerDeleteProductToCart();
   }
@@ -46,6 +46,7 @@ export class ProductController {
     const cart = await this.serviceCart.getOrCreateCart();
 
     this.model.cart = cart;
+    this.appModel.setCartItems(cart);
     this.model.checkProductInCart(cart);
     this.view.buttonsForCart.update();
   }
@@ -55,6 +56,7 @@ export class ProductController {
       if (this.model.cart) {
         const data = await this.serviceCart.addProductToCart(productId);
 
+        this.appModel.setCartItems(data);
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
       }
@@ -77,6 +79,7 @@ export class ProductController {
           data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
         }
 
+        this.appModel.setCartItems(data);
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
       }
@@ -92,6 +95,7 @@ export class ProductController {
       if (this.model.cart && this.model.lineItemCart) {
         const data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
 
+        this.appModel.setCartItems(data);
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
         this.view.showSuccessModal('The product has been removed from the cart');
