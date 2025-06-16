@@ -68,7 +68,6 @@ export class CustomerService {
   }
 
   public async registerCustomer(body: CustomerDraftBody): Promise<Customer | Error> {
-    console.log('test registerCustomer');
     try {
       await this.currentClient.me().signup().post({ body }).execute();
       return this.loginCustomer({ email: body.email, password: body.password });
@@ -79,7 +78,6 @@ export class CustomerService {
   }
 
   public async loginCustomer(customer: CustomerLoginData): Promise<Customer | Error> {
-    console.log('test', customer.email);
     try {
       const passwordAuthOptions: PasswordAuthMiddlewareOptions = {
         host: this.authUrl,
@@ -103,9 +101,6 @@ export class CustomerService {
 
       const meResponse = await authorizedClient.me().login().post({ body: customer }).execute();
       this.currentClient = authorizedClient;
-      if (meResponse.body.cart) {
-        sessionStorage.setItem(CUSTOMER_CART, meResponse.body.cart.id);
-      }
       return meResponse.body.customer;
     } catch (error) {
       const ctMessage = this.getSpecificErrorMessage(error);

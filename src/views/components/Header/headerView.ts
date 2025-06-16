@@ -10,6 +10,7 @@ export class HeaderView {
   private readonly currentUserAnchor: HTMLElement;
   private readonly logoutIconAnchor: HTMLAnchorElement;
   private readonly buttonBM: HTMLButtonElement;
+  private cointProductsInCartContainer: HTMLElement;
 
   constructor(
     private readonly appModel: AppModel,
@@ -21,6 +22,9 @@ export class HeaderView {
     this.cartIconAnchor = elementCreator(document.createElement('a'), {
       classNames: ['header__icon', 'header__icon-cart'],
       attributes: { 'data-route': '/cart', href: '#/cart', title: 'cart' },
+    });
+    this.cointProductsInCartContainer = elementCreator(document.createElement('div'), {
+      classNames: ['header__icon-coin'],
     });
     this.currentUserAnchor = elementCreator(document.createElement('a'), {
       classNames: ['header__icon', 'header__icon-account'],
@@ -63,6 +67,16 @@ export class HeaderView {
 
   public getButtonBM(): HTMLButtonElement {
     return this.buttonBM;
+  }
+
+  public updateCoinProductsInCart(): void {
+    const coin = this.appModel.getCoinProductsInCart();
+    if (!coin || coin === 0) {
+      this.cointProductsInCartContainer.classList.add('visible');
+      return;
+    }
+    this.cointProductsInCartContainer.textContent = coin.toString();
+    this.cointProductsInCartContainer.classList.remove('visible');
   }
 
   public updateCurrentUserState(): void {
@@ -163,7 +177,7 @@ export class HeaderView {
       navList.append(navListItem);
     });
 
-    userItem.append(cart, account, logout);
+    userItem.append(this.cointProductsInCartContainer, account, cart, logout);
     this.navContainer.append(navList, userItem);
   }
 

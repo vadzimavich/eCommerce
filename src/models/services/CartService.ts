@@ -1,17 +1,24 @@
 import { ByProjectKeyCartsRequestBuilder, ByProjectKeyMeCartsRequestBuilder, Cart } from '@commercetools/platform-sdk';
 import { CUSTOMER_CART, CustomerService } from './AuthService';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
+import { AppModel } from '../state/AppState';
 
 export const ANON_CART_ID = 'cart_anon';
 
 export class CartService {
   private static instance: CartService;
-  private readonly service = CustomerService.getInstance();
 
-  private constructor() {}
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly service = CustomerService.getInstance()
+  ) {
+    this.appModel.subscribeLoginStateListener(() => this.getOrCreateCart());
+  }
 
-  public static getInstance(): CartService {
-    if (!CartService.instance) CartService.instance = new CartService();
+  public static getInstance(appModel: AppModel): CartService {
+    if (!CartService.instance) {
+      CartService.instance = new CartService(appModel);
+    }
     return CartService.instance;
   }
 
@@ -28,6 +35,7 @@ export class CartService {
           },
         })
         .execute();
+
       return response.body;
     } catch (error) {
       console.error('Error add product to cart', error);
@@ -35,14 +43,14 @@ export class CartService {
     }
   }
 
-  public async getCurrentCart(): Promise<Cart> {
-    const cart = await this.getOrCreateCart();
-    return cart;
-  }
+  public async getOrCreateCart(): Promise<Cart> {
+    const existing = await this.getExistingCart();
 
-  public async getProductIdsInCart(): Promise<string[]> {
-    const cart = await this.getCurrentCart();
-    return cart.lineItems.map((li) => li.productId);
+    if (existing) {
+      this.appModel.setCartItems(existing);
+      return existing;
+    }
+    return this.createCart();
   }
 
   private isAuthoriziredCustomer(): boolean {
@@ -56,6 +64,27 @@ export class CartService {
   }
 
   private async getExistingCart(): Promise<Cart | null> {
+    if (this.isAuthoriziredCustomer()) {
+      try {
+        const customerCart = sessionStorage.getItem(CUSTOMER_CART);
+        if (customerCart) {
+          const cartResp = await this.cartBuilder().withId({ ID: customerCart }).get().execute();
+
+          return cartResp.body;
+        } else {
+          const cartsList = await this.cartBuilder().get().execute();
+          const activeCart = cartsList.body.results.find((item) => item.cartState === 'Active');
+
+          if (activeCart) {
+            sessionStorage.setItem(CUSTOMER_CART, activeCart.id);
+            return activeCart;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching existing cart for customer', error);
+      }
+    }
+
     const cartId = sessionStorage.getItem(ANON_CART_ID);
 
     if (cartId) {
@@ -70,18 +99,6 @@ export class CartService {
       }
     }
 
-    if (this.isAuthoriziredCustomer()) {
-      try {
-        const customerCart = sessionStorage.getItem(CUSTOMER_CART);
-        if (customerCart) {
-          const cartResp = await this.cartBuilder().withId({ ID: customerCart }).get().execute();
-          return cartResp.body;
-        }
-      } catch (error) {
-        console.error('Error fetching existing cart for customer', error);
-      }
-    }
-
     return null;
   }
 
@@ -90,22 +107,9 @@ export class CartService {
       .post({ body: { currency: 'USD' } })
       .execute();
     if (!this.isAuthoriziredCustomer()) {
-      this.saveAnonCart(response.body);
+      sessionStorage.setItem(ANON_CART_ID, response.body.id);
     }
-
+    this.appModel.setCartItems(response.body);
     return response.body;
-  }
-
-  private async getOrCreateCart(): Promise<Cart> {
-    const existing = await this.getExistingCart();
-
-    if (existing) {
-      return existing;
-    }
-    return this.createCart();
-  }
-
-  private saveAnonCart(cart: Cart): void {
-    sessionStorage.setItem(ANON_CART_ID, cart.id);
   }
 }

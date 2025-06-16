@@ -16,7 +16,7 @@ export class CatalogPage {
   ) {
     this.model = new CatalogModel();
     this.view = new CatalogView(this.model);
-    this.productsView = new ProductsView(this.model);
+    this.productsView = new ProductsView(this.appModel, this.model);
   }
 
   public render(): HTMLElement {

@@ -6,7 +6,6 @@ import { parseProduct, parserCategories } from '../../../utils/parsers';
 export class CatalogModel {
   private products: ProductData[] = [];
   private categories: CategoryData[] = [];
-  private productsInCartId: string[] = [];
   private currentParameters: ProductQueryParameters = {
     page: 1,
     limit: 6,
@@ -84,14 +83,6 @@ export class CatalogModel {
 
   public getSelectedCategory(): string | null {
     return this.currentCategory ?? null;
-  }
-
-  public setCartItems(productsId: string[]): void {
-    this.productsInCartId = productsId;
-  }
-
-  public getProductsInCart(): string[] {
-    return this.productsInCartId;
   }
 
   public subscribeProductsListener(callback: () => void): void {

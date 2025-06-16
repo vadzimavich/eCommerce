@@ -21,7 +21,7 @@ export class CatalogController {
     private readonly parametrs: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
-    this.cartService = CartService.getInstance();
+    this.cartService = CartService.getInstance(appModel);
     this.init();
     this.handlerProductsContainer();
     this.handlerSortSelect();
@@ -29,6 +29,7 @@ export class CatalogController {
     this.handlerFiltersContainer();
     this.handlerClearButton();
     this.handlerPagination();
+    this.productsView.updateButtonAdToCart();
     this.model.subscribeProductsListener(() => {
       this.handlerProducts();
       this.updateCleanButton();
@@ -56,8 +57,6 @@ export class CatalogController {
       route.navigate('/not-found');
     }
     await this.initProducts(this.model.getParameters());
-    await this.getProductsInCurrentCart();
-    this.productsView.updateButtonAdToCart();
   }
 
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
@@ -96,11 +95,6 @@ export class CatalogController {
     }
   }
 
-  private async getProductsInCurrentCart(): Promise<void> {
-    const productsIdInCart = await this.cartService.getProductIdsInCart();
-    this.model.setCartItems(productsIdInCart);
-  }
-
   private handlerProductsContainer(): void {
     const container = this.productsView.getProductsContainer();
 
@@ -120,8 +114,8 @@ export class CatalogController {
       if (isAddToCartButton && isAddToCartButton instanceof HTMLButtonElement) {
         try {
           this.productsView.startAddAnimation(isAddToCartButton);
-          await this.cartService.addProductToCart(cardId);
-          await this.getProductsInCurrentCart();
+          const cart = await this.cartService.addProductToCart(cardId);
+          this.appModel.setCartItems(cart);
           this.productsView.stopAddAnimationAndDisable(isAddToCartButton);
         } catch {}
       } else {

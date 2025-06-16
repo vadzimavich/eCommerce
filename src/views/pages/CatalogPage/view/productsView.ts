@@ -5,6 +5,7 @@ import { CatalogModel } from '../catalogModel';
 import { createInputCatalogSearch, createSelectCatalogSort } from '../../../../utils/catalog-inputs';
 import { sortOptions, sortValues } from './constant-conrent';
 import { loaderView } from '../../../components/Loader';
+import { AppModel } from '../../../../models/state/AppState';
 
 export class ProductsView {
   private readonly container: HTMLElement;
@@ -17,7 +18,10 @@ export class ProductsView {
   private readonly buttonNext: HTMLButtonElement;
   private readonly pageCounter: HTMLElement;
 
-  constructor(private readonly model: CatalogModel) {
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly model: CatalogModel
+  ) {
     this.container = elementCreator(document.createElement('div'), {
       classNames: ['catalog-right', 'section-item'],
     });
@@ -110,7 +114,10 @@ export class ProductsView {
   }
 
   public updateButtonAdToCart(): void {
-    const idCardInCart = this.model.getProductsInCart();
+    const idCardInCart = this.appModel.getProductsIdInCart();
+    if (!idCardInCart) {
+      return;
+    }
     const cards = Array.from(this.productsContainer.children);
     cards.forEach((card) => {
       const productId = card.getAttribute('data-id');
@@ -137,7 +144,6 @@ export class ProductsView {
     if (content) {
       content.classList.remove('btn-animate');
     }
-    // button.classList.remove('btn-animate');
     button.disabled = true;
 
     button.textContent = '✓';

@@ -6,6 +6,7 @@ import { route } from '../../../app';
 
 export class LoginPageController {
   private readonly customerService: CustomerService;
+
   constructor(
     private readonly model: LoginPageModel,
     private readonly view: LoginPageView,

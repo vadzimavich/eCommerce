@@ -82,6 +82,23 @@
         background-color: var(--color-breeze);
       }
     }
+
+    &-coin {
+      position: absolute;
+      top: -1rem;
+      left: 46.5%;
+
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+
+      font-size: 1rem;
+      line-height: 1.6rem;
+      color: var(--color-white);
+      text-align: center;
+
+      background-color: var(--color-breeze);
+    }
   }
 
   &__button-burger {
@@ -176,6 +193,7 @@
   }
 
   &-user {
+    position: relative;
     display: flex;
     gap: $gap-big;
     align-items: center;
@@ -246,6 +264,7 @@
         width: 100%;
         margin-left: 0;
         padding: $padding-section-vertical-sm;
+        padding-top: 2rem;
         border-top: 1px solid var(--color-border);
       }
     }
@@ -257,5 +276,10 @@
     &__logo {
       max-width: 50%;
     }
+  }
+
+  .header__icon-coin {
+    top: 0.5rem;
+    left: 49.2%;
   }
 }
