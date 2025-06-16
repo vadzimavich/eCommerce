@@ -17,6 +17,7 @@ export class HeaderController {
     this.handleCurrentPage();
     this.appModel.subscribeLoginStateListener(() => this.handleLoginState());
     this.appModel.subscribeCurrentPageListener(() => this.handleCurrentPage());
+    this.appModel.subscribeCoinProductsInCartListener(() => this.handleCoinProducts());
     this.model.subscribeBurgerMenuListener(() => this.view.toggleShowBurgerMenu());
   }
 
@@ -69,6 +70,10 @@ export class HeaderController {
 
   private handleCurrentPage(): void {
     this.view.updateViewActivePage();
+  }
+
+  private handleCoinProducts(): void {
+    this.view.updateCoinProductsInCart();
   }
 
   private handleClickBurgerMenuButton(): void {

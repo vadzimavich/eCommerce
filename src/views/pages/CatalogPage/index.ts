@@ -16,12 +16,12 @@ export class CatalogPage {
   ) {
     this.model = new CatalogModel();
     this.view = new CatalogView(this.model);
-    this.productsView = new ProductsView(this.model);
+    this.productsView = new ProductsView(this.appModel, this.model);
   }
 
   public render(): HTMLElement {
     const cataloWrapper = this.view.createWrapper();
-    new CatalogController(this.model, this.view, this.productsView, this.parameters);
+    new CatalogController(this.appModel, this.model, this.view, this.productsView, this.parameters);
     cataloWrapper.append(this.productsView.render());
     const page = this.view.render();
     page.append(cataloWrapper);
