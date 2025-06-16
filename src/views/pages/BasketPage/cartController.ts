@@ -33,33 +33,38 @@ export class CartController {
   private handleCartActions = async (event: MouseEvent): Promise<void> => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
-
     const action = target.dataset.action;
     if (!action) return;
-
     const lineItemElement = target.closest('.cart-item');
-    if (!lineItemElement || !(lineItemElement instanceof HTMLElement)) return;
-
-    const lineItemId = lineItemElement.dataset.lineItemId;
-    if (!lineItemId) return;
-
-    const quantityInput = lineItemElement.querySelector<HTMLInputElement>('.quantity-control__input');
-    const currentQuantity = quantityInput ? Number(quantityInput.value) : 0;
+    const currentCart = this.cartModel.getCart();
 
     try {
       let updatedCart;
-      switch (action) {
-        case 'increase':
-          updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, currentQuantity + 1);
-          break;
-        case 'decrease':
-          updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, currentQuantity - 1);
-          break;
-        case 'remove':
-          updatedCart = await this.cartService.removeLineItem(lineItemId);
-          break;
+      if (action === 'clear-cart') {
+        if (currentCart && window.confirm('Are you sure you want to clear your cart?')) {
+          updatedCart = await this.cartService.deleteCart(currentCart);
+        }
+      } else {
+        if (!lineItemElement || !(lineItemElement instanceof HTMLElement)) return;
+        const lineItemId = lineItemElement.dataset.lineItemId;
+        if (!lineItemId) return;
+
+        const quantityInput = lineItemElement.querySelector<HTMLInputElement>('.quantity-control__input');
+        const currentQuantity = quantityInput ? Number(quantityInput.value) : 0;
+
+        switch (action) {
+          case 'increase':
+            updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, currentQuantity + 1);
+            break;
+          case 'decrease':
+            updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, currentQuantity - 1);
+            break;
+          case 'remove':
+            updatedCart = await this.cartService.removeLineItem(lineItemId);
+            break;
+        }
       }
-      // FIX: Update both models after a successful service call
+
       if (updatedCart) {
         this.cartModel.setCart(updatedCart);
         this.appModel.setCartItems(updatedCart);
@@ -87,7 +92,6 @@ export class CartController {
 
     try {
       const updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, newQuantity);
-      // FIX: Update both models after a successful service call
       this.cartModel.setCart(updatedCart);
       this.appModel.setCartItems(updatedCart);
     } catch (error) {

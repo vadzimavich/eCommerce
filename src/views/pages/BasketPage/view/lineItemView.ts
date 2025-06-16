@@ -88,6 +88,11 @@ export class LineItemView {
       content: '-',
       attributes: { 'data-action': 'decrease' },
     });
+
+    if (this.lineItem.quantity === 1) {
+      decreaseButton.disabled = true;
+    }
+
     const quantityInput = elementCreator(document.createElement('input'), {
       classNames: ['quantity-control__input'],
       attributes: {

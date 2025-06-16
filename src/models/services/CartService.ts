@@ -26,7 +26,6 @@ export class CartService {
   public async addProductToCart(productId: string, quantity = 1): Promise<Cart> {
     try {
       const cart = await this.getOrCreateCart();
-
       const response = await this.cartBuilder()
         .withId({ ID: cart.id })
         .post({
@@ -36,8 +35,6 @@ export class CartService {
           },
         })
         .execute();
-      // FIX: The service should not update the model directly.
-      // this.appModel.setCartItems(response.body);
       return response.body;
     } catch (error) {
       console.error('Error add product to cart', error);
@@ -47,7 +44,6 @@ export class CartService {
 
   public async getOrCreateCart(): Promise<Cart> {
     const existing = await this.getExistingCart();
-
     if (existing) {
       this.appModel.setCartItems(existing);
       return existing;
@@ -61,7 +57,6 @@ export class CartService {
       if (quantity < 1) {
         return this.removeLineItem(lineItemId);
       }
-
       const response = await this.cartBuilder()
         .withId({ ID: cart.id })
         .post({
@@ -71,8 +66,6 @@ export class CartService {
           },
         })
         .execute();
-      // FIX: The service should not update the model directly.
-      // this.appModel.setCartItems(response.body);
       return response.body;
     } catch (error) {
       console.error('Error changing line item quantity', error);
@@ -92,11 +85,24 @@ export class CartService {
           },
         })
         .execute();
-      // FIX: The service should not update the model directly.
-      // this.appModel.setCartItems(response.body);
       return response.body;
     } catch (error) {
       console.error('Error removing product from cart', error);
+      throw error;
+    }
+  }
+
+  public async deleteCart(cart: Cart): Promise<Cart> {
+    try {
+      await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .delete({ queryArgs: { version: cart.version } })
+        .execute();
+      const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
+      sessionStorage.removeItem(storageKey);
+      return this.createCart();
+    } catch (error) {
+      console.error('Error deleting cart:', error);
       throw error;
     }
   }
@@ -115,23 +121,19 @@ export class CartService {
     const cartId = this.isAuthoriziredCustomer()
       ? sessionStorage.getItem(CUSTOMER_CART)
       : sessionStorage.getItem(ANON_CART_ID);
-
     if (!cartId) return null;
-
     try {
       const cartResp = await this.cartBuilder().withId({ ID: cartId }).get().execute();
       if (cartResp.body.cartState === 'Active') {
         return cartResp.body;
       }
     } catch (error) {
-      // FIX: Handle stale cart ID in sessionStorage
       console.warn('Error fetching existing cart, possibly stale ID.', error);
       if (isCtErrorWithBodyMessage(error) && error.statusCode === 404) {
         const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
         sessionStorage.removeItem(storageKey);
       }
     }
-
     return null;
   }
 

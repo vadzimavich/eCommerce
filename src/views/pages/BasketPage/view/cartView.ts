@@ -76,8 +76,13 @@ export class CartView {
     totalElement.append(totalLabel, totalValue);
 
     const promoContainer = this.createPromoCodeContainer();
+    const clearCartButton = elementCreator(document.createElement('button'), {
+      classNames: ['cart-summary__clear-button', 'button', 'button--danger'],
+      content: 'Clear Cart',
+      attributes: { 'data-action': 'clear-cart' },
+    });
 
-    summaryContainer.append(totalElement, promoContainer);
+    summaryContainer.append(totalElement, promoContainer, clearCartButton);
     return summaryContainer;
   }
 
