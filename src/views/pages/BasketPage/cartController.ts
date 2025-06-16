@@ -3,6 +3,7 @@ import { AppModel } from '../../../models/state/AppState';
 import { CartModel } from './cartModel';
 import { CartView } from './view/cartView';
 import { Modal } from '../../../components/modal';
+import { Cart } from '@commercetools/platform-sdk';
 
 export class CartController {
   private cartService: CartService;
@@ -32,40 +33,27 @@ export class CartController {
 
   private handleCartActions = async (event: MouseEvent): Promise<void> => {
     const target = event.target;
-    if (!(target instanceof HTMLElement)) return;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
     const action = target.dataset.action;
-    if (!action) return;
-    const lineItemElement = target.closest('.cart-item');
-    const currentCart = this.cartModel.getCart();
+    if (!action) {
+      return;
+    }
 
     try {
-      let updatedCart;
-      if (action === 'clear-cart') {
-        if (currentCart && window.confirm('Are you sure you want to clear your cart?')) {
-          updatedCart = await this.cartService.deleteCart(currentCart);
-        }
+      let updatedCart: Cart | undefined;
+      if (action.includes('promo')) {
+        updatedCart = await this.handlePromoAction(action, target);
+      } else if (action === 'clear-cart') {
+        updatedCart = await this.handleClearCartAction();
       } else {
-        if (!lineItemElement || !(lineItemElement instanceof HTMLElement)) return;
-        const lineItemId = lineItemElement.dataset.lineItemId;
-        if (!lineItemId) return;
-
-        const quantityInput = lineItemElement.querySelector<HTMLInputElement>('.quantity-control__input');
-        const currentQuantity = quantityInput ? Number(quantityInput.value) : 0;
-
-        switch (action) {
-          case 'increase':
-            updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, currentQuantity + 1);
-            break;
-          case 'decrease':
-            updatedCart = await this.cartService.changeLineItemQuantity(lineItemId, currentQuantity - 1);
-            break;
-          case 'remove':
-            updatedCart = await this.cartService.removeLineItem(lineItemId);
-            break;
-        }
+        updatedCart = await this.handleLineItemAction(action, target);
       }
 
       if (updatedCart) {
+        // console.log('Updated cart from API:', JSON.stringify(updatedCart, null, 2));
         this.cartModel.setCart(updatedCart);
         this.appModel.setCartItems(updatedCart);
       }
@@ -76,6 +64,54 @@ export class CartController {
     }
   };
 
+  private async handlePromoAction(action: string, target: HTMLElement): Promise<Cart | undefined> {
+    if (action === 'apply-promo') {
+      const promoInput = document.getElementById('promo-code-input');
+      if (promoInput instanceof HTMLInputElement && promoInput.value.trim()) {
+        const code = promoInput.value.trim();
+        promoInput.value = '';
+        return this.cartService.applyDiscountCode(code);
+      }
+    } else if (action === 'remove-promo') {
+      const promoId = target.dataset.id;
+      if (promoId) {
+        return this.cartService.removeDiscountCode(promoId);
+      }
+    }
+    return undefined;
+  }
+
+  private async handleClearCartAction(): Promise<Cart | undefined> {
+    const currentCart = this.cartModel.getCart();
+    if (currentCart && window.confirm('Are you sure you want to clear your cart?')) {
+      return this.cartService.deleteCart(currentCart);
+    }
+    return undefined;
+  }
+
+  private async handleLineItemAction(action: string, target: HTMLElement): Promise<Cart | undefined> {
+    const lineItemElement = target.closest('.cart-item');
+    if (!lineItemElement || !(lineItemElement instanceof HTMLElement)) {
+      return undefined;
+    }
+    const lineItemId = lineItemElement.dataset.lineItemId;
+    if (!lineItemId) {
+      return undefined;
+    }
+    const quantityInput = lineItemElement.querySelector<HTMLInputElement>('.quantity-control__input');
+    const currentQuantity = quantityInput ? Number(quantityInput.value) : 0;
+    switch (action) {
+      case 'increase':
+        return this.cartService.changeLineItemQuantity(lineItemId, currentQuantity + 1);
+      case 'decrease':
+        return this.cartService.changeLineItemQuantity(lineItemId, currentQuantity - 1);
+      case 'remove':
+        return this.cartService.removeLineItem(lineItemId);
+      default:
+        return undefined;
+    }
+  }
+
   private handleQuantityInputChange = async (event: Event): Promise<void> => {
     const target = event.target;
     if (!(target instanceof HTMLInputElement) || target.dataset.action !== 'set-quantity') {
@@ -83,10 +119,14 @@ export class CartController {
     }
 
     const lineItemElement = target.closest('.cart-item');
-    if (!lineItemElement || !(lineItemElement instanceof HTMLElement)) return;
+    if (!lineItemElement || !(lineItemElement instanceof HTMLElement)) {
+      return;
+    }
 
     const lineItemId = lineItemElement.dataset.lineItemId;
-    if (!lineItemId) return;
+    if (!lineItemId) {
+      return;
+    }
 
     const newQuantity = Number(target.value);
 

@@ -1,6 +1,8 @@
 @use '../index' as *;
 
 .cart-page {
+  transition: all 0.2s ease-in-out;
+
   &__title {
     width: 100%;
     font-size: 2.5rem;
@@ -14,7 +16,7 @@
     align-items: flex-start;
     width: 100%;
 
-    @media (width <=960px) {
+    @media (width <= 960px) {
       flex-direction: column;
     }
   }
@@ -52,12 +54,13 @@
 .cart-item {
   display: flex;
   gap: $gap-middle;
+  align-items: center;
 
   padding: $gap-middle;
-  border: 1px solid var(--color-border);
   border-radius: $radius;
 
   background-color: var(--color-white);
+  box-shadow: $box-shadow;
 
   &__image-wrapper {
     flex-shrink: 0;
@@ -122,11 +125,13 @@
   align-items: center;
 
   button {
-    width: 2rem;
-    height: 2rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
 
     font-weight: 600;
+
+    background-color: var(--color-shadow);
 
     transition: background-color 0.3s ease;
 
@@ -141,19 +146,21 @@
   }
 
   input {
-    width: 5rem;
+    width: 4rem;
     height: 3rem;
-    border-right: none;
-    border-left: none;
-    border-radius: 0;
+    border: none;
 
     font-family: inherit;
     font-size: inherit;
     text-align: center;
 
+    appearance: textfield;
+    appearance: textfield;
+
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       margin: 0;
+      appearance: none;
       appearance: none;
     }
   }
@@ -167,14 +174,23 @@
 
   width: 30rem;
   padding: $gap-middle;
-  border: 1px solid var(--color-border);
   border-radius: $radius;
 
   background-color: var(--color-white);
+  box-shadow: $box-shadow;
 
-  &__total {
+  &__line {
     display: flex;
     justify-content: space-between;
+
+    width: 100%;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border-opacity);
+  }
+
+  &__total {
+    padding-top: $gap-small;
+    border-bottom: none;
     font-size: 1.8rem;
     font-weight: 700;
   }
@@ -182,11 +198,51 @@
   &__clear-button {
     width: 100%;
     margin-top: $gap-small;
-    border-radius: $radius;
   }
 
-  @media (width <=960px) {
+  @media (width <= 960px) {
     width: 100%;
+  }
+}
+
+.applied-discounts {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-small;
+
+  width: 100%;
+  padding: $gap-small 0;
+  border-bottom: 1px solid var(--color-border-opacity);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.8rem 1.25rem;
+    border-radius: $radius;
+
+    font-size: 1.4rem;
+
+    background-color: var(--color-error-tooltip-bg);
+  }
+
+  &__name {
+    font-weight: 500;
+    color: var(--color-dark-blue);
+  }
+
+  &__remove {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.8rem;
+    color: var(--color-red);
+
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--color-dark);
+    }
   }
 }
 
@@ -194,7 +250,7 @@
   font-family: inherit;
   font-size: 1.25rem;
   color: var(--color-dark);
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
 
   &:hover {
     color: var(--color-red);
@@ -203,6 +259,8 @@
 
 .promo-code {
   display: flex;
+  gap: $gap-small;
+  justify-content: space-between;
   width: 100%;
 
   &__input {
@@ -217,6 +275,16 @@
 
   &__apply-button {
     padding: 0.8rem 1.5rem;
+    border-radius: $radius;
+
     font-family: inherit;
+
+    background-color: var(--color-shadow);
+
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: var(--color-breeze-light);
+    }
   }
 }

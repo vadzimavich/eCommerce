@@ -1,4 +1,9 @@
-import { ByProjectKeyCartsRequestBuilder, ByProjectKeyMeCartsRequestBuilder, Cart } from '@commercetools/platform-sdk';
+import {
+  ByProjectKeyCartsRequestBuilder,
+  ByProjectKeyMeCartsRequestBuilder,
+  Cart,
+  MyCartUpdateAction,
+} from '@commercetools/platform-sdk';
 import { CUSTOMER_CART, CustomerService } from './AuthService';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
 import { AppModel } from '../state/AppState';
@@ -8,6 +13,7 @@ export const ANON_CART_ID = 'cart_anon';
 
 export class CartService {
   private static instance: CartService;
+  private readonly expandQueryArgs = { expand: 'discountCodes[*].discountCode' };
 
   constructor(
     private readonly appModel: AppModel,
@@ -33,6 +39,7 @@ export class CartService {
             version: cart.version,
             actions: [{ action: 'addLineItem', productId, quantity }],
           },
+          queryArgs: this.expandQueryArgs,
         })
         .execute();
       return response.body;
@@ -64,6 +71,7 @@ export class CartService {
             version: cart.version,
             actions: [{ action: 'changeLineItemQuantity', lineItemId, quantity }],
           },
+          queryArgs: this.expandQueryArgs,
         })
         .execute();
       return response.body;
@@ -83,6 +91,7 @@ export class CartService {
             version: cart.version,
             actions: [{ action: 'removeLineItem', lineItemId }],
           },
+          queryArgs: this.expandQueryArgs,
         })
         .execute();
       return response.body;
@@ -107,6 +116,55 @@ export class CartService {
     }
   }
 
+  public async applyDiscountCode(code: string): Promise<Cart> {
+    try {
+      const cart = await this.getOrCreateCart();
+      const actions: MyCartUpdateAction[] = [{ action: 'addDiscountCode', code }, { action: 'recalculate' }];
+      const response = await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions,
+          },
+          queryArgs: this.expandQueryArgs,
+        })
+        .execute();
+      return response.body;
+    } catch (error) {
+      console.error('Error applying discount code:', error);
+      throw error;
+    }
+  }
+
+  public async removeDiscountCode(discountCodeId: string): Promise<Cart> {
+    try {
+      const cart = await this.getOrCreateCart();
+      const discountCodeReference = {
+        typeId: 'discount-code' as const,
+        id: discountCodeId,
+      };
+      const actions: MyCartUpdateAction[] = [
+        { action: 'removeDiscountCode', discountCode: discountCodeReference },
+        { action: 'recalculate' },
+      ];
+      const response = await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions,
+          },
+          queryArgs: this.expandQueryArgs,
+        })
+        .execute();
+      return response.body;
+    } catch (error) {
+      console.error('Error removing discount code:', error);
+      throw error;
+    }
+  }
+
   private isAuthoriziredCustomer(): boolean {
     return !!sessionStorage.getItem(REFRESH_TOKEN);
   }
@@ -121,9 +179,14 @@ export class CartService {
     const cartId = this.isAuthoriziredCustomer()
       ? sessionStorage.getItem(CUSTOMER_CART)
       : sessionStorage.getItem(ANON_CART_ID);
-    if (!cartId) return null;
+    if (!cartId) {
+      return null;
+    }
     try {
-      const cartResp = await this.cartBuilder().withId({ ID: cartId }).get().execute();
+      const cartResp = await this.cartBuilder()
+        .withId({ ID: cartId })
+        .get({ queryArgs: this.expandQueryArgs })
+        .execute();
       if (cartResp.body.cartState === 'Active') {
         return cartResp.body;
       }
@@ -139,7 +202,7 @@ export class CartService {
 
   private async createCart(): Promise<Cart> {
     const response = await this.cartBuilder()
-      .post({ body: { currency: 'USD' } })
+      .post({ body: { currency: 'USD' }, queryArgs: this.expandQueryArgs })
       .execute();
     const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
     sessionStorage.setItem(storageKey, response.body.id);

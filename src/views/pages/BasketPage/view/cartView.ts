@@ -4,6 +4,7 @@ import { loaderView } from '../../../components/Loader';
 import { route } from '../../../../app';
 import { LineItemView } from './lineItemView';
 import { formatPrice } from '../../../../utils/formatters';
+import { DiscountCodeInfo } from '@commercetools/platform-sdk';
 
 export class CartView {
   private container: HTMLElement;
@@ -64,16 +65,31 @@ export class CartView {
       classNames: ['cart-summary'],
     });
     const cart = this.model.getCart();
-    if (!cart) return summaryContainer;
+    if (!cart) {
+      return summaryContainer;
+    }
 
-    const totalElement = elementCreator(document.createElement('div'), {
-      classNames: ['cart-summary__total'],
-    });
-    const totalLabel = elementCreator(document.createElement('span'), { content: 'Subtotal' });
-    const totalValue = elementCreator(document.createElement('span'), {
-      content: formatPrice(cart.totalPrice),
-    });
-    totalElement.append(totalLabel, totalValue);
+    // FIX: Correctly calculate subtotal as the sum of line item total prices
+    const subtotalCentAmount = cart.lineItems.reduce((acc, item) => acc + item.totalPrice.centAmount, 0);
+    const subtotalMoney = { ...cart.totalPrice, centAmount: subtotalCentAmount };
+
+    // FIX: Compare calculated subtotal with the final cart total price
+    const hasCartDiscount = subtotalCentAmount !== cart.totalPrice.centAmount;
+
+    // Always show Subtotal
+    const subtotalElement = this.createSummaryLine('Subtotal', formatPrice(subtotalMoney));
+    if (hasCartDiscount) {
+      subtotalElement.classList.add('price-old');
+    }
+    summaryContainer.append(subtotalElement);
+
+    const appliedDiscountsContainer = this.createAppliedDiscounts(cart.discountCodes);
+    if (appliedDiscountsContainer.hasChildNodes()) {
+      summaryContainer.append(appliedDiscountsContainer);
+    }
+
+    const totalElement = this.createSummaryLine('Total', formatPrice(cart.totalPrice), ['cart-summary__total']);
+    summaryContainer.append(totalElement);
 
     const promoContainer = this.createPromoCodeContainer();
     const clearCartButton = elementCreator(document.createElement('button'), {
@@ -82,8 +98,48 @@ export class CartView {
       attributes: { 'data-action': 'clear-cart' },
     });
 
-    summaryContainer.append(totalElement, promoContainer, clearCartButton);
+    summaryContainer.append(promoContainer, clearCartButton);
     return summaryContainer;
+  }
+
+  private createSummaryLine(label: string, value: string, classes: string[] = []): HTMLElement {
+    const lineElement = elementCreator(document.createElement('div'), {
+      classNames: ['cart-summary__line', ...classes],
+    });
+    const labelElement = elementCreator(document.createElement('span'), {
+      classNames: ['cart-summary__label'],
+      content: label,
+    });
+    const valueElement = elementCreator(document.createElement('span'), {
+      classNames: ['cart-summary__value'],
+      content: value,
+    });
+    lineElement.append(labelElement, valueElement);
+    return lineElement;
+  }
+
+  private createAppliedDiscounts(discounts: DiscountCodeInfo[]): HTMLElement {
+    const container = elementCreator(document.createElement('div'), { classNames: ['applied-discounts'] });
+    discounts.forEach((discountInfo) => {
+      const discount = discountInfo.discountCode.obj;
+      if (discount) {
+        const line = elementCreator(document.createElement('div'), { classNames: ['applied-discounts__item'] });
+        const description = discount.description?.['en-US'] || '';
+        const nameText = `${discount.code}${description ? ` - ${description}` : ''}`;
+        const name = elementCreator(document.createElement('span'), {
+          classNames: ['applied-discounts__name'],
+          content: nameText,
+        });
+        const removeButton = elementCreator(document.createElement('button'), {
+          classNames: ['applied-discounts__remove'],
+          attributes: { 'data-action': 'remove-promo', 'data-id': discount.id },
+          content: '×',
+        });
+        line.append(name, removeButton);
+        container.append(line);
+      }
+    });
+    return container;
   }
 
   private createPromoCodeContainer(): HTMLElement {
@@ -92,11 +148,12 @@ export class CartView {
     });
     const promoInput = elementCreator(document.createElement('input'), {
       classNames: ['promo-code__input'],
-      attributes: { placeholder: 'Enter promo code' },
+      attributes: { placeholder: 'Enter promo code', id: 'promo-code-input' },
     });
     const applyButton = elementCreator(document.createElement('button'), {
       classNames: ['promo-code__apply-button', 'button'],
       content: 'Apply',
+      attributes: { 'data-action': 'apply-promo' },
     });
     promoContainer.append(promoInput, applyButton);
     return promoContainer;
