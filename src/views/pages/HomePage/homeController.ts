@@ -1,3 +1,4 @@
+import { route } from '../../../app';
 import { DiscoountService } from '../../../models/services/DiscountService';
 import { AppModel } from '../../../models/state/AppState';
 import { HomeModel } from './homeModel';
@@ -13,6 +14,7 @@ export class HomeController {
     this.discountService = DiscoountService.getInstance();
     this.getPromoCod();
     this.handleCoppyButton();
+    this.initButtonsHandlers();
     this.model.subscribeIsPromoCodeListener(() => {
       this.updateDiscontView();
     });
@@ -20,7 +22,7 @@ export class HomeController {
 
   private async getPromoCod(): Promise<void> {
     const promoCode = await this.discountService.getPromoCodes();
-    this.model.setPromoCode(promoCode[0].code);
+    this.model.setPromoCode(promoCode[1].code);
   }
 
   private handleCoppyButton(): void {
@@ -32,6 +34,11 @@ export class HomeController {
         setTimeout(() => this.view.updateCoppyButton('Copy'), 1500);
       });
     });
+  }
+
+  private initButtonsHandlers(): void {
+    const buttonToAbout = this.view.getButtonToAbout();
+    buttonToAbout.addEventListener('click', () => route.navigate('/about-us'));
   }
 
   private updateDiscontView(): void {

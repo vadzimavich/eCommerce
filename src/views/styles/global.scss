@@ -117,12 +117,8 @@ main {
 }
 
 .section-item {
-  width: 100%;
-  margin: 0 auto;
   padding: $padding-section-vertical;
-  padding: 3rem 6rem;
   border-radius: $radius-big;
-
   background-color: var(--color-bg-modal);
   box-shadow: $box-shadow;
 }
