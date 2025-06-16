@@ -24,11 +24,13 @@ export class ModalView {
   public renderInfo(message: string): HTMLDialogElement {
     this.addMessage(message);
     document.body.append(this.modal);
-    this.modal.showModal();
+    this.modal.classList.add('modal-info');
+    this.modal.show();
 
     setTimeout(() => {
       this.remove();
-    }, 3000);
+      this.modal.classList.remove('modal-info');
+    }, 2000);
 
     return this.modal;
   }

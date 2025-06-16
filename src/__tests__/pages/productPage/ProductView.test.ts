@@ -22,7 +22,7 @@ describe('ProductView', () => {
   });
 
   test('render(): should return the container element', () => {
-    const result = mockView.getContainer();
+    const result = mockView.render();
     expect(result).toBe(mockView.getContainer());
   });
 
