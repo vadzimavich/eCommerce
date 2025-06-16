@@ -202,6 +202,10 @@ main {
   animation: spin 1.5s linear infinite;
 }
 
+.visible {
+  visibility: hidden;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

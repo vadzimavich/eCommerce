@@ -128,6 +128,8 @@ export type ProductFilter = {
 export type ProductQueryParameters = {
   sort?: string;
   limit?: number;
+  page?: number;
+  total?: number;
   searchText?: string;
   filters?: ProductFilter;
 };

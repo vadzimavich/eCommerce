@@ -4,24 +4,33 @@ import {
   Cart,
   LineItem,
 } from '@commercetools/platform-sdk';
-import { CustomerService } from './AuthService';
+import { CUSTOMER_CART, CustomerService } from './AuthService';
 import { REFRESH_TOKEN } from '../../controllers/AuthController';
+import { AppModel } from '../state/AppState';
 
-export const CART_ID_KEY = 'cart_anon';
+export const ANON_CART_ID = 'cart_anon';
 
 export class CartService {
   private static instance: CartService;
-  private readonly service = CustomerService.getInstance();
 
-  public static getInstance(): CartService {
+  constructor(
+    private readonly appModel: AppModel,
+    private readonly service = CustomerService.getInstance()
+  ) {
+    this.appModel.subscribeLoginStateListener(() => this.getOrCreateCart());
+  }
+
+  public static getInstance(appModel: AppModel): CartService {
     if (!CartService.instance) {
-      CartService.instance = new CartService();
+      CartService.instance = new CartService(appModel);
     }
     return CartService.instance;
   }
 
-  public async addProductToCart(cart: Cart, productId: string, quantity = 1): Promise<Cart> {
+  public async addProductToCart(productId: string, quantity = 1): Promise<Cart> {
     try {
+      const cart = await this.getOrCreateCart();
+
       const response = await this.cartBuilder()
         .withId({ ID: cart.id })
         .post({
@@ -31,6 +40,7 @@ export class CartService {
           },
         })
         .execute();
+
       return response.body;
     } catch (error) {
       console.error('Error add product to cart', error);
@@ -38,9 +48,14 @@ export class CartService {
     }
   }
 
-  public async getCurrentCart(): Promise<Cart> {
-    const cart = await this.getOrCreateCart();
-    return cart;
+  public async getOrCreateCart(): Promise<Cart> {
+    const existing = await this.getExistingCart();
+
+    if (existing) {
+      this.appModel.setCartItems(existing);
+      return existing;
+    }
+    return this.createCart();
   }
 
   public async updateLineItem(cart: Cart, lineItem: LineItem, quantity: number): Promise<Cart> {
@@ -101,8 +116,28 @@ export class CartService {
   }
 
   private async getExistingCart(): Promise<Cart | null> {
-    const client = this.service.getCurrentClient();
-    const cartId = sessionStorage.getItem(CART_ID_KEY);
+    if (this.isAuthorizedCustomer()) {
+      try {
+        const customerCart = sessionStorage.getItem(CUSTOMER_CART);
+        if (customerCart) {
+          const cartResp = await this.cartBuilder().withId({ ID: customerCart }).get().execute();
+
+          return cartResp.body;
+        } else {
+          const cartsList = await this.cartBuilder().get().execute();
+          const activeCart = cartsList.body.results.find((item) => item.cartState === 'Active');
+
+          if (activeCart) {
+            sessionStorage.setItem(CUSTOMER_CART, activeCart.id);
+            return activeCart;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching existing cart for customer', error);
+      }
+    }
+
+    const cartId = sessionStorage.getItem(ANON_CART_ID);
 
     if (cartId) {
       try {
@@ -111,16 +146,6 @@ export class CartService {
         if (cartResp.body.cartState === 'Active') {
           return cartResp.body;
         }
-      } catch (error) {
-        this.createCart();
-        console.error('Error fetching existing cart', error);
-      }
-    }
-
-    if (this.isAuthorizedCustomer()) {
-      try {
-        const cart = await client.me().activeCart().get().execute();
-        return cart.body;
       } catch (error) {
         console.error('Error fetching existing cart', error);
       }
@@ -133,22 +158,10 @@ export class CartService {
     const response = await this.cartBuilder()
       .post({ body: { currency: 'USD' } })
       .execute();
-
-    this.saveAnonCart(response.body);
-    return response.body;
-  }
-
-  private async getOrCreateCart(): Promise<Cart> {
-    const existing = await this.getExistingCart();
-
-    if (existing) {
-      return existing;
+    if (!this.isAuthorizedCustomer()) {
+      sessionStorage.setItem(ANON_CART_ID, response.body.id);
     }
-
-    return this.createCart();
-  }
-
-  private saveAnonCart(cart: Cart): void {
-    sessionStorage.setItem(CART_ID_KEY, cart.id);
+    this.appModel.setCartItems(response.body);
+    return response.body;
   }
 }

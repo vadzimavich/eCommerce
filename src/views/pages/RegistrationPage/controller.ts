@@ -62,7 +62,7 @@ export class RegistrationController {
       const result = await this.service.registerCustomer(this.model.createCustomerSignUpBody());
 
       if (result && !(result instanceof Error)) {
-        this.appModel.login(result.customer);
+        this.appModel.login(result);
 
         this.view.showSuccessModal('You have successfully registered');
         route.navigate('/home');
