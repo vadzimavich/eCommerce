@@ -34,7 +34,7 @@ export class HomeView {
     return this.pageContainer;
   }
 
-  public getCoppyButton(): HTMLButtonElement {
+  public getCopyButton(): HTMLButtonElement {
     return this.copyButton;
   }
 

@@ -26,7 +26,7 @@ export class HomeController {
   }
 
   private handleCoppyButton(): void {
-    const button = this.view.getCoppyButton();
+    const button = this.view.getCopyButton();
     button.addEventListener('click', () => {
       const code = this.model.getPromoCode();
       navigator.clipboard.writeText(code).then(() => {
