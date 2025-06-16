@@ -54,8 +54,10 @@ export class ProductController {
   private async addProduct(productId: string): Promise<void> {
     try {
       if (this.model.cart) {
+        this.view.buttonsForCart.getComponents().buttonIncrement.disabled = true;
         const data = await this.serviceCart.addProductToCart(productId);
 
+        this.view.buttonsForCart.getComponents().buttonIncrement.disabled = false;
         this.appModel.setCartItems(data);
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
@@ -73,12 +75,14 @@ export class ProductController {
         let data: Cart;
         const quantity = this.model.lineItemCart?.quantity - 1;
 
+        this.view.buttonsForCart.getComponents().buttonDecrement.disabled = true;
         if (quantity > 0) {
           data = await this.serviceCart.updateLineItem(this.model.cart, this.model.lineItemCart, quantity);
         } else {
           data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
         }
 
+        this.view.buttonsForCart.getComponents().buttonDecrement.disabled = false;
         this.appModel.setCartItems(data);
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
@@ -93,8 +97,10 @@ export class ProductController {
   private async deleteProductToCart(): Promise<void> {
     try {
       if (this.model.cart && this.model.lineItemCart) {
+        this.view.buttonsForCart.getComponents().delete.disabled = true;
         const data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
 
+        this.view.buttonsForCart.getComponents().delete.disabled = false;
         this.appModel.setCartItems(data);
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
