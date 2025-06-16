@@ -18,7 +18,7 @@ export class ProductController {
     private readonly parameters: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
-    this.serviceCart = CartService.getInstance();
+    this.serviceCart = CartService.getInstance(appModel);
     this.initProduct();
     this.getCart();
     this.model.subscribeProductListener(() => this.handlerLoadProduct());
@@ -43,7 +43,7 @@ export class ProductController {
   }
 
   private async getCart(): Promise<void> {
-    const cart = await this.serviceCart.getCurrentCart();
+    const cart = await this.serviceCart.getOrCreateCart();
 
     this.model.cart = cart;
     this.model.checkProductInCart(cart);
@@ -53,7 +53,7 @@ export class ProductController {
   private async addProduct(productId: string): Promise<void> {
     try {
       if (this.model.cart) {
-        const data = await this.serviceCart.addProductToCart(this.model.cart, productId);
+        const data = await this.serviceCart.addProductToCart(productId);
 
         this.model.checkProductInCart(data);
         this.view.buttonsForCart.update();
