@@ -1,26 +1,20 @@
-import { CartService } from '../../../models/services/CartService';
 import { AppModel } from '../../../models/state/AppState';
+import { CartController } from './cartController';
+import { CartModel } from './cartModel';
+import { CartView } from './view/cartView';
 
 export class CartPage {
-  private readonly cartService: CartService;
+  private readonly view: CartView;
+  private readonly model: CartModel;
+  private readonly controller: CartController;
+
   constructor(private readonly appModel: AppModel) {
-    this.cartService = CartService.getInstance(this.appModel);
-    this.showCart();
+    this.model = new CartModel();
+    this.view = new CartView(this.model);
+    this.controller = new CartController(this.appModel, this.model, this.view);
   }
+
   public render(): HTMLElement {
-    const container = document.createElement('div');
-
-    container.classList.add('plug');
-    container.innerHTML = 'cartPage';
-
-    return container;
-  }
-
-  private async showCart(): Promise<void> {
-    if (this.appModel.getCurrentCart() === null) {
-      await this.cartService.getOrCreateCart();
-    }
-
-    console.log(this.appModel.getCurrentCart());
+    return this.view.render();
   }
 }
