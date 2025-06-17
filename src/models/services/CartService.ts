@@ -2,6 +2,7 @@ import {
   ByProjectKeyCartsRequestBuilder,
   ByProjectKeyMeCartsRequestBuilder,
   Cart,
+  LineItem,
   MyCartUpdateAction,
 } from '@commercetools/platform-sdk';
 import { CUSTOMER_CART, CustomerService } from './AuthService';
@@ -107,7 +108,7 @@ export class CartService {
         .withId({ ID: cart.id })
         .delete({ queryArgs: { version: cart.version } })
         .execute();
-      const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
+      const storageKey = this.isAuthorizedCustomer() ? CUSTOMER_CART : ANON_CART_ID;
       sessionStorage.removeItem(storageKey);
       return this.createCart();
     } catch (error) {
@@ -165,36 +166,68 @@ export class CartService {
     }
   }
 
-  private isAuthoriziredCustomer(): boolean {
+  public async updateLineItem(cart: Cart, lineItem: LineItem, quantity: number): Promise<Cart> {
+    try {
+      const response = await this.cartBuilder()
+        .withId({ ID: cart.id })
+        .post({
+          body: {
+            version: cart.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: lineItem.id,
+                quantity: quantity,
+              },
+            ],
+          },
+        })
+        .execute();
+
+      return response.body;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private isAuthorizedCustomer(): boolean {
     return !!sessionStorage.getItem(REFRESH_TOKEN);
   }
 
   private cartBuilder(): ByProjectKeyMeCartsRequestBuilder | ByProjectKeyCartsRequestBuilder {
-    return this.isAuthoriziredCustomer()
+    return this.isAuthorizedCustomer()
       ? this.service.getCurrentClient().me().carts()
       : this.service.getCurrentClient().carts();
   }
 
   private async getExistingCart(): Promise<Cart | null> {
-    const cartId = this.isAuthoriziredCustomer()
+    const cartId = this.isAuthorizedCustomer()
       ? sessionStorage.getItem(CUSTOMER_CART)
       : sessionStorage.getItem(ANON_CART_ID);
-    if (!cartId) {
-      return null;
-    }
-    try {
-      const cartResp = await this.cartBuilder()
-        .withId({ ID: cartId })
-        .get({ queryArgs: this.expandQueryArgs })
-        .execute();
-      if (cartResp.body.cartState === 'Active') {
-        return cartResp.body;
+    if (cartId) {
+      try {
+        const cartResp = await this.cartBuilder()
+          .withId({ ID: cartId })
+          .get({ queryArgs: this.expandQueryArgs })
+          .execute();
+        if (cartResp.body.cartState === 'Active') {
+          return cartResp.body;
+        }
+      } catch (error) {
+        console.warn('Error fetching existing cart, possibly stale ID.', error);
+        if (isCtErrorWithBodyMessage(error) && error.statusCode === 404) {
+          const storageKey = this.isAuthorizedCustomer() ? CUSTOMER_CART : ANON_CART_ID;
+          sessionStorage.removeItem(storageKey);
+        }
       }
-    } catch (error) {
-      console.warn('Error fetching existing cart, possibly stale ID.', error);
-      if (isCtErrorWithBodyMessage(error) && error.statusCode === 404) {
-        const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
-        sessionStorage.removeItem(storageKey);
+    }
+    if (this.isAuthorizedCustomer()) {
+      const cartsList = await this.cartBuilder().get({ queryArgs: this.expandQueryArgs }).execute();
+      const activeCart = cartsList.body.results.find((item) => item.cartState === 'Active');
+
+      if (activeCart) {
+        sessionStorage.setItem(CUSTOMER_CART, activeCart.id);
+        return activeCart;
       }
     }
     return null;
@@ -204,7 +237,7 @@ export class CartService {
     const response = await this.cartBuilder()
       .post({ body: { currency: 'USD' }, queryArgs: this.expandQueryArgs })
       .execute();
-    const storageKey = this.isAuthoriziredCustomer() ? CUSTOMER_CART : ANON_CART_ID;
+    const storageKey = this.isAuthorizedCustomer() ? CUSTOMER_CART : ANON_CART_ID;
     sessionStorage.setItem(storageKey, response.body.id);
     this.appModel.setCartItems(response.body);
     return response.body;

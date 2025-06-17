@@ -15,6 +15,7 @@ import { HeaderModel } from './views/components/Header/headerModel';
 import { ProfilePage } from './views/pages/ProfilePage';
 import { AuthController } from './controllers/AuthController';
 import { ProductPage } from './views/pages/ProductDetailPage';
+import { elementCreator } from './utils/dom-helpers';
 
 class App {
   public readonly route: Router;
@@ -28,7 +29,8 @@ class App {
     const headerContainer = header.render();
 
     const mainContainer = document.createElement('main');
-    document.body.append(headerContainer, mainContainer);
+    const background = elementCreator(document.createElement('div'), { classNames: ['texture'] });
+    document.body.append(headerContainer, mainContainer, background);
 
     const routes: Routes = {
       '/': HomePage,

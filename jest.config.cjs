@@ -15,10 +15,10 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/coverage/**', '!**/__tests__/**'],
   coverageThreshold: {
     global: {
-      branches: 25,
-      functions: 25,
-      lines: 25,
-      statements: 25,
+      branches: 30,
+      functions: 30,
+      lines: 30,
+      statements: 30,
     },
   },
   testPathIgnorePatterns: ['/node_modules/', '/coverage/'],

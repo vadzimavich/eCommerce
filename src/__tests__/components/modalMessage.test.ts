@@ -47,12 +47,12 @@ describe('Modal', () => {
       addMessage: jest.fn(),
     };
 
-    mockView.modal.showModal = jest.fn();
+    mockView.modal.show = jest.fn();
     mockView.renderInfo('test');
     const result = mockView.renderInfo('test');
 
     expect(mockView.addMessage).toHaveBeenCalled();
-    expect(mockView.modal.showModal).toHaveBeenCalled();
+    expect(mockView.modal.show).toHaveBeenCalled();
     expect(result).toBe(mockView.modal);
 
     setTimeout(() => {
