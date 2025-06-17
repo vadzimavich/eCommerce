@@ -16,6 +16,7 @@ import { ProfilePage } from './views/pages/ProfilePage';
 import { AuthController } from './controllers/AuthController';
 import { ProductPage } from './views/pages/ProductDetailPage';
 import { elementCreator } from './utils/dom-helpers';
+import { Footer } from './views/components/Footer';
 
 class App {
   public readonly route: Router;
@@ -28,9 +29,12 @@ class App {
     const header = new Header(this.appModel, this.headerModel);
     const headerContainer = header.render();
 
+    const footer = new Footer(this.appModel);
+    const footerContainer = footer.render();
+
     const mainContainer = document.createElement('main');
     const background = elementCreator(document.createElement('div'), { classNames: ['texture'] });
-    document.body.append(headerContainer, mainContainer, background);
+    document.body.append(headerContainer, mainContainer, footerContainer, background);
 
     const routes: Routes = {
       '/': HomePage,
