@@ -10,3 +10,10 @@ export type HandlerInputFieldResult = {
   result: boolean;
   errorMessage?: string;
 };
+
+export type MemberData = {
+  name: string;
+  description: string;
+  image: string;
+  achievements: string[];
+};
