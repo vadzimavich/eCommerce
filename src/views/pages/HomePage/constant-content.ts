@@ -5,5 +5,5 @@ export const enum TitleSection {
 }
 
 export enum DiscountSection {
-  Title = `Use our promo code on your first purchase`,
+  Title = `Use our promo code on your first order`,
 }
