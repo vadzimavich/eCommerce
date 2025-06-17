@@ -79,7 +79,7 @@ export class ProductController {
         if (quantity > 0) {
           data = await this.serviceCart.updateLineItem(this.model.cart, this.model.lineItemCart, quantity);
         } else {
-          data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
+          data = await this.serviceCart.removeLineItem(this.model.lineItemCart.id);
         }
 
         this.view.buttonsForCart.getComponents().buttonDecrement.disabled = false;
@@ -98,7 +98,7 @@ export class ProductController {
     try {
       if (this.model.cart && this.model.lineItemCart) {
         this.view.buttonsForCart.getComponents().delete.disabled = true;
-        const data = await this.serviceCart.removeLineItem(this.model.cart, this.model.lineItemCart);
+        const data = await this.serviceCart.removeLineItem(this.model.lineItemCart.id);
 
         this.view.buttonsForCart.getComponents().delete.disabled = false;
         this.appModel.setCartItems(data);

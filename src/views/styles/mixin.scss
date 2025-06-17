@@ -4,11 +4,11 @@
   width: 100%;
   max-width: 144rem;
   margin: 0 auto;
-  padding: variables.$padding-section-vertical variables.$padding-section-horizontal;
+  padding: variables.$padding-section-vertical;
 
   text-align: center;
 
-  @media (width <= 520px) {
-    padding: variables.$padding-section-vertical-sm variables.$padding-section-horizontal-sm;
-  }
+  // @media (width <= 768px) {
+  //   padding: variables.$padding-section-vertical-sm;padding
+  // }
 }

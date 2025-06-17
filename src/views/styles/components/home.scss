@@ -2,10 +2,11 @@
 
 .home {
   width: 100%;
+  margin: 0 3rem;
   padding: 0;
   border-radius: 5rem;
 
-  background-color: var(--color-bg-modal);
+  background-color: var(--color-white);
   box-shadow: 0 4px 16px var(--color-shadow);
 
   section {
@@ -137,10 +138,6 @@
 }
 
 @media (width <= 768px) {
-  main {
-    padding: 3rem;
-  }
-
   .section__discount {
     width: 100%;
   }

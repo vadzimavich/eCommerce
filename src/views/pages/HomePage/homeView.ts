@@ -13,7 +13,7 @@ export class HomeView {
     private readonly model: HomeModel
   ) {
     this.pageContainer = elementCreator(document.createElement('div'), {
-      classNames: ['home'],
+      classNames: ['home', 'page-wrapper'],
     });
     this.copyButton = elementCreator(document.createElement('button'), {
       classNames: ['button', 'form__button', 'discount__btn'],
