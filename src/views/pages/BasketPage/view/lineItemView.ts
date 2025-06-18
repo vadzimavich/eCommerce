@@ -63,6 +63,8 @@ export class LineItemView {
         content: formatPrice(this.lineItem.price.value),
       });
       priceWrapper.prepend(originalPriceElement);
+
+      priceElement.classList.add('price-new');
     }
     return priceWrapper;
   }

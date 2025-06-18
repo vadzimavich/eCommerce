@@ -74,6 +74,7 @@ body {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 23px;
+  color: var(--color-dark);
 
   background: linear-gradient(rgb(245 247 250), rgb(215 206 178)) no-repeat;
 
@@ -132,8 +133,10 @@ main {
 }
 
 .section-item {
+  width: 100%;
   padding: $padding-section-vertical;
   border-radius: $radius-big;
+
   background-color: var(--color-bg-modal);
   box-shadow: $box-shadow;
 

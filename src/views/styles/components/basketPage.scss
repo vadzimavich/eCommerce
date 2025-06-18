@@ -1,11 +1,14 @@
 @use '../index' as *;
 
 .cart-page {
+  gap: 3rem;
   transition: all 0.2s ease-in-out;
 
   &__title {
     width: 100%;
-    font-size: 2.5rem;
+
+    font-size: 4rem;
+    line-height: 5rem;
     color: var(--color-dark-blue);
     text-align: left;
   }
@@ -26,6 +29,8 @@
     flex-direction: column;
     flex-grow: 1;
     gap: $gap-middle;
+
+    width: 100%;
   }
 
   &__empty {
@@ -56,10 +61,10 @@
   gap: $gap-middle;
   align-items: center;
 
-  padding: $gap-middle;
-  border-radius: $radius;
+  padding: 3rem;
+  border-radius: $radius-big;
 
-  background-color: var(--color-white);
+  background-color: var(--color-bg-modal);
   box-shadow: $box-shadow;
 
   &__image-wrapper {
@@ -71,6 +76,7 @@
   &__image {
     width: 100%;
     height: 100%;
+    border-radius: $radius;
     object-fit: contain;
   }
 
@@ -84,7 +90,7 @@
   }
 
   &__name {
-    font-size: 1.6rem;
+    font-size: 2rem;
     font-weight: 600;
   }
 
@@ -101,6 +107,13 @@
     align-items: flex-end;
 
     min-width: 15rem;
+
+    @media (width <= 500px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      min-width: auto;
+    }
   }
 
   &__total-price {
@@ -118,6 +131,12 @@
       color: var(--color-red);
     }
   }
+
+  @media (width <= 500px) {
+    flex-direction: column;
+    gap: $gap-small;
+    align-items: stretch;
+  }
 }
 
 .quantity-control {
@@ -130,8 +149,9 @@
     border-radius: 50%;
 
     font-weight: 600;
+    color: var(--color-white);
 
-    background-color: var(--color-shadow);
+    background-color: var(--color-breeze);
 
     transition: background-color 0.3s ease;
 
@@ -170,11 +190,11 @@
   flex-shrink: 0;
   gap: $gap-middle;
 
-  width: 30rem;
-  padding: $gap-middle;
-  border-radius: $radius;
+  width: 35rem;
+  padding: 3rem;
+  border-radius: $radius-big;
 
-  background-color: var(--color-white);
+  background-color: var(--color-bg-modal);
   box-shadow: $box-shadow;
 
   &__line {
@@ -246,8 +266,8 @@
 
 .button--danger {
   font-family: inherit;
-  font-size: 1.25rem;
-  color: var(--color-dark);
+  font-size: 1.5rem;
+  color: var(--color-breeze);
   transition: color 0.2s ease;
 
   &:hover {
@@ -276,8 +296,9 @@
     border-radius: $radius;
 
     font-family: inherit;
+    color: var(--color-white);
 
-    background-color: var(--color-shadow);
+    background-color: var(--color-breeze);
 
     transition: all 0.2s ease-in-out;
 

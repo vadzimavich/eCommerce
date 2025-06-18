@@ -1,10 +1,14 @@
-export class AboutPage {
-  public render(): HTMLElement {
-    const container = document.createElement('div');
-    // Заглушка класс для страниц потом удалим
-    container.classList.add('plug');
-    container.innerHTML = 'aboutPage';
+import { AboutView } from './about-view';
 
-    return container;
+export class AboutPage {
+  private readonly view: AboutView;
+
+  constructor() {
+    this.view = new AboutView();
+  }
+
+  public render(): HTMLElement {
+    const render = this.view.render();
+    return render;
   }
 }
