@@ -15,11 +15,12 @@ export class FooterView {
 
   public render(): HTMLElement {
     const topTitle = elementCreator(document.createElement('div'), { classNames: ['footer', 'footer__top'] });
+    const bottomTitle = this.buildBottomTitle();
     const benifist = this.builInfoBlock(content.benefits);
     const categories = this.buildCategories();
     const team = this.builInfoBlock(content.team);
     topTitle.append(benifist, categories, team);
-    this.footer.append(topTitle);
+    this.footer.append(topTitle, bottomTitle);
     return this.footer;
   }
 
@@ -123,5 +124,15 @@ export class FooterView {
       classNames: [`${baseClass}__text`],
       content: item.label,
     });
+  }
+
+  private buildBottomTitle(): HTMLElement {
+    const container = elementCreator(document.createElement('div'), { classNames: ['footer', 'footer__bottom'] });
+    const copyright = elementCreator(document.createElement('p'), {
+      classNames: ['footer__copyright'],
+      content: `© 2025 CodersFinal. Educational CleanOcean project for RSSchool.`,
+    });
+    container.append(copyright);
+    return container;
   }
 }

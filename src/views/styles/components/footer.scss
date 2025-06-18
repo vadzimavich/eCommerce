@@ -1,11 +1,25 @@
 @use '../index' as *;
 
 .footer {
+  margin-top: 3rem;
   background-color: var(--color-dark-blue);
 
   &__top {
     display: flex;
     justify-content: space-between;
+
+    @media (width <= 768px) {
+      flex-direction: column;
+    }
+  }
+
+  &__bottom {
+    padding: 1.2rem;
+    border-top: 1px solid var(--color-breeze-dark);
+
+    font-size: 1.2rem;
+    color: var(--color-card-desc);
+    text-align: center;
   }
 }
 
@@ -17,7 +31,7 @@
 
   &__title {
     margin-bottom: 1.6rem;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: 600;
   }
 
@@ -25,6 +39,7 @@
     display: flex;
     flex-direction: column;
     gap: $gap-small;
+    justify-content: start;
   }
 
   &__item {
@@ -32,7 +47,6 @@
     gap: $gap-middle;
     align-items: center;
 
-    max-width: 30rem;
     padding: 0.5rem;
 
     color: var(--color-white);
