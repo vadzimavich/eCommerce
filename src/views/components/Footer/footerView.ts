@@ -16,9 +16,9 @@ export class FooterView {
   public render(): HTMLElement {
     const topTitle = elementCreator(document.createElement('div'), { classNames: ['footer', 'footer__top'] });
     const bottomTitle = this.buildBottomTitle();
-    const benifist = this.builInfoBlock(content.benefits);
+    const benifist = this.buildInfoBlock(content.benefits);
     const categories = this.buildCategories();
-    const team = this.builInfoBlock(content.team);
+    const team = this.buildInfoBlock(content.team);
     topTitle.append(benifist, categories, team);
     this.footer.append(topTitle, bottomTitle);
     return this.footer;
@@ -68,7 +68,7 @@ export class FooterView {
     return container;
   }
 
-  private builInfoBlock({ title, items, baseClass }: InfoBlockParameters): HTMLElement {
+  private buildInfoBlock({ title, items, baseClass }: InfoBlockParameters): HTMLElement {
     const container = elementCreator(document.createElement('div'), {
       classNames: [baseClass],
     });
