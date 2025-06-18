@@ -25,6 +25,7 @@ export class Router {
     }
 
     window.addEventListener('hashchange', () => {
+      window.scrollTo({ top: 0 });
       const newPath = location.hash.slice(1);
       this.appModel.setCurrentHash(newPath);
       this.loadRoute();

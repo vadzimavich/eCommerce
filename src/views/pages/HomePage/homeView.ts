@@ -30,7 +30,10 @@ export class HomeView {
 
   public render(): HTMLElement {
     const sectionTitle = this.buildTitleSection();
-    this.pageContainer.append(sectionTitle);
+    const howSection = this.buildHowSection();
+    const impactSection = this.buildImpactSection();
+
+    this.pageContainer.append(sectionTitle, howSection, impactSection);
     return this.pageContainer;
   }
 
@@ -63,8 +66,8 @@ export class HomeView {
       classNames: ['discount__wrapper'],
     });
 
-    const text = elementCreator(document.createElement('p'), {
-      classNames: ['discount__text'],
+    const title = elementCreator(document.createElement('h3'), {
+      classNames: ['discount__title'],
       content: sectionContent.DiscountSection.Title,
     });
 
@@ -75,7 +78,7 @@ export class HomeView {
 
     promoBottom.append(promoCodeText, this.copyButton);
 
-    sectionPromo.append(text, promoBottom);
+    sectionPromo.append(title, promoBottom);
     this.pageContainer.append(sectionPromo);
   }
 
@@ -107,6 +110,89 @@ export class HomeView {
     });
     descContainer.append(title, subtitle, this.buttonToAbout);
     section.append(descContainer, imgContainer);
+    return section;
+  }
+
+  private buildHowSection(): HTMLElement {
+    const section = elementCreator(document.createElement('section'), {
+      classNames: ['section', 'section__how', 'how'],
+    });
+
+    const title = elementCreator(document.createElement('h3'), {
+      classNames: ['how__title'],
+      content: sectionContent.HowSection.Title,
+    });
+
+    const list = elementCreator(document.createElement('ul'), {
+      classNames: ['how__list'],
+    });
+
+    sectionContent.HowSection.Steps.forEach((item, index) => {
+      const cart = elementCreator(document.createElement('li'), {
+        classNames: ['how__item'],
+      });
+      const number = elementCreator(document.createElement('span'), {
+        classNames: ['how__num'],
+        content: (index + 1).toString(),
+      });
+      const text = elementCreator(document.createElement('p'), {
+        classNames: ['how__text'],
+        content: item,
+      });
+      cart.append(number, text);
+      list.append(cart);
+    });
+
+    section.append(title, list);
+    return section;
+  }
+
+  private buildImpactSection(): HTMLElement {
+    const section = elementCreator(document.createElement('section'), {
+      classNames: ['section', 'section__impact', 'impact'],
+    });
+
+    const title = elementCreator(document.createElement('h3'), {
+      classNames: ['impact__title'],
+      content: sectionContent.ImpactSection.Title,
+    });
+
+    const content = elementCreator(document.createElement('div'), {
+      classNames: ['impact__content'],
+    });
+
+    const imageContainer = elementCreator(document.createElement('div'), {
+      classNames: ['impact__image'],
+    });
+
+    const img = elementCreator(document.createElement('img'), {
+      attributes: { src: './assets/home/home-impact.webp', alt: 'impact-img' },
+    });
+
+    imageContainer.append(img);
+
+    const cards = elementCreator(document.createElement('div'), {
+      classNames: ['impact__cards'],
+    });
+
+    sectionContent.ImpactSection.Cards.forEach(({ value, label }) => {
+      const card = elementCreator(document.createElement('div'), {
+        classNames: ['impact__card'],
+      });
+      const value_ = elementCreator(document.createElement('p'), {
+        classNames: ['impact__value'],
+        content: value,
+      });
+      const lbl = elementCreator(document.createElement('p'), {
+        classNames: ['impact__label'],
+        content: label,
+      });
+      card.append(value_, lbl);
+      cards.append(card);
+    });
+    content.append(imageContainer, cards);
+
+    section.append(title, content);
     return section;
   }
 }
