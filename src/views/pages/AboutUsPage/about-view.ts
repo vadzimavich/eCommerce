@@ -1,10 +1,11 @@
 import { elementCreator } from '../../../utils/dom-helpers';
-import { AboutModel } from './about-model';
 import * as content from './components/content';
+import { Member } from './components/member';
 
 export class AboutView {
   private readonly container: HTMLElement;
-  constructor(private readonly model: AboutModel) {
+
+  constructor() {
     this.container = elementCreator(document.createElement('section'), {
       classNames: ['page-wrapper', 'about'],
     });
@@ -12,17 +13,42 @@ export class AboutView {
 
   public render(): HTMLElement {
     this.createTeamInfo();
-    this.createPlatformInfo();
+    this.createMembers();
+    this.createSectionPlatform();
     return this.container;
+  }
+
+  private createMembers(): void {
+    const wrapper = elementCreator(document.createElement('ul'), {
+      classNames: ['members'],
+    });
+
+    wrapper.append(new Member(content.Andrey).render());
+    wrapper.append(new Member(content.Denis).render());
+    wrapper.append(new Member(content.Tanya).render());
+    this.container.append(wrapper);
   }
 
   private createTeamInfo(): void {
     const wrapper = elementCreator(document.createElement('div'), {
-      classNames: ['about__team'],
+      classNames: ['about__team', 'wrapper'],
+    });
+
+    const imgWrapper = elementCreator(document.createElement('div'), {
+      classNames: ['img__wrapper'],
+    });
+
+    wrapper.append(this.createContentTeam(), imgWrapper);
+    this.container.append(wrapper);
+  }
+
+  private createContentTeam(): HTMLElement {
+    const contentWrapper = elementCreator(document.createElement('div'), {
+      classNames: ['content'],
     });
 
     const title = elementCreator(document.createElement('h2'), {
-      classNames: ['title'],
+      classNames: ['title', 'name'],
       content: content.Team.Title,
     });
 
@@ -41,13 +67,22 @@ export class AboutView {
       content: content.Team.Description_mission,
     });
 
-    wrapper.append(title, description, titleMission, descriptionMission);
-    this.container.append(wrapper);
+    for (let i = 0; i < 3; i++) {
+      const background = elementCreator(document.createElement('div'), {
+        classNames: ['background'],
+      });
+
+      contentWrapper.append(background);
+    }
+
+    contentWrapper.append(title, description, titleMission, descriptionMission);
+
+    return contentWrapper;
   }
 
-  private createPlatformInfo(): void {
+  private createPlatformInfo(): HTMLElement {
     const wrapper = elementCreator(document.createElement('div'), {
-      classNames: ['about__platform'],
+      classNames: ['platform__content', 'wrapper'],
     });
 
     const title = elementCreator(document.createElement('h2'), {
@@ -60,7 +95,29 @@ export class AboutView {
       content: content.Platform.Description,
     });
 
-    wrapper.append(title, description);
+    const link = elementCreator(document.createElement('a'), {
+      classNames: ['link'],
+      attributes: {
+        href: content.Platform.Url,
+        target: '_blank',
+      },
+    });
+
+    wrapper.append(title, description, link);
+    return wrapper;
+  }
+
+  private createSectionPlatform(): void {
+    const wrapper = elementCreator(document.createElement('div'), {
+      classNames: ['about__platform'],
+    });
+
+    const imgWrapper = elementCreator(document.createElement('div'), {
+      classNames: ['img__wrapper'],
+    });
+
+    wrapper.append(imgWrapper, this.createPlatformInfo());
+
     this.container.append(wrapper);
   }
 }

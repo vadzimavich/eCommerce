@@ -15,5 +15,7 @@ export type MemberData = {
   name: string;
   description: string;
   image: string;
-  achievements: string[];
+  contribution: string[];
+  gitHub: string;
+  roles: string[];
 };
