@@ -1,0 +1,61 @@
+@use '../index' as *;
+
+.footer {
+  background-color: var(--color-dark-blue);
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.benefits,
+.team,
+.categories {
+  padding: 2rem;
+  color: var(--color-yelow);
+
+  &__title {
+    margin-bottom: 1.6rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-small;
+  }
+
+  &__item {
+    display: flex;
+    gap: $gap-middle;
+    align-items: center;
+
+    max-width: 30rem;
+    padding: 0.5rem;
+
+    color: var(--color-white);
+  }
+
+  &__icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    object-fit: cover;
+  }
+
+  &__text,
+  &__label {
+    font-size: 1.2rem;
+  }
+}
+
+.team,
+.categories {
+  &__item {
+    &:hover {
+      color: var(--color-yelow);
+    }
+  }
+}
