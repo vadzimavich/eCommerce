@@ -26,6 +26,8 @@
     flex-direction: column;
     flex-grow: 1;
     gap: $gap-middle;
+
+    width: 100%;
   }
 
   &__empty {
@@ -101,6 +103,13 @@
     align-items: flex-end;
 
     min-width: 15rem;
+
+    @media (width <= 500px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      min-width: auto;
+    }
   }
 
   &__total-price {
@@ -117,6 +126,12 @@
     &:hover {
       color: var(--color-red);
     }
+  }
+
+  @media (width <= 500px) {
+    flex-direction: column;
+    gap: $gap-small;
+    align-items: stretch;
   }
 }
 
