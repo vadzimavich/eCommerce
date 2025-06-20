@@ -1,4 +1,5 @@
 import { route } from '../../../app';
+import { AuthController } from '../../../controllers/AuthController';
 import { CustomerService } from '../../../models/services/AuthService';
 import { AppModel } from '../../../models/state/AppState';
 import { HeaderModel } from './headerModel';
@@ -12,11 +13,13 @@ export class HeaderController {
     private readonly view: HeaderView
   ) {
     this.service = CustomerService.getInstance();
+    new AuthController(this.appModel).checkAuthorization();
     this.addEventListeners();
     this.handleLoginState();
     this.handleCurrentPage();
     this.appModel.subscribeLoginStateListener(() => this.handleLoginState());
     this.appModel.subscribeCurrentPageListener(() => this.handleCurrentPage());
+    this.appModel.subscribeCoinProductsInCartListener(() => this.handleCoinProducts());
     this.model.subscribeBurgerMenuListener(() => this.view.toggleShowBurgerMenu());
   }
 
@@ -69,6 +72,10 @@ export class HeaderController {
 
   private handleCurrentPage(): void {
     this.view.updateViewActivePage();
+  }
+
+  private handleCoinProducts(): void {
+    this.view.updateCoinProductsInCart();
   }
 
   private handleClickBurgerMenuButton(): void {

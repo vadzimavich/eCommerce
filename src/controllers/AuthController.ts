@@ -1,4 +1,3 @@
-// import { route } from '../app';
 import { CustomerService } from '../models/services/AuthService';
 import { AppModel } from '../models/state/AppState';
 
@@ -13,7 +12,6 @@ export class AuthController {
 
   public async checkAuthorization(): Promise<void> {
     const refreshToken = sessionStorage.getItem(REFRESH_TOKEN);
-
     if (refreshToken) {
       try {
         const customer = await this.service.loginWithRefreshToken(refreshToken);
@@ -29,8 +27,6 @@ export class AuthController {
         this.appModel.logout();
         this.service.loginAnonymousClient();
       }
-    } else {
-      this.service.loginAnonymousClient();
     }
   }
 }

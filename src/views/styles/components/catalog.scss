@@ -93,9 +93,11 @@
 .catalog-right {
   display: flex;
   flex-direction: column;
-  gap: $gap-middle;
+  gap: $gap-big;
   align-items: center;
   justify-content: center;
+
+  width: 100%;
 
   &__head {
     display: flex;
@@ -172,14 +174,46 @@
     justify-items: stretch;
 
     width: 100%;
-    min-height: 58rem;
+    min-height: 71rem;
 
-    @media (width <= 1130px) {
+    @media (width <= 1250px) {
       grid-template-columns: 1fr 1fr;
     }
 
     @media (width <= 690px) {
       grid-template-columns: 1fr;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 25rem;
+
+    .btn {
+      width: 5rem;
+      padding: 1rem;
+      background-color: var(--color-dark-blue);
+    }
+
+    .count {
+      display: block;
+
+      width: 3.6rem;
+      height: 3.6rem;
+      border-radius: 50%;
+
+      font-weight: bold;
+      line-height: 3.6rem;
+      color: var(--color-white);
+      text-align: center;
+
+      background-color: var(--color-dark-blue);
+    }
+
+    @media (width <= 490px) {
+      width: 20rem;
     }
   }
 
@@ -198,11 +232,12 @@
   gap: $gap-middle;
   justify-content: space-between;
 
-  min-height: 34rem;
+  min-width: 19rem;
+  min-height: 40rem;
   max-height: min-content;
-  padding: 1.5rem;
+  padding: 3.5rem;
   border: 1px solid var(--color-border-opacity);
-  border-radius: $radius;
+  border-radius: $radius-big;
 
   background-color: var(--color-card-background);
 
@@ -213,9 +248,11 @@
 
   &__bestsaller {
     position: absolute;
-    top: 1rem;
-    left: 0;
-    width: 4rem;
+    top: -2rem;
+    left: -2rem;
+    transform: rotate(-30deg);
+
+    width: 9rem;
   }
 
   &__img {
@@ -286,8 +323,29 @@
         transition: opacity 0.3s ease;
       }
 
+      &[disabled] {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+
       &:hover::after {
         opacity: 1;
+      }
+
+      @keyframes btn-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .btn-icon {
+        display: block;
+        height: 100%;
+        line-height: 3rem;
+
+        &.btn-animate {
+          animation: btn-spin 0.5s ease-in-out infinite;
+        }
       }
     }
   }
@@ -296,6 +354,10 @@
     transform: scale(1.01);
     border: 1px solid var(--color-breeze);
     box-shadow: $box-shadow;
+  }
+
+  @media (width <= 520px) {
+    padding: 3rem 2rem;
   }
 }
 

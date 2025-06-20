@@ -15,20 +15,28 @@ import { HeaderModel } from './views/components/Header/headerModel';
 import { ProfilePage } from './views/pages/ProfilePage';
 import { AuthController } from './controllers/AuthController';
 import { ProductPage } from './views/pages/ProductDetailPage';
+import { elementCreator } from './utils/dom-helpers';
+import { Footer } from './views/components/Footer';
+import { FooterModel } from './views/components/Footer/footerModel';
 
 class App {
   public readonly route: Router;
 
   constructor(
     private readonly appModel: AppModel,
-    private readonly headerModel: HeaderModel
+    private readonly headerModel: HeaderModel,
+    private readonly footerModel: FooterModel
   ) {
     this.appModel.initUserFromSession();
     const header = new Header(this.appModel, this.headerModel);
     const headerContainer = header.render();
 
+    const footer = new Footer(this.appModel, this.footerModel);
+    const footerContainer = footer.render();
+
     const mainContainer = document.createElement('main');
-    document.body.append(headerContainer, mainContainer);
+    const background = elementCreator(document.createElement('div'), { classNames: ['texture'] });
+    document.body.append(headerContainer, mainContainer, footerContainer, background);
 
     const routes: Routes = {
       '/': HomePage,
@@ -48,5 +56,5 @@ class App {
   }
 }
 
-const app = new App(new AppModel(), new HeaderModel());
+const app = new App(new AppModel(), new HeaderModel(), new FooterModel());
 export const route = app.route;

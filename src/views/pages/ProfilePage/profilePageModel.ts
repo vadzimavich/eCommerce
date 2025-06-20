@@ -67,7 +67,6 @@ export class ProfilePageModel {
       this.changePasswordStatusForm['profile-confirm-password'] =
         newPassword === confirmPassword && newPassword.length > 0 && isNewPasswordInputActuallyValid;
     }
-    console.log('Model: changePasswordStatusForm updated:', JSON.stringify(this.changePasswordStatusForm)); // debug
     this.notifyPasswordEditModeListeners();
   }
 
@@ -76,13 +75,6 @@ export class ProfilePageModel {
     const newPassValid = this.changePasswordStatusForm['profile-new-password'] === true;
     const confirmPassValid = this.changePasswordStatusForm['profile-confirm-password'] === true;
 
-    // debug:
-    console.log(
-      `isChangePasswordFormValid: 
-        Current: ${this.changePasswordDataForm['profile-current-password']} (${currentPassValid}), 
-        New: ${this.changePasswordDataForm['profile-new-password']} (${newPassValid}), 
-        Confirm: ${this.changePasswordDataForm['profile-confirm-password']} (${confirmPassValid})`
-    );
     return currentPassValid && newPassValid && confirmPassValid;
   }
 

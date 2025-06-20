@@ -1,0 +1,348 @@
+@use '../index' as *;
+
+.home {
+  width: 100%;
+  margin: 3rem;
+  padding: 0;
+  border-radius: 5rem;
+
+  background-color: var(--color-white);
+  box-shadow: 0 4px 16px var(--color-shadow);
+
+  section {
+    width: 100%;
+    padding: 2rem 4rem;
+  }
+}
+
+.section__title {
+  display: flex;
+  gap: $gap-big;
+  align-items: center;
+  justify-content: space-between;
+
+  border-top-left-radius: 5rem;
+  border-top-right-radius: 5rem;
+
+  background-image: url('/assets/home/home-bg.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+
+  &-desc {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-middle;
+
+    max-width: 50%;
+
+    color: var(--color-white);
+    text-align: start;
+
+    .desc__title {
+      margin-bottom: 0.5rem;
+
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 140%;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+
+      @media (width <= 900px) {
+        font-size: 3.2rem;
+      }
+    }
+
+    .desc__subtitle {
+      color: var(--color-white);
+
+      @media (width <= 900px) {
+        font-size: 1.4rem;
+      }
+    }
+
+    .desc__btn {
+      margin-top: 5rem;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        color: var(--color-dark-blue);
+        background-color: var(--color-yelow);
+      }
+    }
+  }
+
+  &-img {
+    .title-img__img {
+      width: 100%;
+      max-width: 40rem;
+      height: auto;
+      object-fit: cover;
+    }
+  }
+}
+
+.discount {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-big;
+  align-items: center;
+
+  border-bottom-right-radius: 5rem;
+  border-bottom-left-radius: 5rem;
+
+  color: var(--color-dark-blue);
+
+  background-color: var(--color-white);
+
+  &__title {
+    font-size: 2.2rem;
+    font-weight: 500;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  &__wrapper {
+    display: flex;
+    gap: $gap-middle;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 70%;
+    padding: 2rem;
+    border: 2px solid var(--color-yelow);
+    border-radius: 1.5rem;
+
+    background-color: var(--color-bg-modal);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+
+    @media (width <= 768px) {
+      flex-direction: column;
+    }
+  }
+
+  &__code {
+    width: 20rem;
+    padding: 1rem 1.5rem;
+    border-radius: $radius;
+
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-dark-blue);
+    text-align: center;
+
+    background-color: var(--color-yelow);
+  }
+
+  &__btn {
+    max-width: 10rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      color: var(--color-dark-blue);
+      background-color: var(--color-yelow);
+    }
+  }
+}
+
+.how {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-big;
+  align-items: center;
+
+  text-align: center;
+
+  &__title {
+    font-size: 3rem;
+    font-weight: 500;
+    color: var(--color-dark-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__list {
+    display: flex;
+    gap: $gap-big;
+    width: 100%;
+
+    @media (width <= 1200px) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (width <= 768px) {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__item {
+    display: flex;
+    gap: $gap-middle;
+    align-items: center;
+
+    padding: 2rem;
+    border-radius: 1.5rem;
+
+    background-color: var(--color-white);
+    box-shadow: 0 4px 16px var(--color-shadow);
+
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  &__num {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 50%;
+
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-dark-blue);
+
+    background-color: var(--color-yelow);
+  }
+
+  &__text {
+    font-size: 1.8rem;
+    line-height: 1.4;
+    color: var(--color-dark-blue);
+  }
+}
+
+.impact {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-big;
+  align-items: center;
+
+  text-align: center;
+
+  &__title {
+    font-size: 3rem;
+    font-weight: 500;
+    line-height: 112%;
+    color: var(--color-dark-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__content {
+    display: flex;
+    gap: $gap-middle;
+    align-items: stretch;
+    justify-content: space-between;
+
+    @media (width <= 856px) {
+      flex-direction: column;
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $gap-big;
+    justify-content: center;
+
+    width: 100%;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-small;
+    justify-content: center;
+
+    max-width: 35rem;
+    padding: 2rem 3rem;
+    border-radius: 1.5rem;
+
+    background-color: var(--color-dark-blue);
+    box-shadow: 0 4px 16px var(--color-shadow);
+
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+
+    @media (width <= 1251px) {
+      width: 31rem;
+    }
+
+    @media (width <= 900px) {
+      padding: 1rem 2rem;
+    }
+
+    @media (width <= 900px) {
+      padding: 2rem 3rem;
+    }
+  }
+
+  &__value {
+    margin-bottom: 0.6rem;
+
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-yelow);
+  }
+
+  &__label {
+    font-size: 1.6rem;
+    line-height: 1.4;
+    color: var(--color-white);
+  }
+}
+
+@media (width <= 768px) {
+  .section__discount {
+    width: 100%;
+  }
+
+  .section__title {
+    flex-direction: column;
+  }
+
+  .section__title-desc {
+    align-items: center;
+    width: 100%;
+    max-width: 90%;
+    text-align: center;
+  }
+
+  .desc__btn {
+    margin: 2rem 0;
+  }
+}
+
+@media (width <= 480px) {
+  .section__title-desc {
+    max-width: 100%;
+  }
+
+  .desc__subtitle {
+    font-size: 1.4rem;
+  }
+
+  .desc__title {
+    font-size: 2.8rem;
+  }
+
+  .discount__wrapper {
+    width: 100%;
+  }
+
+  .discount__text {
+    font-size: 1.8rem;
+  }
+}

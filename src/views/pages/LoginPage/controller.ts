@@ -3,10 +3,10 @@ import { CustomerService } from '../../../models/services/AuthService';
 import { LoginPageModel } from './model';
 import { LoginPageView } from './view';
 import { route } from '../../../app';
-// import { CustomerSignInResult } from '@commercetools/platform-sdk';
 
 export class LoginPageController {
   private readonly customerService: CustomerService;
+
   constructor(
     private readonly model: LoginPageModel,
     private readonly view: LoginPageView,
@@ -52,9 +52,10 @@ export class LoginPageController {
       this.view.submitButton.disabled = true;
     }
     try {
+      console.log('test handleFormSubmit');
       const signInResult = await this.customerService.loginCustomer(loginData);
       if (signInResult && !(signInResult instanceof Error)) {
-        this.appModel.login(signInResult.customer);
+        this.appModel.login(signInResult);
         route.navigate('/');
       }
     } catch (error) {

@@ -3,6 +3,16 @@
  */
 
 import { AppModel } from '../../../models/state/AppState';
+
+jest.mock('../../../models/services/CartService', () => ({
+  CartService: {
+    getInstance: jest.fn().mockReturnValue({
+      addProductToCart: jest.fn(),
+      getOrCreateCart: jest.fn().mockResolvedValue({ id: 'test-id', lineItems: [] }),
+    }),
+  },
+}));
+
 import { ProductPage } from '../../../views/pages/ProductDetailPage';
 import { ProductController } from '../../../views/pages/ProductDetailPage/productController';
 import { ProductModel } from '../../../views/pages/ProductDetailPage/productModel';

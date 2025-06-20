@@ -1,5 +1,8 @@
 import { route } from '../../../app';
+import { AuthController } from '../../../controllers/AuthController';
+import { CartService } from '../../../models/services/CartService';
 import { ProductsService } from '../../../models/services/ProductService';
+import { AppModel } from '../../../models/state/AppState';
 import { ProductQueryParameters } from '../../../models/types/api-types';
 import { RouteParameters } from '../../../models/types/router-types';
 import { parserSortRequest } from '../../../utils/parsers';
@@ -9,19 +12,24 @@ import { ProductsView } from './view/productsView';
 
 export class CatalogController {
   private readonly service: ProductsService;
+  private readonly cartService: CartService;
   constructor(
+    private readonly appModel: AppModel,
     private readonly model: CatalogModel,
     private readonly view: CatalogView,
     private readonly productsView: ProductsView,
     private readonly parametrs: RouteParameters
   ) {
     this.service = ProductsService.getInstance();
+    this.cartService = CartService.getInstance(appModel);
     this.init();
     this.handlerProductsContainer();
     this.handlerSortSelect();
     this.handlerSearchForm();
     this.handlerFiltersContainer();
     this.handlerClearButton();
+    this.handlerPagination();
+    this.productsView.updateButtonAdToCart();
     this.model.subscribeProductsListener(() => {
       this.handlerProducts();
       this.updateCleanButton();
@@ -33,6 +41,7 @@ export class CatalogController {
   }
 
   private async init(): Promise<void> {
+    new AuthController(this.appModel).checkAuthorization();
     await this.getCategories();
     const categoryId = this.model.checkCategory(this.parametrs.category);
 
@@ -47,24 +56,26 @@ export class CatalogController {
     } else {
       route.navigate('/not-found');
     }
-
     await this.initProducts(this.model.getParameters());
   }
+
   private async initProducts(parameters: ProductQueryParameters): Promise<void> {
     try {
+      this.productsView.renderLoader();
       const resultProducts = await this.service.getAllProducts(parameters);
-
       if (resultProducts instanceof Error) {
         this.productsView.renderMessage(resultProducts.message);
         return;
       }
 
-      if (resultProducts.length === 0) {
+      if (resultProducts.results.length === 0) {
         this.productsView.renderMessage('No products found.');
         return;
       }
 
-      this.model.setProducts(resultProducts);
+      this.model.setProducts(resultProducts.results);
+      this.model.setParameters({ total: resultProducts.total });
+      this.productsView.updatePagination();
     } catch (error) {
       console.error('Error loading products:', error);
     }
@@ -87,16 +98,28 @@ export class CatalogController {
   private handlerProductsContainer(): void {
     const container = this.productsView.getProductsContainer();
 
-    container.addEventListener('click', (event: MouseEvent) => {
+    container.addEventListener('click', async (event: MouseEvent) => {
       const target = event.target;
 
-      if (target instanceof HTMLElement) {
-        const card = target.closest('.product-card');
+      if (!(target instanceof HTMLElement)) return;
 
-        if (card instanceof HTMLElement) {
-          const cardId = card.getAttribute('data-id');
-          route.navigate(`product/${cardId}`);
-        }
+      const card = target.closest('.product-card');
+      if (!(card instanceof HTMLElement)) return;
+
+      const cardId = card.getAttribute('data-id');
+      if (!cardId) return;
+
+      const isAddToCartButton = target.closest('.product-card__priceinform-btn');
+
+      if (isAddToCartButton && isAddToCartButton instanceof HTMLButtonElement) {
+        try {
+          this.productsView.startAddAnimation(isAddToCartButton);
+          const cart = await this.cartService.addProductToCart(cardId);
+          this.appModel.setCartItems(cart);
+          this.productsView.stopAddAnimationAndDisable(isAddToCartButton);
+        } catch {}
+      } else {
+        route.navigate(`product/${cardId}`);
       }
     });
   }
@@ -198,6 +221,27 @@ export class CatalogController {
       const selectedOption = select.options[select.selectedIndex];
       const optionId = selectedOption.id;
       route.navigate(`/catalog/${optionId}`);
+    });
+  }
+
+  private handlerPagination(): void {
+    const nextButton = this.productsView.getButtonNext();
+    const previousButton = this.productsView.getButtonPrev();
+
+    nextButton.addEventListener('click', () => {
+      const currentParameters = this.model.getParameters();
+      const nextPage = (currentParameters.page ?? 1) + 1;
+      this.model.setParameters({ page: nextPage });
+      this.productsView.updatePagination();
+      this.initProducts(this.model.getParameters());
+    });
+
+    previousButton.addEventListener('click', () => {
+      const currentParameters = this.model.getParameters();
+      const previousPage = (currentParameters.page ?? 1) - 1;
+      this.model.setParameters({ page: previousPage });
+      this.productsView.updatePagination();
+      this.initProducts(this.model.getParameters());
     });
   }
 

@@ -90,8 +90,9 @@ export class ProductCard {
     const buttonAdd = elementCreator(document.createElement('button'), {
       classNames: ['product-card__priceinform-btn'],
     });
-    buttonAdd.textContent = '+';
+    const buttonContet = elementCreator(document.createElement('span'), { content: '+', classNames: ['btn-icon'] });
     buttonAdd.dataset.title = 'Add To Cart';
+    buttonAdd.append(buttonContet);
     return buttonAdd;
   }
 
