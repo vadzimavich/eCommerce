@@ -62,7 +62,7 @@ If you want to join the project, you are welcome!
 To contribute:
 
 - Fork this repository.
-- Create a new branck `git checkout -b feature/you-feature-name`.
+- Create a new branch `git checkout -b feature/you-feature-name`.
 - Make your changes.
 - Run linter and tests.
 - Push your branch and Pull Request.
