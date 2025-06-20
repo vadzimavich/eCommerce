@@ -186,7 +186,6 @@ export const createInputCity = (id: string): HTMLInputElement => {
   return input;
 };
 
-// eslint-disable-next-line max-lines-per-function
 export const createSelectCountry = (id: string, countryNames: string[]): HTMLSelectElement => {
   const select = elementCreator(document.createElement('select'), {
     classNames: ['form__input'],
