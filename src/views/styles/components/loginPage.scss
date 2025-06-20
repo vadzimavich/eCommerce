@@ -1,0 +1,13 @@
+@use '../index' as *;
+
+.login-page {
+  justify-content: flex-start;
+
+  .form {
+    max-width: 40rem;
+
+    &__button {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,223 @@
+@use '../index' as *;
+
+.profile-page {
+  &__fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-middle;
+    margin-bottom: $gap-middle;
+  }
+
+  .form__title {
+    font-size: 3rem;
+    color: var(--color-breeze);
+    text-transform: uppercase;
+  }
+
+  .form__input--readonly {
+    cursor: default;
+
+    padding-right: 0;
+    padding-left: 0;
+    border-color: transparent;
+
+    font-size: 1.8rem;
+    color: var(--color-card-desc);
+
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  .form__input--readonly[type='date'] {
+    display: inline-block;
+    width: auto;
+    appearance: none;
+
+    &::-webkit-calendar-picker-indicator,
+    &::-webkit-inner-spin-button,
+    &::-webkit-clear-button {
+      display: none;
+      appearance: none;
+    }
+  }
+
+  .form__input__wrapper {
+    label {
+      font-size: 2rem;
+    }
+  }
+
+  .form__input--editable {
+    cursor: text;
+    border-color: var(--color-border-input);
+    background-color: var(--color-white);
+
+    &:focus {
+      border-color: var(--color-breeze);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(var(--color-breeze-rgb), 0.2);
+    }
+  }
+
+  .form__input--editable[type='date'] {
+    display: block;
+    width: 100%;
+    appearance: revert;
+    appearance: auto;
+
+    &::-webkit-calendar-picker-indicator,
+    &::-webkit-inner-spin-button,
+    &::-webkit-clear-button {
+      display: initial;
+      appearance: revert;
+    }
+  }
+
+  &__title {
+    margin-bottom: $gap-middle;
+  }
+
+  &__content-wrapper {
+    position: relative;
+    min-height: 30rem;
+    padding: 5rem;
+    text-align: left;
+  }
+
+  .default-address-text {
+    margin-left: $gap-small;
+    font-size: 0.9em;
+    font-weight: normal;
+    color: var(--color-breeze);
+  }
+
+  &__section {
+    margin-bottom: $gap-big;
+    padding-bottom: $gap-middle;
+    border-bottom: 1px solid var(--color-border);
+
+    &:last-child {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+  }
+
+  &__section-title {
+    margin-bottom: 3rem;
+
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--color-dark-blue);
+    text-align: center;
+  }
+
+  &__address-item {
+    margin-bottom: $gap-small;
+    font-size: 1.6rem;
+    line-height: 1.6;
+  }
+
+  &__address-item strong {
+    margin-right: $gap-small;
+    font-weight: 500;
+    color: var(--color-dark);
+  }
+
+  &__address-list {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-big;
+  }
+
+  &__form-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-small;
+  }
+
+  &__checkbox-wrapper {
+    flex-direction: row;
+  }
+
+  &__address-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    padding: 3rem;
+    border: 1px solid var(--color-border-input);
+    border-radius: $radius-big;
+
+    background-color: var(--color-bg-modal);
+
+    .default-shipping-text,
+    .default-billing-text {
+      margin-left: $gap-small;
+      font-size: 0.9em;
+      font-weight: normal;
+      color: var(--color-breeze);
+    }
+  }
+
+  &__button {
+    max-width: max-content;
+    margin-right: $gap-small;
+    padding: 0.8em 1.5em;
+    border-radius: $radius;
+
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-white);
+
+    background-color: var(--color-breeze);
+
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+      background-color: var(--color-breeze-light);
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .button--save {
+    color: var(--color-white);
+    background-color: var(--color-breeze);
+
+    &:hover {
+      background-color: var(--color-breeze-light);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: var(--color-dark);
+      opacity: 0.7;
+      background-color: var(--color-shadow);
+
+      &:hover {
+        background-color: var(--color-shadow);
+      }
+    }
+  }
+
+  &__address-form {
+    border: 1px solid var(--color-border-input);
+  }
+
+  &__new-password-fields {
+    display: flex;
+    flex-direction: column;
+    gap: $gap-middle;
+    margin-top: $gap-middle;
+  }
+}

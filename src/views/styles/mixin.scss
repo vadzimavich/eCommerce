@@ -1,0 +1,10 @@
+@use './variables.scss';
+
+@mixin container {
+  width: 100%;
+  max-width: 144rem;
+  margin: 0 auto;
+  padding: variables.$padding-section-vertical;
+
+  text-align: center;
+}

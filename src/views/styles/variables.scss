@@ -1,0 +1,41 @@
+:root {
+  --color-dark: #313131;
+  --color-dark-blue: #3c4563;
+  --color-white: #fff;
+  --color-breeze: #0c99ac;
+  --color-breeze-rgb: 12, 153, 172;
+  --color-breeze-light: #80dae5;
+  --color-breeze-dark: #074149;
+  --color-shadow: #dadada;
+  --color-bg-modal: rgb(255 255 255 / 72%);
+  --color-border-input: #e0e5eb;
+  --color-border: #cacaca;
+  --color-border-opacity: #cacaca4a;
+  --color-red: red;
+  --color-btn-bg: #222934;
+  --color-disabled: #eef1f6;
+  --color-error-tooltip-bg: #fff4ea;
+  --color-error-tooltip-border: #fee9d6;
+  --color-error-tooltip-text: #f67804;
+  --color-card-title: #3c4563;
+  --color-card-desc: #7c8191;
+  --color-card-price: #313131;
+  --color-card-price-discount: #eb0000;
+  --color-card-button: #0c99ac;
+  --color-card-background: #fff;
+  --color-yelow: #ffce13;
+}
+
+$box-shadow: 0 4px 16px var(--color-shadow);
+
+$padding-section-horizontal: 60px;
+$padding-section-vertical: 30px;
+$padding-section-horizontal-sm: 30px;
+$padding-section-vertical-sm: 10px;
+
+$gap-big: 30px;
+$gap-middle: 15px;
+$gap-small: 8px;
+
+$radius: 10px;
+$radius-big: 50px;
