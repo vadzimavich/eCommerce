@@ -5,6 +5,7 @@ import {
   HttpMiddlewareOptions,
   PasswordAuthMiddlewareOptions,
   RefreshAuthMiddlewareOptions,
+  TokenCache,
   TokenStore,
 } from '@commercetools/sdk-client-v2';
 import { getEnvironmentValue } from '../../utils/helpers';
@@ -21,11 +22,15 @@ import { Modal } from '../../components/modal';
 import { isCtErrorWithBodyMessage, isStandardError } from '../types/api-types';
 
 export const CUSTOMER_CART = 'customer_cart';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tokenCache: any = {
-  get: () => {
+
+const tokenCache: TokenCache = {
+  get: (): TokenStore => {
     const token = sessionStorage.getItem(REFRESH_TOKEN);
-    return token ? { refreshToken: token } : null;
+    return {
+      refreshToken: token || '',
+      token: '',
+      expirationTime: 0,
+    };
   },
   set: (tokenObject: TokenStore) => {
     if (tokenObject?.refreshToken) {
